@@ -19,6 +19,14 @@ describe('lentes', () => {
     expect(className('hielo', 'veg_perdida', 'en')).toBe('Possible wet snow');
     expect(className('vegetacion', 'veg_aumento', 'en')).toBe('Possible vegetation or crop growth');
   });
+  it('el lente de vegetación nombra las tres clases ambiguas en clave agrícola', () => {
+    expect(className('vegetacion', 'agua_nueva', 'es')).toBe('Posible superficie lisa o inundada nueva');
+    expect(className('vegetacion', 'agua_retirada', 'es')).toBe('Posible superficie que dejó de ser lisa o de estar inundada');
+    expect(className('vegetacion', 'veg_inundada', 'es')).toBe('Sube HH con HV estable: posible riego o labranza');
+    expect(className('vegetacion', 'agua_nueva', 'en')).toBe('Possible newly smooth or flooded surface');
+    expect(className('vegetacion', 'agua_retirada', 'en')).toBe('Possible surface no longer smooth or flooded');
+    expect(className('vegetacion', 'veg_inundada', 'en')).toBe('HH up, HV steady: possible irrigation or tillage');
+  });
   it('sobre un glaciar ninguna clase habla de pérdida de vegetación', () => {
     for (const key of KEYS) {
       expect(className('hielo', key, 'es').toLowerCase()).not.toContain('pérdida de vegetación');

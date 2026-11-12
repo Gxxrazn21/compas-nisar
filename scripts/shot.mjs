@@ -1,6 +1,6 @@
 // Capturas de pantalla con el Chrome del sistema (sin descargar navegadores).
 // Uso: node scripts/shot.mjs <url> <salida.png> [ancho=1440] [alto=900] [esperaMs=4000] [pasos.json]
-// pasos.json (opcional): [{"click":"selector"},{"wait":1500},{"key":"ArrowRight"},{"shot":"otra.png"},{"eval":"código"}]
+// pasos.json (opcional): [{"click":"selector"},{"wait":1500},{"mouse":[x,y]},{"key":"ArrowRight"},{"shot":"otra.png"},{"eval":"código"}]
 import { chromium } from 'playwright-core';
 import { readFileSync } from 'node:fs';
 
@@ -27,6 +27,7 @@ await page.waitForTimeout(+wait);
 if (stepsFile) {
   for (const step of JSON.parse(readFileSync(stepsFile, 'utf8'))) {
     if (step.click) await page.click(step.click, { timeout: 15000 });
+    if (step.mouse) await page.mouse.click(step.mouse[0], step.mouse[1]);
     if (step.key) await page.keyboard.press(step.key);
     if (step.eval) await page.evaluate(step.eval);
     if (step.wait) await page.waitForTimeout(step.wait);

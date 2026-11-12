@@ -1,5 +1,4 @@
 // Sonda: valores de HH y HV en el punto donde se hizo clic.
-import { useEffect, useRef } from 'react';
 import { useI18n } from '../../i18n';
 import { formatDb, formatNumber } from '../../lib/format';
 import { className } from '../../lib/lens';
@@ -14,11 +13,6 @@ interface Props {
 
 export function ProbeBlock({ probe, lens, calibrated = false }: Props) {
   const { t, lang } = useI18n();
-  const section = useRef<HTMLElement>(null);
-  const point = probe?.point;
-  useEffect(() => {
-    if (point) section.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-  }, [point]);
   let body;
   if (!probe) {
     body = <p className="ayuda">{t('probe.hint')}</p>;
@@ -63,7 +57,7 @@ export function ProbeBlock({ probe, lens, calibrated = false }: Props) {
     );
   }
   return (
-    <section ref={section} className="bloque" aria-labelledby="sonda-h">
+    <section className="bloque" aria-labelledby="sonda-h">
       <h3 id="sonda-h">{t('probe.title')}</h3>
       {body}
     </section>

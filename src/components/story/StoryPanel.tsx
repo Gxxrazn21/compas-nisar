@@ -15,9 +15,11 @@ interface Props {
   extra?: ReactNode;
   onStep: (index: number) => void;
   onBack: () => void;
+  /** Abre «Qué viene con NISAR» en el diálogo Método. */
+  onFuture: () => void;
 }
 
-export function StoryPanel({ story, steps, step, dance, extra, onStep, onBack }: Props) {
+export function StoryPanel({ story, steps, step, dance, extra, onStep, onBack, onFuture }: Props) {
   const { t, loc, lang } = useI18n();
   const total = steps.length;
   const activeRef = useRef<HTMLLIElement>(null);
@@ -78,6 +80,14 @@ export function StoryPanel({ story, steps, step, dance, extra, onStep, onBack }:
                   <p>{loc(item.text)}</p>
                   {item.layer === 'dance' && <DanceStart dance={dance} />}
                   {item.layer === 'zoom' && <p className="ayuda">{t('story.zoomHint')}</p>}
+                  {index === total - 1 && (
+                    <p className="paso-futuro">
+                      {t('story.futureLead')}{' '}
+                      <button type="button" className="enlace-texto" onClick={onFuture}>
+                        {t('story.future')}
+                      </button>
+                    </p>
+                  )}
                 </div>
               )}
             </li>

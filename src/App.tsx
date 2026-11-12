@@ -15,8 +15,13 @@ import { Cover, EarthTodayDetail } from './components/story/Cover';
 import { InterferogramPicker, InterferogramReading } from './components/story/InterferogramParts';
 import { StoryPanel } from './components/story/StoryPanel';
 import { useI18n } from './i18n';
+import type { Key } from './i18n/es';
+import { activeContext } from './lib/context';
+import type { ContextLayers } from './lib/context';
 import { eventsGeoJSON, urgentGeoJSON } from './lib/events';
 import { useCompas } from './state/useCompas';
+
+const NO_CONTEXT: ContextLayers = {};
 
 type View = 'cover' | 'story' | 'interferogram' | 'explore' | 'live';
 
@@ -24,6 +29,11 @@ export function App() {
   const { t } = useI18n();
   const compas = useCompas();
   const [methodOpen, setMethodOpen] = useState(false);
+  const [methodAnchor, setMethodAnchor] = useState<'future' | null>(null);
+  const openMethod = (anchor: 'future' | null = null) => {
+    setMethodAnchor(anchor);
+    setMethodOpen(true);
+  };
   const [readingCollapsed, setReadingCollapsed] = useState(false);
   const stageApi = useRef<StageApi | null>(null);
   const { dance, live, mode, story } = compas;
@@ -48,6 +58,9 @@ export function App() {
     compas.basemap === 'optico' && compas.mapLayer !== 'swipe' && compas.opticalDate && (view === 'story' || view === 'explore')
       ? compas.opticalDate
       : null;
+
+  // Las capas de contexto acompañan a una comparación: solo se dibujan en Historias y Explorar.
+  const contextOn = view === 'story' || (view === 'explore' && compas.readingState.status !== 'idle');
 
   const liveLayers = useMemo<LiveLayers | null>(() => {
     if (view !== 'live') return null;
@@ -121,9 +134,11 @@ export function App() {
         live={liveLayers}
         overlay={overlay}
         opticalDate={optical}
+        context={contextOn ? compas.context : NO_CONTEXT}
+        contextDate={compas.contextDate}
         apiRef={stageApi}
       />
-      <TopBar mode={compas.mode} onMode={compas.setMode} onHome={compas.goHome} onMethod={() => setMethodOpen(true)} />
+      <TopBar mode={compas.mode} onMode={compas.setMode} onHome={compas.goHome} onMethod={() => openMethod()} />
 
       {view === 'cover' ? (
         <>
@@ -140,6 +155,7 @@ export function App() {
               dance={dance}
               onStep={compas.setStep}
               onBack={compas.goHome}
+              onFuture={() => openMethod('future')}
             />
           )}
           {view === 'interferogram' && story && (
@@ -151,6 +167,7 @@ export function App() {
               extra={<InterferogramPicker state={compas.interferograms} pair={compas.pair} onPair={compas.setPair} />}
               onStep={compas.setStep}
               onBack={compas.goHome}
+              onFuture={() => openMethod('future')}
             />
           )}
           {view === 'explore' && <ExplorePanel compas={compas} />}
@@ -169,6 +186,14 @@ export function App() {
                 onOpacity={compas.setOpacity}
                 onBasemap={compas.setBasemap}
                 onRecenter={compas.recenter}
+                context={{
+                  layers: compas.context,
+                  date: compas.contextDate,
+                  days: compas.contextDays,
+                  after: compas.opticalDate,
+                  onLayer: compas.setContextLayer,
+                  onStep: compas.stepContextDays,
+                }}
                 stageApi={stageApi}
               />
             )}
@@ -182,7 +207,7 @@ export function App() {
               lupa={lupa}
               collapsed={readingCollapsed}
               onCollapse={setReadingCollapsed}
-              onMethod={() => setMethodOpen(true)}
+              onMethod={() => openMethod()}
             />
           )}
           {view === 'interferogram' && <InterferogramReading state={compas.interferograms} pair={compas.pair} />}
@@ -193,8 +218,11 @@ export function App() {
       <footer className="pie">
         {t(view === 'live' ? 'live.footer' : 'map.attribution')}
         {optical ? ` ${t('basemap.attribution')}` : ''}
+        {contextOn && activeContext(compas.context).length > 0
+          ? ` ${t('ctx.attr.pie', { names: activeContext(compas.context).map((id) => t(`ctx.attr.${id}` as Key)).join(', ') })}`
+          : null}
       </footer>
-      <MethodDialog open={methodOpen} onClose={() => setMethodOpen(false)} />
+      <MethodDialog open={methodOpen} anchor={methodAnchor} onClose={() => setMethodOpen(false)} />
     </div>
   );
 }

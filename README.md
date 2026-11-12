@@ -8,7 +8,9 @@ NISAR vuelve sobre cada sitio cada 12 días. Ese es el compás de la danza, y po
 
 ## Qué hace
 
-- **Historias.** Tres recorridos guiados con datos reales: las ciénagas de La Mojana (Colombia) entre junio y octubre de 2026, el deshielo de verano del casquete Vatnajökull (Islandia) y los interferogramas sobre la isla de Hawái.
+- **Historias.** Cuatro recorridos guiados con datos reales: las ciénagas de La Mojana (Colombia) entre junio y octubre de 2026, las parcelas agrícolas del valle de San Joaquín (Estados Unidos) entre el verano y la cosecha, el deshielo de verano del casquete Vatnajökull (Islandia) y los interferogramas sobre la isla de Hawái.
+- **Por qué cambió.** Cada clase de cambio trae su hipótesis física, otras causas posibles y la polarización que la revela.
+- **Contexto.** Capas opcionales de NASA: agua superficial vista por Sentinel-1 (otro radar, de banda C), cobertura del suelo y densidad de población.
 - **Explorar.** Un clic en cualquier punto del globo consulta el catálogo de NASA, lista las series de pasadas que cubren ese punto y permite comparar dos fechas.
 - **Lectura del cambio.** Mapa de aumento y disminución del retorno del radar, clases de cambio con su área en km², sonda por punto, histograma, procedencia de cada dato y límites del análisis.
 - **La danza.** Animación de todas las pasadas de una serie, con la partitura siguiendo el ritmo.
@@ -34,6 +36,9 @@ NISAR vuelve sobre cada sitio cada 12 días. Ese es el compás de la danza, y po
 | NASA EONET v3 | Eventos naturales | Público |
 | NASA EPIC (DSCOVR) | Imagen diaria de la Tierra | Clave de api.nasa.gov |
 | NASA GIBS, VIIRS | Mapa base óptico del día | Público |
+| NASA GIBS, OPERA DSWx-S1 | Agua superficial vista por Sentinel-1 (banda C): contraste independiente | Público |
+| NASA GIBS, MODIS IGBP | Cobertura del suelo | Público |
+| NASA GIBS, GPW 2020 | Densidad de población | Público |
 | Esri World Imagery | Mapa base satelital | Público |
 
 No se usan datos sintéticos. Todo lo que aparece en pantalla viene de estos servicios.
@@ -67,6 +72,16 @@ A escala de un kilómetro el método reproduce el patrón y el signo del cambio.
 
 El detalle del método y de cada servicio está en `docs/contrato-api.md`.
 
+### Cómo comprobar un resultado por tu cuenta
+
+- **Procedencia.** Cada comparación lista el nombre de los dos productos. Búscalos en https://search.asf.alaska.edu y verás las mismas imágenes publicadas por NASA.
+- **Control de estabilidad.** Compara dos pasadas seguidas (12 días). Debe salir casi sin cambio; si aparece mucho, desconfía del resultado.
+- **Dos órbitas.** Donde haya una serie ascendente y otra descendente, el mismo periodo debe mostrar el mismo patrón en ambas.
+- **Otro radar.** Activa la capa de agua de Sentinel-1 y compárala con el cambio de NISAR.
+- **Otro sensor.** Revisa las mismas fechas en imágenes ópticas en https://worldview.earthdata.nasa.gov.
+- **Dato calibrado.** Abre la lupa sobre la zona, o ejecuta `scripts/validar_browse_vs_gcov.py`.
+- **Terreno.** Ninguna de estas comprobaciones reemplaza la información de campo: niveles de ríos, reportes locales, censos agrícolas.
+
 ### Lo que la herramienta no afirma
 
 - No confirma inundaciones, incendios, deforestación ni deformación del terreno. Señala dónde cambió el retorno del radar y con qué es compatible.
@@ -79,6 +94,9 @@ El detalle del método y de cada servicio está en `docs/contrato-api.md`.
 Requisitos: Python 3.11 o posterior, Node.js 20 o posterior, y conexión a internet.
 
 ```powershell
+git clone https://github.com/Gxxrazn21/compas-nisar
+cd compas-nisar
+
 # 1. Claves (opcionales): copia la plantilla y complétala
 Copy-Item .env.example .env
 
@@ -86,7 +104,7 @@ Copy-Item .env.example .env
 powershell -ExecutionPolicy Bypass -File scripts\start.ps1 -Prewarm
 ```
 
-`-Prewarm` descarga y calcula las tres historias antes de abrir, para que respondan al instante durante una presentación.
+`-Prewarm` descarga y calcula las cuatro historias antes de abrir, para que respondan al instante durante una presentación.
 
 Las dos claves de `.env` son opcionales:
 
@@ -128,6 +146,10 @@ La caché de `data/cache/` se limita sola a unos 3,5 GB; se puede borrar en cual
 ## Uso de inteligencia artificial
 
 El código y los textos de este proyecto se escribieron con asistentes de programación (Codex y Claude Code), dirigidos y revisados por el autor. Los asistentes no generaron ningún dato: las imágenes, cifras y fechas provienen de los servicios de NASA y ASF citados arriba, y cada resultado se puede reproducir con los scripts del repositorio.
+
+## Licencia
+
+Código bajo licencia MIT (ver `LICENSE`). Los datos pertenecen a sus fuentes y se usan según sus políticas de acceso abierto.
 
 ## Créditos
 

@@ -27,9 +27,10 @@ export function ConfidenceNote({ stats, calibrated = false }: { stats: ChangeSta
       </div>
     );
   }
+  // La confianza media se pliega a su titular para dejar a la vista las clases; la baja va abierta.
   return (
-    <div className={`confianza ${level}`} role="note">
-      <p className="confianza-titulo">{t(level === 'media' ? 'conf.media' : 'conf.baja')}</p>
+    <details className={`confianza ${level}`} open={level === 'baja'}>
+      <summary className="confianza-titulo">{t(level === 'media' ? 'conf.media' : 'conf.baja')}</summary>
       <p>{t(level === 'media' ? 'conf.lead.media' : 'conf.lead.baja')}</p>
       {reasons.length > 0 && (
         <ul>
@@ -38,6 +39,6 @@ export function ConfidenceNote({ stats, calibrated = false }: { stats: ChangeSta
           ))}
         </ul>
       )}
-    </div>
+    </details>
   );
 }

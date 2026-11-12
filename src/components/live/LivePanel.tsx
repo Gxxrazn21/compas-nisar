@@ -66,6 +66,7 @@ function Events({ compas }: { compas: Compas }) {
   return (
     <>
       <p className="ayuda">{t('live.events.count', { n: live.visibleEvents.length, days: 20 })}</p>
+      {live.visibleEvents.length > 30 && <p className="ayuda">{t('live.clusterHint')}</p>}
       <div className="filtros" role="group" aria-label={t('live.filter')}>
         {live.categories.map((key) => {
           const off = live.hidden.has(key);

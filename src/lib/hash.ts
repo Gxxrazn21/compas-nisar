@@ -1,6 +1,8 @@
 // Estado esencial en el hash de la URL: abrir una vista concreta y reproducir capturas.
 // Cubre historias, exploración libre (punto, pila, fechas, lente, área, capa) y En vivo.
 import type { Bounds, Lang, LonLat, MapLayer, ZoomWindow } from '../types';
+import { parseContext, parseDays, stringifyContext } from './context';
+import type { ContextLayers } from './context';
 
 export type Mode = 'stories' | 'explore' | 'live';
 
@@ -26,6 +28,10 @@ export interface HashState {
   basemap: 'sat' | 'optico';
   /** Índice del interferograma elegido. */
   pair: number | null;
+  /** Capas de contexto de NASA GIBS encendidas, con su opacidad. */
+  context: ContextLayers;
+  /** Días de desfase de la capa de Sentinel-1 respecto de la fecha «después». */
+  contextDays: number;
   /** Para depuración y capturas: `mercator` evita el globo en navegadores sin WebGL potente. */
   proj: 'globe' | 'mercator';
 }
@@ -103,6 +109,8 @@ export function parseHash(hash: string): HashState {
     lupa: lupa(params.get('u')),
     basemap: params.get('bm') === 'optico' ? 'optico' : 'sat',
     pair: Number.isInteger(pair) && pair >= 0 ? pair : null,
+    context: parseContext(params.get('cx')),
+    contextDays: parseDays(params.get('cd')),
     proj: params.get('proj') === 'mercator' ? 'mercator' : 'globe',
   };
 }
@@ -128,6 +136,9 @@ export function buildHash(state: Partial<HashState>): string {
   );
   if (state.basemap === 'optico') put('bm', 'optico');
   put('g', state.pair);
+  const context = stringifyContext(state.context ?? {});
+  put('cx', context);
+  if (context.includes('a') && state.contextDays) put('cd', state.contextDays);
   put('lang', state.lang);
   if (state.proj === 'mercator') put('proj', 'mercator');
   const text = params.toString();

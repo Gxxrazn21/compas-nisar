@@ -16,6 +16,8 @@ const EMPTY = {
   lupa: null,
   basemap: 'sat',
   pair: null,
+  context: {},
+  contextDays: 0,
   proj: 'globe',
 };
 
@@ -91,5 +93,28 @@ describe('enlace de exploración', () => {
     expect(parsed.point).toBeNull();
     expect(parsed.aoi).toBeNull();
     expect(parsed.lupa).toBeNull();
+  });
+
+  it('guarda las capas de contexto con su opacidad y el desfase de Sentinel-1', () => {
+    const hash = buildHash({
+      mode: 'stories',
+      story: 'mojana',
+      context: { agua: 0.75, poblacion: 0.6 },
+      contextDays: 1,
+    });
+    expect(hash).toBe('#s=mojana&cx=a75%2Cp60&cd=1');
+    const back = parseHash(hash);
+    expect(back.context).toEqual({ agua: 0.75, poblacion: 0.6 });
+    expect(back.contextDays).toBe(1);
+  });
+
+  it('sin capas de contexto no escribe nada, y el desfase solo cuenta con la de Sentinel-1', () => {
+    expect(buildHash({ story: 'mojana', context: {}, contextDays: 3 })).toBe('#s=mojana');
+    expect(buildHash({ story: 'mojana', context: { suelo: 0.6 }, contextDays: 3 })).toBe('#s=mojana&cx=c60');
+  });
+
+  it('ignora capas de contexto inválidas', () => {
+    expect(parseHash('#cx=z50,a,a999,c5').context).toEqual({ agua: 1, suelo: 0.2 });
+    expect(parseHash('#cd=banana').contextDays).toBe(0);
   });
 });

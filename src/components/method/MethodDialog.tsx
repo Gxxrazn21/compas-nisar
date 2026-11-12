@@ -5,13 +5,18 @@ import type { Key } from '../../i18n/es';
 
 interface Props {
   open: boolean;
+  /** Sección a la que bajar al abrir (por ejemplo, «Qué viene con NISAR»). */
+  anchor?: 'future' | null;
   onClose: () => void;
 }
 
 const SECTIONS = ['s1', 's2', 's3', 's4', 's5', 's7', 's8', 's9', 's10'] as const;
 const LIMITS = ['s6.1', 's6.2', 's6.3', 's6.4', 's6.5'] as const;
+const FACTS = ['future.facts.1', 'future.facts.2', 'future.facts.3', 'future.facts.4'] as const;
+const APPS = ['future.apps.1', 'future.apps.2', 'future.apps.3', 'future.apps.4', 'future.apps.5', 'future.apps.6'] as const;
+const GAPS = ['future.gap.1', 'future.gap.2'] as const;
 
-export function MethodDialog({ open, onClose }: Props) {
+export function MethodDialog({ open, anchor = null, onClose }: Props) {
   const { t } = useI18n();
   const ref = useRef<HTMLDialogElement>(null);
 
@@ -20,7 +25,15 @@ export function MethodDialog({ open, onClose }: Props) {
     if (!dialog) return;
     if (open && !dialog.open) dialog.showModal();
     if (!open && dialog.open) dialog.close();
-  }, [open]);
+    if (open) {
+      const target = anchor === 'future' ? dialog.querySelector<HTMLElement>('#futuro') : null;
+      // Se espera un cuadro para que el diálogo ya tenga su alto.
+      requestAnimationFrame(() => {
+        if (target) target.scrollIntoView({ block: 'start' });
+        else dialog.querySelector('.metodo-cuerpo')?.scrollTo({ top: 0 });
+      });
+    }
+  }, [open, anchor]);
 
   return (
     <dialog
@@ -51,6 +64,28 @@ export function MethodDialog({ open, onClose }: Props) {
           <ul>
             {LIMITS.map((id) => (
               <li key={id}>{t(`method.${id}` as Key)}</li>
+            ))}
+          </ul>
+        </section>
+        <section id="futuro" className="futuro" aria-labelledby="futuro-h">
+          <h3 id="futuro-h">{t('future.title')}</h3>
+          <p>{t('future.intro')}</p>
+          <h4>{t('future.facts.title')}</h4>
+          <ul>
+            {FACTS.map((id) => (
+              <li key={id}>{t(id)}</li>
+            ))}
+          </ul>
+          <h4>{t('future.apps.title')}</h4>
+          <ul>
+            {APPS.map((id) => (
+              <li key={id}>{t(id)}</li>
+            ))}
+          </ul>
+          <h4>{t('future.gap.title')}</h4>
+          <ul>
+            {GAPS.map((id) => (
+              <li key={id}>{t(id)}</li>
             ))}
           </ul>
         </section>

@@ -298,6 +298,7 @@ export type StepLayer =
   | 'after'
   | 'swipe'
   | 'change_hh'
+  | 'change_hv'
   | 'classes'
   | 'dance'
   | 'zoom'

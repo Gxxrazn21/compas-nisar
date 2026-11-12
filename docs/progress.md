@@ -8,18 +8,19 @@ Los documentos de `docs/superpowers/` (diseño y plan del 11 de noviembre) descr
 
 - Backend FastAPI completo: catálogo CMR, imágenes de vista previa con caché, método de cambio versión 3, series y cuadros de animación, sonda, respuesta urgente, interferogramas, eventos EONET, imagen EPIC y lupa calibrada sobre el producto GCOV. 106 pruebas sin red.
 - Método validado contra el producto calibrado (`docs/validacion-browse.json`).
-- Frontend completo: portada, historias, explorar cualquier punto, lupa calibrada, historia de interferogramas, En vivo (eventos y respuesta urgente), panel de lectura con exportación, partitura, danza, mapa óptico del día, diálogo Método, español e inglés, enlace permanente y hoja inferior en celular. 75 pruebas.
-- Tres historias con datos reales: La Mojana, Vatnajökull y Kilauea.
+- Frontend completo: portada, historias, explorar cualquier punto, lupa calibrada, historia de interferogramas, En vivo con eventos agrupados y respuesta urgente, panel de lectura en pestañas con hipótesis físicas por clase y exportación, capas de contexto (Sentinel-1, cobertura del suelo, población), partitura, danza, mapa óptico del día, diálogo Método con «Qué viene con NISAR», español e inglés, enlace permanente y hoja inferior en celular. 104 pruebas.
+- Cuatro historias con datos reales: La Mojana, valle de San Joaquín, Vatnajökull y Kilauea.
 - Lanzador (`scripts/start.ps1`) y precálculo de historias (`scripts/prewarm.py`).
-- Verificado en modo producción (un solo servidor en el puerto 8000) con capturas en `docs/capturas/`.
+- Repositorio público con licencia MIT: https://github.com/Gxxrazn21/compas-nisar
 
 ## Pendiente
 
 - Probar la hoja inferior en un celular real (solo se revisó en Chrome sin cabeza).
-- Panel de lectura largo: agruparlo en pestañas lo haría más cómodo de proyectar.
-- A 1366×768 el mapa queda ajustado entre paneles.
-- El diálogo Método es extenso; la validación merecería una figura.
-- En vivo: los incendios (más de 400 puntos) tapan otras categorías; convendría agruparlos.
+- La capa de Sentinel-1 sale vacía en muchas fechas y el servicio GIBS falla a ratos: falta un botón que salte a la pasada con datos más cercana.
+- Las capas de contexto no se ven del lado «antes» de la cortina.
+- Al desplegar una hipótesis en pantallas bajas, el texto queda cortado hasta desplazar el panel.
+- Un párrafo de contexto personal sobre La Mojana, que debe escribir el autor.
+- Material de entrega del Space Apps: video o diapositivas de la demostración.
 
 ## Decisiones
 

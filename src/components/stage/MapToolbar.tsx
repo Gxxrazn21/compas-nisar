@@ -5,6 +5,8 @@ import { useI18n } from '../../i18n';
 import type { Key } from '../../i18n/es';
 import { formatDate } from '../../lib/format';
 import type { ChangeResult, MapLayer } from '../../types';
+import { ContextControl } from './ContextControl';
+import type { ContextProps } from './ContextControl';
 import type { StageApi } from './Stage';
 
 interface Props {
@@ -20,6 +22,8 @@ interface Props {
   onOpacity: (value: number) => void;
   onBasemap: (basemap: 'sat' | 'optico') => void;
   onRecenter: () => void;
+  /** Capas de contexto de NASA GIBS; sin esto, el control no aparece. */
+  context?: ContextProps;
   stageApi: RefObject<StageApi | null>;
 }
 
@@ -32,7 +36,7 @@ const GROUPS: Array<{ id: 'image' | 'change' | 'reading'; layers: LayerKey[] }> 
 ];
 
 export function MapToolbar(props: Props) {
-  const { change, layer, opacity, compact, basemap, opticalDate, onLayer, onOpacity, onBasemap, onRecenter, stageApi } = props;
+  const { change, layer, opacity, compact, basemap, opticalDate, onLayer, onOpacity, onBasemap, onRecenter, context, stageApi } = props;
   const { t, lang } = useI18n();
   const current = layer === 'dance' ? null : layer;
   const swipe = layer === 'swipe';
@@ -103,6 +107,7 @@ export function MapToolbar(props: Props) {
           </button>
         </div>
       )}
+      {context && !compact && <ContextControl {...context} />}
       <div className="zoom" role="group" aria-label={t('map.zoomGroup')}>
         <button type="button" className="icono" onClick={() => stageApi.current?.zoomIn()} aria-label={t('map.zoomIn')} title={t('map.zoomIn')}>
           <Plus size={18} aria-hidden="true" />

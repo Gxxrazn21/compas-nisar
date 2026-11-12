@@ -547,6 +547,130 @@ export const es = {
     'El mapa óptico del día',
   'method.s10.text':
     'Es la imagen diaria de color verdadero del satélite VIIRS (NASA GIBS) en la fecha «después». Muestra lo que ve un satélite óptico: a menudo, nubes. El radar de NISAR ve la misma zona a través de ellas, y por eso conviene mirarlos juntos.',
+  'ctx.button':
+    'Contexto',
+  'ctx.active':
+    '{n} capas activas',
+  'ctx.title':
+    'Capas de contexto',
+  'ctx.intro':
+    'Capas de la NASA para ver qué rodea el cambio. Quedan debajo del cambio de NISAR.',
+  'ctx.agua.name':
+    'Agua vista por Sentinel-1',
+  'ctx.agua.what':
+    'Marca agua abierta y vegetación inundada. Cumple dos papeles: es un contraste independiente (otro satélite, otro día) y otra frecuencia (banda C, frente a la banda L de NISAR). Si coinciden, la pista se sostiene mejor; si no, puede deberse a la frecuencia o al día.',
+  'ctx.suelo.name':
+    'Cobertura del suelo (MODIS, 2024)',
+  'ctx.suelo.what':
+    'Qué hay sobre el terreno: bosque, cultivo, humedal o ciudad. Ayuda a leer el cambio, porque la misma señal significa cosas distintas en un cultivo y en un bosque.',
+  'ctx.poblacion.name':
+    'Densidad de población (2020)',
+  'ctx.poblacion.what':
+    'Cuánta gente vive en cada zona: muestra a quién puede afectar un cambio, como una inundación.',
+  'ctx.opacity':
+    'Opacidad',
+  'ctx.opacityOf':
+    'Opacidad de la capa: {name}',
+  'ctx.legend':
+    'Cómo leer los colores',
+  'ctx.poblacion.read':
+    'De crema (menos de 1 persona por km²) a rojo oscuro (1.000 o más). Sin color: sin dato, como en el océano.',
+  'ctx.link':
+    'Ver la capa en NASA Worldview',
+  'ctx.s1.group':
+    'Fecha de Sentinel-1',
+  'ctx.s1.prev':
+    'Un día antes',
+  'ctx.s1.next':
+    'Un día después',
+  'ctx.s1.same':
+    'Igual que la fecha «después» de la comparación',
+  'ctx.s1.later':
+    '{n} {unit} después de la fecha «después»',
+  'ctx.s1.earlier':
+    '{n} {unit} antes de la fecha «después»',
+  'ctx.day':
+    'día',
+  'ctx.days':
+    'días',
+  'ctx.s1.reset':
+    'Volver a la fecha «después»',
+  'ctx.s1.note':
+    'Sentinel-1 es otro radar, de banda C; pasa cada 6 a 12 días. Si el mapa sale vacío, avanza o retrocede un día hasta dar con una pasada.',
+  'ctx.attr.agua':
+    'OPERA con Sentinel-1',
+  'ctx.attr.suelo':
+    'MODIS',
+  'ctx.attr.poblacion':
+    'GPW v4',
+  'ctx.attr.pie':
+    'Contexto: NASA GIBS, {names}.',
+  'ctx.attr.full':
+    'Atribución: NASA EOSDIS GIBS; OPERA (JPL); MODIS (NASA LP DAAC); GPW v4 (NASA SEDAC, CIESIN).',
+  'classes.hint':
+    'Elige una clase para ver por qué pudo cambiar.',
+  'why.signal':
+    'Qué hace la señal',
+  'why.mechanism':
+    'Mecanismo más probable',
+  'why.lead':
+    'Lo más probable',
+  'why.others':
+    'También puede ser',
+  'why.pol':
+    'Qué polarización lo revela',
+  'pol.title':
+    'Qué ve cada polarización',
+  'pol.single':
+    'Esta comparación tiene una sola polarización (HH): no hay lectura de HV.',
+  'tabs.label':
+    'Secciones de la lectura',
+  'tabs.reading':
+    'Lectura',
+  'tabs.point':
+    'Punto',
+  'tabs.data':
+    'Datos',
+  'story.future':
+    'Qué viene con NISAR',
+  'story.futureLead':
+    'Esta historia es una parte de lo que NISAR puede hacer.',
+  'future.title':
+    'Qué viene con NISAR',
+  'future.intro':
+    'Lo que Compás muestra hoy es una parte de lo que NISAR puede ofrecer. Esto es lo que ya sabemos del satélite y lo que se abre a partir de ahí.',
+  'future.facts.title':
+    'Lo que ya es un hecho',
+  'future.facts.1':
+    'NISAR lleva dos radares: banda L (NASA) y banda S (ISRO).',
+  'future.facts.2':
+    'Pasa por el mismo lugar cada 12 días y observa en órbitas ascendentes y descendentes.',
+  'future.facts.3':
+    'La banda L atraviesa el follaje.',
+  'future.facts.4':
+    'El catálogo público ya publica, además de lo que usa Compás, productos de humedad del suelo, de desplazamientos (útiles para glaciares) e interferogramas, y una línea de respuesta urgente casi en tiempo real.',
+  'future.apps.title':
+    'Aplicaciones que eso abre',
+  'future.apps.1':
+    'Seguimiento de humedales e inundaciones bajo las nubes y bajo el bosque.',
+  'future.apps.2':
+    'Calendario y área de cultivos.',
+  'future.apps.3':
+    'Alertas de deforestación.',
+  'future.apps.4':
+    'Deshielo y movimiento de glaciares.',
+  'future.apps.5':
+    'Deformación del terreno por sismos, volcanes y hundimientos.',
+  'future.apps.6':
+    'Apoyo a la respuesta ante desastres.',
+  'future.gap.title':
+    'Qué le falta a Compás para llegar ahí',
+  'future.gap.1':
+    'Series completas y calibradas: hoy la vista general usa imágenes de vista previa con dB aproximados, y la lupa calibrada cubre solo ventanas pequeñas.',
+  'future.gap.2':
+    'Validación con datos de campo: Compás todavía no contrasta sus señales con mediciones hechas en el terreno.',
+  'live.clusterHint':
+    'Los círculos con número agrupan eventos cercanos; púlsalos para acercarte y separarlos.',
 } as const;
 
 export type Key = keyof typeof es;

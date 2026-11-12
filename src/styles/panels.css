@@ -37,7 +37,7 @@
   top: 0;
   left: 0;
   bottom: 0;
-  width: min(560px, 46vw);
+  width: min(620px, 48vw);
   min-width: 440px;
   max-height: none;
   padding: calc(var(--alto-barra) + 28px) 24px 48px 40px;
@@ -46,7 +46,7 @@
   border-radius: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: safe center;
   gap: 18px;
 }
 
@@ -142,6 +142,50 @@
 
 .programa-fila:hover .programa-titulo {
   color: var(--oro);
+}
+
+/* Portátiles de 768 px de alto: la portada cabe con las cuatro historias */
+@media (max-height: 800px) and (min-width: 721px) {
+  .portada {
+    gap: 12px;
+    padding-top: calc(var(--alto-barra) + 12px);
+    padding-bottom: calc(var(--alto-pie) + 12px);
+  }
+
+  .titular {
+    font-size: clamp(2rem, 3.3vw, 2.8rem);
+    max-width: 14em;
+  }
+
+  .tempo {
+    font-size: var(--t17);
+  }
+
+  .portada .lead {
+    font-size: var(--t15);
+  }
+
+  .programa {
+    margin-top: 0;
+    max-width: none;
+  }
+
+  .programa li + li {
+    margin-top: 0;
+  }
+
+  .programa-fila {
+    padding: 7px 8px;
+  }
+
+  .programa-titulo {
+    font-size: 1.2rem;
+  }
+
+  .programa-tempo {
+    margin-top: 0;
+    font-size: var(--t15);
+  }
 }
 
 /* La Tierra hoy */

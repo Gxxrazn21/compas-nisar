@@ -6,6 +6,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { useEffect, useRef, useState } from 'react';
 import type { RefObject } from 'react';
 import { useI18n } from '../../i18n';
+import type { ContextLayers } from '../../lib/context';
 import type { FeatureCollection } from '../../lib/events';
 import { zoomForBounds } from '../../lib/camera';
 import { prefersReducedMotion } from '../../state/useElapsed';
@@ -14,10 +15,13 @@ import type { Bounds, ChangeResult, Corners, LonLat, MapLayer, SeriesResult } fr
 import { installChange, installFrames, showFrame, showLayer } from './dataLayers';
 import { baseStyle, gibsTiles } from './mapStyle';
 import {
+  CLUSTERS,
   EVENTS,
   URGENT,
+  expandCluster,
   featureAt,
   installOverlays,
+  setContext,
   setEvents,
   setFootprint,
   setOverlayImage,
@@ -66,6 +70,9 @@ interface Props {
   overlay: { url: string; coordinates: Corners } | null;
   /** Fecha del mapa óptico del día; `null` deja el satélite de siempre. */
   opticalDate: string | null;
+  /** Capas de contexto de GIBS encendidas y fecha que pide la de Sentinel-1. */
+  context: ContextLayers;
+  contextDate: string;
   apiRef: RefObject<StageApi | null>;
 }
 
@@ -136,7 +143,14 @@ export function Stage(props: Props) {
     instance.on('click', (event) => {
       const current = live.current;
       if (current.live) {
-        const hit = featureAt(instance, event.point, [EVENTS, `${URGENT}-relleno`]);
+        const hit = featureAt(instance, event.point, [EVENTS, CLUSTERS, `${URGENT}-relleno`]);
+        if (hit?.layer.id === CLUSTERS && hit.geometry.type === 'Point') {
+          const clusterId = hit.properties?.cluster_id;
+          if (typeof clusterId === 'number') {
+            void expandCluster(instance, clusterId, hit.geometry.coordinates as [number, number]);
+          }
+          return;
+        }
         const id = hit?.properties?.id;
         if (typeof id === 'string') {
           if (hit?.layer.id === EVENTS) current.live.onEvent(id);
@@ -149,10 +163,15 @@ export function Stage(props: Props) {
     });
     instance.on('mousemove', (event) => {
       if (!live.current.live) return;
-      const hit = featureAt(instance, event.point, [EVENTS, `${URGENT}-relleno`]);
+      const hit = featureAt(instance, event.point, [EVENTS, CLUSTERS, `${URGENT}-relleno`]);
       instance.getCanvas().style.cursor = hit ? 'pointer' : '';
     });
-    instance.on('error', (event) => console.error('mapa:', event.error?.message ?? event));
+    instance.on('error', (event) => {
+      // Las teselas de contexto de GIBS fallan a veces (500 o fechas sin datos): no es un error de la aplicación.
+      const sourceId = (event as { sourceId?: unknown }).sourceId;
+      if (typeof sourceId === 'string' && sourceId.startsWith('contexto-')) return;
+      console.error('mapa:', event.error?.message ?? event);
+    });
     return () => {
       markerRef.current?.remove();
       pointRef.current?.remove();
@@ -293,6 +312,14 @@ export function Stage(props: Props) {
     if (optical) (map.getSource('optico') as RasterTileSource | undefined)?.setTiles(gibsTiles(optical));
     map.setLayoutProperty('optico', 'visibility', optical ? 'visible' : 'none');
   }, [map, ready, optical]);
+
+  // Capas de contexto (NASA GIBS).
+  const contextKey = `${JSON.stringify(props.context)}|${props.contextDate}`;
+  useEffect(() => {
+    if (!map || !ready) return;
+    setContext(map, props.context, props.contextDate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, ready, contextKey]);
 
   // Marcador de la sonda y del punto de exploración.
   useEffect(() => {

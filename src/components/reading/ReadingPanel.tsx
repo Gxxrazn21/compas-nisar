@@ -1,5 +1,6 @@
 // Panel de lectura (derecha): frase resumen, confianza, clases, sonda, lupa, histograma, exportar, procedencia.
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { useI18n } from '../../i18n';
 import type { Key } from '../../i18n/es';
 import { formatArea, formatBetween, formatNumber } from '../../lib/format';
@@ -14,7 +15,13 @@ import { Histogram } from './Histogram';
 import { CalibratedBanner, LupaOpener } from './LupaBlock';
 import type { LupaControls } from './LupaBlock';
 import { ProbeBlock } from './ProbeBlock';
+import { PolarizationGuide } from './PolarizationGuide';
 import { Provenance } from './Provenance';
+import { ReadingTabs, panelId, tabId } from './ReadingTabs';
+import type { TabItem } from './ReadingTabs';
+
+type TabKey = 'lectura' | 'punto' | 'datos';
+const PREFIX = 'lectura';
 
 interface Props {
   state: ChangeState;
@@ -100,6 +107,28 @@ export function ReadingPanel({ state, lens, stack, probe, lupa, collapsed, onCol
   const { t, lang } = useI18n();
   const { change, status } = state;
   const calibrated = change?.source === 'gcov';
+  const tabs: TabItem<TabKey>[] = [
+    { id: 'lectura', label: t('tabs.reading') },
+    { id: 'punto', label: t('tabs.point') },
+    { id: 'datos', label: t('tabs.data') },
+  ];
+  const [tab, setTab] = useState<TabKey>('lectura');
+  const body = useRef<HTMLDivElement>(null);
+  const shell = useRef<HTMLElement>(null);
+
+  // Una comparación nueva vuelve a la lectura; una sonda nueva lleva a la pestaña del punto.
+  const changeId = change?.id ?? '';
+  useEffect(() => setTab('lectura'), [changeId]);
+  const probeKey = probe ? probe.point.join(',') : '';
+  // Cada pestaña se abre desde arriba.
+  useEffect(() => {
+    shell.current?.scrollTo({ top: 0 });
+  }, [tab]);
+  useEffect(() => {
+    if (!probeKey) return;
+    setTab('punto');
+    body.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }, [probeKey]);
 
   if (collapsed) {
     return (
@@ -113,7 +142,7 @@ export function ReadingPanel({ state, lens, stack, probe, lupa, collapsed, onCol
   }
 
   return (
-    <aside className="panel panel-der lectura" data-cubre="right" aria-label={t('read.title')} aria-busy={status === 'loading'}>
+    <aside ref={shell} className="panel panel-der lectura" data-cubre="right" aria-label={t('read.title')} aria-busy={status === 'loading'}>
       <button type="button" className="plegar" onClick={() => onCollapse(true)} aria-expanded={true}>
         {t('read.collapse')}
         <ChevronRight size={18} aria-hidden="true" />
@@ -121,29 +150,55 @@ export function ReadingPanel({ state, lens, stack, probe, lupa, collapsed, onCol
       {status === 'loading' && (lupa.target ? <LoadingLupa elapsed={state.elapsed} lupa={lupa} /> : <Loading elapsed={state.elapsed} />)}
       {status === 'error' && <Failure state={state} lupa={lupa} />}
       {change && status !== 'error' && (
-        <div className={status === 'loading' ? 'lectura-cuerpo viejo' : 'lectura-cuerpo'}>
+        <div ref={body} className={status === 'loading' ? 'lectura-cuerpo viejo' : 'lectura-cuerpo'}>
           {calibrated && <CalibratedBanner lupa={lupa} resolution={change.resolution_m} />}
-          <p className="frase">
-            {t(change.stats.changed_km2 > 0 ? 'read.summary' : 'read.summaryNone', {
-              between: formatBetween(change.before.date, change.after.date, lang),
-              changed: formatArea(change.stats.changed_km2, lang),
-              valid: formatArea(change.stats.valid_km2, lang),
-            })}
-          </p>
-          {calibrated && (
-            <p className="medianas">
-              {zoomSummary(change.stats, lang).map((sentence) => (
-                <span key={sentence}>{sentence} </span>
-              ))}
+          <ReadingTabs label={t('tabs.label')} tabs={tabs} selected={tab} prefix={PREFIX} onSelect={setTab} />
+          <div
+            role="tabpanel"
+            id={panelId(PREFIX, 'lectura')}
+            aria-labelledby={tabId(PREFIX, 'lectura')}
+            hidden={tab !== 'lectura'}
+            className="pestana-cuerpo"
+          >
+            <p className="frase">
+              {t(change.stats.changed_km2 > 0 ? 'read.summary' : 'read.summaryNone', {
+                between: formatBetween(change.before.date, change.after.date, lang),
+                changed: formatArea(change.stats.changed_km2, lang),
+                valid: formatArea(change.stats.valid_km2, lang),
+              })}
             </p>
-          )}
-          <ConfidenceNote stats={change.stats} calibrated={calibrated} />
-          {!calibrated && <LupaOpener lupa={lupa} />}
-          <ClassList classes={change.stats.classes} lens={lens} />
-          <ProbeBlock probe={probe} lens={lens} calibrated={calibrated} />
-          <Histogram data={change.stats.hh.hist} calibrated={calibrated} />
-          <ExportBlock change={change} stack={stack} lens={lens} />
-          <Provenance change={change} stack={stack} onMethod={onMethod} />
+            {calibrated && (
+              <p className="medianas">
+                {zoomSummary(change.stats, lang).map((sentence) => (
+                  <span key={sentence}>{sentence} </span>
+                ))}
+              </p>
+            )}
+            <ConfidenceNote stats={change.stats} calibrated={calibrated} />
+            <ClassList classes={change.stats.classes} lens={lens} />
+            <PolarizationGuide lens={lens} dual={change.dual_pol} />
+          </div>
+          <div
+            role="tabpanel"
+            id={panelId(PREFIX, 'punto')}
+            aria-labelledby={tabId(PREFIX, 'punto')}
+            hidden={tab !== 'punto'}
+            className="pestana-cuerpo"
+          >
+            <ProbeBlock probe={probe} lens={lens} calibrated={calibrated} />
+            {!calibrated && <LupaOpener lupa={lupa} />}
+          </div>
+          <div
+            role="tabpanel"
+            id={panelId(PREFIX, 'datos')}
+            aria-labelledby={tabId(PREFIX, 'datos')}
+            hidden={tab !== 'datos'}
+            className="pestana-cuerpo"
+          >
+            <Histogram data={change.stats.hh.hist} calibrated={calibrated} />
+            <ExportBlock change={change} stack={stack} lens={lens} />
+            <Provenance change={change} stack={stack} onMethod={onMethod} />
+          </div>
         </div>
       )}
     </aside>

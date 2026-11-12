@@ -289,3 +289,170 @@
     left: 72%;
   }
 }
+
+/* Pestañas de la lectura: Lectura, Punto y Datos */
+.pestanas-lectura {
+  position: sticky;
+  top: -20px;
+  z-index: 3;
+  display: flex;
+  margin: -4px -22px 0;
+  padding: 4px 22px 0;
+  background: var(--panel);
+  border-bottom: 1px solid var(--linea);
+}
+
+.pestana-lectura {
+  flex: 1 1 0;
+  min-height: 40px;
+  padding: 8px 10px;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  font-size: var(--t15);
+  font-weight: 500;
+  color: var(--bruma);
+}
+
+.pestana-lectura:hover {
+  color: var(--papel);
+}
+
+.pestana-lectura[aria-selected='true'] {
+  color: var(--papel);
+  font-weight: 600;
+  border-bottom-color: var(--oro);
+}
+
+.pestana-lectura:focus-visible {
+  outline-offset: -2px;
+}
+
+.pestana-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pestana-cuerpo[hidden] {
+  display: none;
+}
+
+/* Cada clase se despliega con su hipótesis */
+.clase-nombre {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-height: 24px;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 4px;
+  text-align: left;
+  font: inherit;
+  line-height: 1.3;
+  color: var(--papel);
+}
+
+.clase-nombre:hover > span:first-child {
+  text-decoration: underline;
+  text-decoration-color: var(--bruma);
+  text-underline-offset: 3px;
+}
+
+.clase-flecha {
+  flex: none;
+  align-self: center;
+  color: var(--bruma);
+  transition: transform 0.15s ease;
+}
+
+.clase.abierta .clase-flecha {
+  transform: rotate(180deg);
+}
+
+.clase-porque {
+  grid-column: 2 / 4;
+  margin-top: 4px;
+  padding: 12px 14px;
+  background: rgba(24, 48, 77, 0.6);
+  border-left: 3px solid var(--bruma);
+  border-radius: 0 6px 6px 0;
+}
+
+.clase-porque dl {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.clase-porque dt {
+  font-size: var(--t13);
+  font-weight: 600;
+  color: var(--bruma);
+}
+
+.clase-porque dd {
+  font-size: var(--t15);
+  line-height: 1.5;
+}
+
+.clase-porque ul {
+  list-style: disc;
+  padding-left: 18px;
+}
+
+.clase-pista {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--linea);
+  font-size: var(--t13);
+  line-height: 1.5;
+  color: var(--bruma);
+}
+
+/* Qué ve cada polarización */
+.polarizaciones p,
+.polarizaciones-notas {
+  font-size: var(--t15);
+  line-height: 1.5;
+}
+
+.polarizaciones p + p {
+  margin-top: 8px;
+}
+
+.polarizaciones-notas {
+  margin-top: 8px;
+  padding-left: 18px;
+  list-style: disc;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--bruma);
+}
+
+@media (max-height: 800px) {
+  .pestanas-lectura {
+    top: -14px;
+  }
+}
+
+@media (max-width: 720px) {
+  .pestanas-lectura {
+    top: 0;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* La confianza media o baja se pliega a su titular */
+details.confianza > summary {
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+details.confianza[open] > summary {
+  margin-bottom: 6px;
+}

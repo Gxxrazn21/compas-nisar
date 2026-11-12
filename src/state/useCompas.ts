@@ -6,6 +6,8 @@ import { api, isAbort } from '../api';
 import { aoiFromView, bboxOfPolygon } from '../lib/aoi';
 import { datesAroundEvent, hasPairAround } from '../lib/around';
 import { cameraFor, centerOfBounds, zoomForBounds, zoomForWindow } from '../lib/camera';
+import { contextDate as contextDateFor, stepOffset } from '../lib/context';
+import type { ContextId, ContextLayers } from '../lib/context';
 import { buildHash, parseHash } from '../lib/hash';
 import type { HashState, Mode } from '../lib/hash';
 import { asLens } from '../lib/lens';
@@ -135,6 +137,14 @@ export interface Compas {
   setBasemap: (basemap: 'sat' | 'optico') => void;
   /** Fecha del mapa óptico (la fecha «después» de la comparación), si hay una. */
   opticalDate: string | null;
+  // capas de contexto (NASA GIBS)
+  context: ContextLayers;
+  /** Fecha que pide la capa de Sentinel-1: la fecha «después» más o menos algunos días. */
+  contextDate: string;
+  contextDays: number;
+  /** Enciende (con su opacidad), gradúa o apaga (`null`) una capa de contexto. */
+  setContextLayer: (id: ContextId, opacity: number | null) => void;
+  stepContextDays: (delta: number) => void;
   // vistas
   /** Hay una comparación en pantalla o en camino: se muestra la lectura, la barra de capas y la sonda. */
   analysing: boolean;
@@ -218,6 +228,10 @@ export function useCompas(): Compas {
   // Lupa calibrada pedida por la persona (la de un paso de historia se deriva del paso)
   const [lupaReq, setLupaReq] = useState<ZoomWindow | null>(start.lupa);
   const [lupaSize, setLupaSize] = useState<number>(start.lupa?.size_km ?? 15);
+
+  // Capas de contexto de GIBS
+  const [context, setContext] = useState<ContextLayers>(start.context);
+  const [contextDays, setContextDays] = useState(start.contextDays);
 
   // Interferogramas
   const [pair, setPairState] = useState(start.pair ?? 0);
@@ -345,6 +359,13 @@ export function useCompas(): Compas {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appliedKey, stackId]);
 
+  // El desfase de Sentinel-1 vale para una comparación: con otras fechas, vuelve a la fecha «después».
+  const previousApplied = useRef('');
+  useEffect(() => {
+    if (previousApplied.current && previousApplied.current !== appliedKey) setContextDays(0);
+    previousApplied.current = appliedKey;
+  }, [appliedKey]);
+
   // La sonda pertenece a un cambio concreto.
   const changeId = mapChange?.id ?? null;
   useEffect(() => {
@@ -424,6 +445,8 @@ export function useCompas(): Compas {
         pair: interferogramStory ? pairIndex : null,
         lupa: lupaForHash,
         basemap,
+        context,
+        contextDays,
       };
     } else if (mode === 'explore') {
       state = {
@@ -437,6 +460,8 @@ export function useCompas(): Compas {
         layer: exDates ? rawLayer : null,
         lupa: lupaForHash,
         basemap,
+        context,
+        contextDays,
       };
     } else if (mode === 'live') {
       state = { mode };
@@ -449,7 +474,7 @@ export function useCompas(): Compas {
     }
   }, [
     mode, story, interferogramStory, stackId, dates, rawLayer, step, pairIndex, lupaForHash, basemap,
-    exStackId, exPoint, exDates, exLens, exAoi, lang, start.proj,
+    exStackId, exPoint, exDates, exLens, exAoi, lang, start.proj, context, contextDays,
   ]);
 
   // Cámara al abrir o cerrar la lupa
@@ -762,6 +787,20 @@ export function useCompas(): Compas {
 
   const opticalDate = applied?.after ?? null;
 
+  const setContextLayer = useCallback((id: ContextId, opacity: number | null) => {
+    setContext((current) => {
+      const next = { ...current };
+      if (opacity === null) delete next[id];
+      else next[id] = opacity;
+      return next;
+    });
+  }, []);
+
+  const stepContextDays = useCallback(
+    (delta: number) => setContextDays((current) => stepOffset(opticalDate, current, delta)),
+    [opticalDate],
+  );
+
   return {
     proj: start.proj,
     mode,
@@ -814,6 +853,11 @@ export function useCompas(): Compas {
     basemap,
     setBasemap,
     opticalDate,
+    context,
+    contextDate: contextDateFor(opticalDate, contextDays),
+    contextDays,
+    setContextLayer,
+    stepContextDays,
     analysing,
     setMode,
     openStory,

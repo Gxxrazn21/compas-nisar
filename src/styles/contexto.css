@@ -1,0 +1,283 @@
+/* Control «Contexto» de la barra del mapa y sus capas de NASA GIBS. */
+.contexto {
+  position: relative;
+  display: flex;
+}
+
+.capa-contexto {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  font-size: var(--t15);
+  font-weight: 500;
+  color: var(--papel);
+  background: var(--panel-92);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  white-space: nowrap;
+}
+
+.capa-contexto:hover {
+  border-color: var(--bruma);
+}
+
+.capa-contexto[aria-expanded='true'] {
+  background: var(--relieve);
+}
+
+.capa-contexto.activa {
+  border-color: var(--oro);
+}
+
+.ctx-cuenta {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 10px;
+  background: var(--oro);
+  color: var(--noche);
+  font-size: var(--t13);
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* Flota en la franja libre del mapa, entre el panel izquierdo y el de lectura, justo sobre la barra */
+.contexto-panel {
+  position: fixed;
+  z-index: 25;
+  left: calc(var(--ancho-izq) + 2 * var(--margen));
+  bottom: var(--pila-inferior, 300px);
+  width: clamp(340px, calc(100vw - var(--ancho-izq) - var(--ancho-der) - 4 * var(--margen)), 430px);
+  max-height: calc(100dvh - var(--alto-barra) - var(--pila-inferior, 300px) - 8px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--linea) transparent;
+  padding: 16px 18px 6px;
+  background: var(--panel);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.contexto-panel h3 {
+  font-family: var(--serif);
+  font-size: var(--t22);
+  font-weight: 500;
+  line-height: 1.15;
+}
+
+.contexto-panel > .ayuda {
+  margin-top: 4px;
+}
+
+.ctx-lista {
+  margin-top: 12px;
+}
+
+.ctx-capa {
+  padding: 12px 0 14px;
+  border-top: 1px solid var(--linea);
+}
+
+.ctx-interruptor {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 28px;
+  cursor: pointer;
+}
+
+.ctx-interruptor input {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--oro);
+}
+
+.ctx-nombre {
+  font-size: var(--t15);
+  font-weight: 600;
+}
+
+.ctx-capa > .ayuda {
+  margin: 2px 0 0 28px;
+}
+
+.ctx-detalle {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 12px 0 0 28px;
+}
+
+.ctx-opacidad {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--t13);
+  color: var(--bruma);
+}
+
+.ctx-opacidad input {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--oro);
+}
+
+/* Fecha de Sentinel-1 */
+.ctx-fecha {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.ctx-fecha-control {
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  gap: 8px;
+}
+
+.ctx-fecha-dia {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.ctx-fecha-dia strong {
+  font-size: var(--t15);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.ctx-fecha-dia span {
+  font-size: var(--t13);
+  color: var(--bruma);
+}
+
+/* Cómo leer los colores */
+.ctx-lectura {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ctx-lectura-titulo {
+  font-size: var(--t13);
+  font-weight: 600;
+  color: var(--bruma);
+}
+
+.ctx-leyenda {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 14px;
+}
+
+.ctx-leyenda li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--t13);
+  line-height: 1.3;
+}
+
+.ctx-muestra {
+  flex: none;
+  display: inline-flex;
+  width: 30px;
+  height: 14px;
+  overflow: hidden;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(242, 239, 230, 0.35);
+}
+
+.ctx-muestra span {
+  flex: 1;
+}
+
+.ctx-rampa {
+  display: block;
+  height: 12px;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(242, 239, 230, 0.35);
+}
+
+.ctx-enlace {
+  font-size: var(--t13);
+}
+
+/* Método: el encabezado queda a la vista y «Qué viene con NISAR» no se oculta bajo él */
+.metodo-cabeza {
+  position: sticky;
+  top: -28px;
+  z-index: 2;
+  margin: -28px -32px 0;
+  padding: 24px 32px 12px;
+  background: var(--panel);
+}
+
+.futuro {
+  scroll-margin-top: 110px;
+}
+
+/* Método: «Qué viene con NISAR» */
+.futuro h4 {
+  margin: 14px 0 4px;
+  font-size: var(--t15);
+  font-weight: 600;
+  color: var(--bruma);
+}
+
+.paso-futuro {
+  margin-top: 12px;
+  font-size: var(--t13);
+  color: var(--bruma);
+}
+
+.paso-futuro .enlace-texto {
+  font-size: var(--t13);
+  padding: 0;
+}
+
+/* Celular: el panel de contexto va dentro de la hoja, no flotando */
+@media (max-width: 720px) {
+  .metodo-cabeza {
+    top: -20px;
+    margin: -20px -18px 0;
+    padding: 18px 18px 10px;
+  }
+
+  .hoja .contexto {
+    flex: 1 1 100%;
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .hoja .capa-contexto {
+    min-height: 44px;
+    justify-content: center;
+  }
+
+  .hoja .contexto-panel {
+    position: static;
+    width: auto;
+    max-height: none;
+    overflow: visible;
+    box-shadow: none;
+  }
+}
+
+.ctx-atribucion {
+  padding: 10px 0 12px;
+  border-top: 1px solid var(--linea);
+}
