@@ -1,0 +1,69 @@
+{
+  "fecha_validacion": "2026-11-12",
+  "pila": "011_D_084",
+  "antes": "2026-06-26",
+  "despues": "2026-10-24",
+  "centro": [
+    -74.85,
+    8.72
+  ],
+  "size_km": 15,
+  "umbral_db": 3.0,
+  "browse": {
+    "size": [
+      89,
+      90
+    ],
+    "georef": "kml",
+    "bounds": [
+      -74.919262,
+      8.650813,
+      -74.781067,
+      8.788873
+    ],
+    "correlacion_escena": 0.921,
+    "confianza": "alta"
+  },
+  "calibrado": {
+    "size": [
+      500,
+      500
+    ],
+    "resolucion_m": 30.0,
+    "celdas_por_pixel_browse_mediana": 30
+  },
+  "resultados": {
+    "promedio_a_resolucion_browse": {
+      "n_pixeles": 7744,
+      "pearson_r": 0.488,
+      "pendiente_ols": 0.244,
+      "ordenada_db": -0.39,
+      "razon_desviaciones": 0.501,
+      "mediana_error_abs_db": 0.81,
+      "sesgo_mediano_db": -0.7,
+      "desv_browse_db": 0.72,
+      "desv_calibrado_db": 1.45,
+      "detecta_browse": 72,
+      "detecta_calibrado": 329,
+      "precision": 0.458,
+      "exhaustividad": 0.1,
+      "signo_correcto_en_aciertos": 0.939
+    },
+    "promedio_y_media_5x5": {
+      "n_pixeles": 7744,
+      "pearson_r": 0.859,
+      "pendiente_ols": 0.942,
+      "ordenada_db": -0.73,
+      "razon_desviaciones": 1.096,
+      "mediana_error_abs_db": 0.69,
+      "sesgo_mediano_db": -0.69,
+      "desv_browse_db": 0.72,
+      "desv_calibrado_db": 0.66,
+      "detecta_browse": 72,
+      "detecta_calibrado": 20,
+      "precision": 0.125,
+      "exhaustividad": 0.45,
+      "signo_correcto_en_aciertos": 1.0
+    }
+  }
+}

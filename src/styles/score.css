@@ -1,0 +1,279 @@
+/* La partitura: la pieza distintiva. */
+.partitura {
+  position: absolute;
+  z-index: 14;
+  left: var(--margen);
+  right: var(--margen);
+  bottom: calc(var(--alto-pie) + 6px);
+  height: var(--alto-partitura);
+  display: flex;
+  flex-direction: column;
+  padding: 10px 18px 6px;
+  background: var(--panel-92);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+}
+
+.partitura-cabeza {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-height: 42px;
+}
+
+.partitura-titulo {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: var(--t22);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.partitura-titulo em {
+  margin-left: 6px;
+  font-size: var(--t17);
+  color: var(--oro);
+}
+
+.partitura-estado {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--t15);
+  color: var(--bruma);
+  line-height: 1.3;
+}
+
+.partitura-acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+
+.partitura-aviso {
+  font-size: var(--t13);
+  color: var(--sube);
+}
+
+.partitura-lienzo {
+  flex: 1;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--linea) transparent;
+}
+
+.partitura-pie,
+.partitura-vacia {
+  padding: 4px 0;
+}
+
+.pentagrama {
+  display: block;
+  overflow: visible;
+}
+
+.pent-linea {
+  stroke: var(--pauta);
+  stroke-width: 1.2;
+}
+
+.pent-barra {
+  stroke: var(--pauta);
+  stroke-width: 1.2;
+}
+
+.pent-clave {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 22px;
+  fill: var(--bruma);
+}
+
+.pent-mes {
+  stroke: var(--pauta);
+  stroke-width: 1;
+}
+
+.pent-mes-texto {
+  font-size: 13px;
+  fill: var(--bruma);
+  font-family: var(--sans);
+}
+
+/* Notas */
+.nota {
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.6s cubic-bezier(0.3, 0.7, 0.2, 1), opacity 0.2s;
+}
+
+.nota-cabeza {
+  fill: var(--papel);
+  stroke: var(--papel);
+  stroke-width: 1;
+  transition: fill 0.15s;
+}
+
+.nota-plica {
+  stroke: var(--papel);
+  stroke-width: 1.5;
+}
+
+.nota-zona {
+  fill: transparent;
+}
+
+.nota-foco {
+  fill: none;
+  stroke: var(--oro);
+  stroke-width: 2;
+  opacity: 0;
+}
+
+.nota-halo {
+  fill: var(--oro);
+  opacity: 0;
+}
+
+.nota:hover .nota-cabeza {
+  fill: var(--oro);
+  stroke: var(--oro);
+}
+
+.nota:focus-visible .nota-foco {
+  opacity: 1;
+}
+
+.nota.elegida .nota-cabeza {
+  fill: var(--oro);
+  stroke: var(--oro);
+}
+
+.nota.elegida .nota-plica {
+  stroke: var(--oro);
+}
+
+.nota.hueca .nota-cabeza {
+  fill: none;
+  stroke: var(--bruma);
+  stroke-width: 1.6;
+}
+
+.nota.hueca .nota-plica {
+  stroke: var(--bruma);
+}
+
+.nota.hueca,
+.nota.atenuada {
+  opacity: 0.4;
+}
+
+.nota.hueca:hover .nota-cabeza {
+  fill: none;
+  stroke: var(--bruma);
+}
+
+.nota.atenuada {
+  cursor: not-allowed;
+}
+
+.nota.encendida .nota-halo {
+  opacity: 0.35;
+}
+
+.nota.encendida .nota-cabeza {
+  fill: var(--oro);
+  stroke: var(--oro);
+}
+
+.ligadura {
+  fill: none;
+  stroke: var(--oro);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.nota-rotulo {
+  font-size: 15px;
+  font-weight: 500;
+  fill: var(--oro);
+  font-family: var(--sans);
+}
+
+.nota-palabra {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 17px;
+}
+
+.cursor line {
+  stroke: var(--oro);
+  stroke-width: 1.6;
+  opacity: 0.85;
+}
+
+.cursor path {
+  fill: var(--oro);
+}
+
+/* Estado de la danza */
+.danza-carga,
+.danza-controles {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.danza-carga span,
+.danza-cuadro {
+  font-size: var(--t15);
+  color: var(--papel);
+  white-space: nowrap;
+}
+
+.danza-carga span {
+  white-space: normal;
+  max-width: 380px;
+  line-height: 1.3;
+}
+
+.danza-carga progress {
+  width: 120px;
+  height: 6px;
+  accent-color: var(--oro);
+}
+
+.danza-cuadro {
+  margin-right: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 720px) {
+  .hoja .partitura {
+    position: static;
+    flex: none;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    height: var(--alto-partitura);
+    padding: 8px 8px 6px;
+    background: var(--panel);
+    border-radius: 8px;
+  }
+
+  .partitura-cabeza {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+
+  .partitura-estado {
+    flex-basis: 100%;
+    order: 3;
+  }
+
+  .danza-cuadro {
+    display: none;
+  }
+}

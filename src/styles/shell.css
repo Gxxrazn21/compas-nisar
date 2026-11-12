@@ -1,0 +1,381 @@
+/* Estructura: el mapa ocupa toda la ventana; la interfaz flota encima. */
+.app {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--noche);
+}
+
+.escenario,
+.escenario .escenario-mapa,
+.cortina .cortina-mapa {
+  position: absolute;
+  inset: 0;
+}
+
+.escenario-mapa .maplibregl-canvas {
+  outline: none;
+}
+
+/* Barra superior */
+.barra-superior {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 20;
+  height: var(--alto-barra);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--margen) 0 24px;
+  background: linear-gradient(var(--noche) 0%, rgba(10, 22, 38, 0.72) 55%, transparent 100%);
+  pointer-events: none;
+}
+
+.barra-superior > * {
+  pointer-events: auto;
+}
+
+.marca {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: var(--serif);
+  font-size: var(--t30);
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: 0.01em;
+  color: var(--papel);
+  line-height: 1;
+}
+
+.marca:hover {
+  color: var(--oro);
+}
+
+.barra-derecha {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.idioma {
+  display: inline-flex;
+  border: 1px solid var(--linea);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--panel-92);
+}
+
+.idioma button {
+  background: none;
+  border: 0;
+  min-width: 42px;
+  padding: 7px 10px;
+  font-size: var(--t13);
+  font-weight: 600;
+  color: var(--bruma);
+}
+
+.idioma button[aria-pressed='true'] {
+  background: var(--relieve);
+  color: var(--oro);
+}
+
+.barra-derecha .enlace {
+  background: var(--panel-92);
+  border: 1px solid var(--linea);
+  padding: 7px 14px;
+  font-weight: 500;
+}
+
+/* Pie con la atribución */
+.pie {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 30;
+  height: var(--alto-pie);
+  padding: 0 var(--margen);
+  display: flex;
+  align-items: center;
+  font-size: var(--t13);
+  color: var(--bruma);
+  background: linear-gradient(rgba(10, 22, 38, 0.55), rgba(10, 22, 38, 0.92));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+/* Cortina antes/después */
+.cortina {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.cortina-mapa {
+  position: absolute;
+  inset: 0;
+  background: var(--noche);
+}
+
+.cortina-asa {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--pos);
+  width: 48px;
+  margin-left: -24px;
+  pointer-events: auto;
+  cursor: ew-resize;
+  touch-action: none;
+  outline: none;
+}
+
+.cortina-asa::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: var(--pila-inferior, 0px);
+  left: 23px;
+  width: 2px;
+  background: var(--oro);
+}
+
+.cortina-grip {
+  position: absolute;
+  top: 44%;
+  left: 4px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--oro);
+  border: 3px solid var(--noche);
+}
+
+.cortina-grip::before,
+.cortina-grip::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  margin-top: -6px;
+  border: 6px solid transparent;
+}
+
+.cortina-grip::before {
+  left: 3px;
+  border-right-color: var(--noche);
+}
+
+.cortina-grip::after {
+  right: 3px;
+  border-left-color: var(--noche);
+}
+
+.cortina-asa:focus-visible .cortina-grip {
+  outline: 2px solid var(--papel);
+  outline-offset: 3px;
+}
+
+.cortina-rotulo {
+  position: absolute;
+  top: 76px;
+  padding: 5px 12px;
+  font-size: var(--t13);
+  font-weight: 500;
+  background: var(--panel-92);
+  border: 1px solid var(--linea);
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.cortina-rotulo.antes {
+  left: calc(var(--pos) - 12px);
+  transform: translateX(-100%);
+}
+
+.cortina-rotulo.despues {
+  left: calc(var(--pos) + 12px);
+}
+
+/* Marca de la sonda */
+.sonda-marca {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 3px solid var(--oro);
+  background: rgba(10, 22, 38, 0.55);
+  box-shadow: 0 0 0 5px rgba(232, 184, 74, 0.25);
+}
+
+/* Barra del mapa */
+.barra-mapa {
+  position: absolute;
+  z-index: 15;
+  left: var(--margen);
+  right: var(--margen);
+  bottom: calc(var(--alto-pie) + 6px + var(--alto-partitura) + 10px);
+  height: var(--alto-herramientas);
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.barra-mapa > * {
+  pointer-events: auto;
+}
+
+.capas,
+.opacidad,
+.zoom {
+  display: flex;
+  align-items: center;
+  background: var(--panel-92);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+}
+
+.capas {
+  padding: 4px;
+  gap: 2px;
+  overflow-x: auto;
+}
+
+.capa {
+  background: none;
+  border: 0;
+  border-radius: 5px;
+  padding: 7px 12px;
+  font-size: var(--t15);
+  font-weight: 500;
+  color: var(--bruma);
+  white-space: nowrap;
+}
+
+.capa:hover:not(:disabled) {
+  color: var(--papel);
+}
+
+.capa[aria-pressed='true'] {
+  background: var(--oro);
+  color: var(--noche);
+  font-weight: 600;
+}
+
+.opacidad {
+  gap: 10px;
+  padding: 0 14px;
+  font-size: var(--t13);
+  color: var(--bruma);
+}
+
+.opacidad input {
+  width: 110px;
+  accent-color: var(--oro);
+}
+
+.zoom {
+  padding: 4px;
+  gap: 4px;
+}
+
+.zoom .icono {
+  width: 38px;
+  height: 38px;
+  border: 0;
+  background: none;
+}
+
+.zoom .icono:hover {
+  background: var(--relieve);
+}
+
+/* La hoja inferior solo existe en celular; en escritorio no genera caja. */
+.hoja {
+  display: contents;
+}
+
+.hoja-asa {
+  display: none;
+}
+
+@media (max-width: 1180px) {
+  .opacidad span {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  :root {
+    --alto-barra: 48px;
+    --alto-partitura: 176px;
+  }
+
+  .barra-superior {
+    padding-left: 14px;
+  }
+
+  .marca {
+    font-size: var(--t22);
+  }
+
+  .hoja {
+    position: absolute;
+    z-index: 15;
+    inset: auto 0 var(--alto-pie) 0;
+    height: 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 12px 16px;
+    overflow: hidden;
+    background: var(--panel);
+    border-top: 1px solid var(--linea);
+    border-radius: 16px 16px 0 0;
+    transition: height 0.25s ease;
+  }
+
+  .hoja.abierta {
+    height: 58dvh;
+    overflow-y: auto;
+  }
+
+  .hoja-asa {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    flex: none;
+    width: 100%;
+    padding: 14px 0 6px;
+    background: var(--panel);
+    border: 0;
+  }
+
+  .hoja-barra {
+    width: 48px;
+    height: 5px;
+    border-radius: 3px;
+    background: var(--bruma);
+  }
+
+  .hoja .barra-mapa {
+    position: static;
+    flex: none;
+    height: auto;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .hoja .capas {
+    max-width: 100%;
+  }
+
+  .pie {
+    font-size: var(--t13);
+  }
+}

@@ -1,0 +1,291 @@
+/* Panel de lectura: frase, confianza, clases, sonda, histograma, procedencia. */
+.lectura-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.lectura-cuerpo.viejo {
+  opacity: 0.45;
+}
+
+.frase {
+  font-family: var(--serif);
+  font-size: var(--t22);
+  line-height: 1.28;
+  font-weight: 500;
+}
+
+.bloque h3 {
+  font-size: var(--t17);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.confianza {
+  font-size: var(--t15);
+  line-height: 1.5;
+}
+
+.confianza.alta {
+  color: var(--bruma);
+}
+
+.confianza.media,
+.confianza.baja {
+  padding: 12px 14px;
+  border-left: 3px solid var(--oro);
+  border-radius: 0 6px 6px 0;
+  background: rgba(232, 184, 74, 0.09);
+}
+
+.confianza-titulo {
+  font-weight: 600;
+  color: var(--oro);
+  margin-bottom: 4px;
+}
+
+.confianza ul {
+  margin-top: 8px;
+  padding-left: 18px;
+  list-style: disc;
+  color: var(--bruma);
+  font-size: var(--t13);
+}
+
+.confianza li + li {
+  margin-top: 4px;
+}
+
+/* Clases = leyenda */
+.clases {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.clase {
+  display: grid;
+  grid-template-columns: 14px 1fr auto;
+  column-gap: 10px;
+  row-gap: 5px;
+  align-items: baseline;
+}
+
+.clase-color {
+  grid-row: 1;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  align-self: center;
+}
+
+.clase-nombre {
+  line-height: 1.3;
+}
+
+.clase-km {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.clase-km {
+  font-weight: 600;
+}
+
+.clase-barra {
+  grid-column: 2 / 4;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--linea);
+  overflow: hidden;
+  align-self: center;
+}
+
+.clase-barra span {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+}
+
+
+.bloque .ayuda {
+  margin-top: 8px;
+}
+
+/* Sonda */
+.sonda-clase {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.sonda-tabla {
+  border-collapse: collapse;
+  width: 100%;
+  font-variant-numeric: tabular-nums;
+}
+
+.sonda-tabla th,
+.sonda-tabla td {
+  padding: 4px 0;
+  text-align: right;
+  font-weight: 400;
+}
+
+.sonda-tabla th[scope='row'] {
+  text-align: left;
+  color: var(--bruma);
+}
+
+.sonda-tabla thead th {
+  font-weight: 600;
+}
+
+.sonda-tabla tbody tr:last-child td {
+  font-weight: 600;
+  color: var(--papel);
+  border-top: 1px solid var(--linea);
+}
+
+/* Histograma */
+.histograma {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.hist-barra.baja {
+  fill: var(--baja);
+}
+
+.hist-barra.sube {
+  fill: var(--sube);
+}
+
+.hist-barra.quieto {
+  fill: #3f5f87;
+}
+
+.hist-umbral {
+  stroke: var(--bruma);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.hist-eje {
+  stroke: var(--bruma);
+  stroke-width: 1;
+}
+
+.hist-rotulo {
+  font-size: 13px;
+  fill: var(--bruma);
+  font-family: var(--sans);
+}
+
+/* Procedencia y límites */
+.desplegable {
+  border-top: 1px solid var(--linea);
+  padding-top: 12px;
+}
+
+.desplegable summary {
+  font-size: var(--t17);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.desplegable[open] summary {
+  margin-bottom: 10px;
+}
+
+.prov {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.prov dt {
+  font-weight: 600;
+}
+
+.prov dd {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.prov-id {
+  font-family: var(--cond);
+  font-size: var(--t13);
+  color: var(--bruma);
+  overflow-wrap: anywhere;
+}
+
+.prov-texto {
+  margin-top: 10px;
+  font-size: var(--t15);
+  line-height: 1.5;
+}
+
+.limites {
+  list-style: disc;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+/* Carga y error */
+.carga,
+.falla {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.carga-titulo,
+.falla-titulo {
+  font-family: var(--serif);
+  font-size: var(--t22);
+  font-weight: 500;
+}
+
+.falla {
+  padding: 12px 14px;
+  border-left: 3px solid var(--sube);
+  background: rgba(255, 107, 94, 0.08);
+  border-radius: 0 6px 6px 0;
+  align-items: flex-start;
+}
+
+.carga-aguja {
+  position: relative;
+  display: block;
+  height: 3px;
+  background: var(--linea);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.carga-aguja::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 28%;
+  background: var(--oro);
+  animation: aguja 1.4s ease-in-out infinite alternate;
+}
+
+@keyframes aguja {
+  from {
+    left: 0;
+  }
+  to {
+    left: 72%;
+  }
+}

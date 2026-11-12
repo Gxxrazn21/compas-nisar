@@ -1,0 +1,1033 @@
+{
+ "hits": 2,
+ "items": [
+  {
+   "meta": {
+    "concept-type": "granule",
+    "concept-id": "G4408739830-ASF",
+    "revision-id": 1,
+    "native-id": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001",
+    "collection-concept-id": "C2887502657-ASF",
+    "provider-id": "ASF",
+    "format": "application/vnd.nasa.cmr.umm+json",
+    "revision-date": "2026-11-11T19:07:50.796Z"
+   },
+   "umm": {
+    "TemporalExtent": {
+     "RangeDateTime": {
+      "BeginningDateTime": "2026-11-11T12:34:55.000000Z",
+      "EndingDateTime": "2026-11-11T12:35:12.999342Z"
+     }
+    },
+    "OrbitCalculatedSpatialDomains": [
+     {
+      "OrbitNumber": 6764
+     }
+    ],
+    "GranuleUR": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001",
+    "AdditionalAttributes": [
+     {
+      "Name": "ASCENDING_DESCENDING",
+      "Values": [
+       "DESCENDING"
+      ]
+     },
+     {
+      "Name": "FRAME_NUMBER",
+      "Values": [
+       "77"
+      ]
+     },
+     {
+      "Name": "FREQUENCIES",
+      "Values": [
+       "A",
+       "B"
+      ]
+     },
+     {
+      "Name": "FREQUENCY_A_POLARIZATION",
+      "Values": [
+       "HH",
+       "HV",
+       "VH",
+       "VV"
+      ]
+     },
+     {
+      "Name": "FREQUENCY_A_POLARIZATION_CONCAT",
+      "Values": [
+       "HH+HV+VH+VV"
+      ]
+     },
+     {
+      "Name": "FREQUENCY_A_RANGE_BANDWIDTH",
+      "Values": [
+       "20"
+      ]
+     },
+     {
+      "Name": "FREQUENCY_B_POLARIZATION",
+      "Values": [
+       "HH",
+       "HV"
+      ]
+     },
+     {
+      "Name": "FREQUENCY_B_POLARIZATION_CONCAT",
+      "Values": [
+       "HH+HV"
+      ]
+     },
+     {
+      "Name": "FREQUENCY_B_RANGE_BANDWIDTH",
+      "Values": [
+       "5"
+      ]
+     },
+     {
+      "Name": "FULL_FRAME",
+      "Values": [
+       "FALSE"
+      ]
+     },
+     {
+      "Name": "JOINT_OBSERVATION",
+      "Values": [
+       "TRUE"
+      ]
+     },
+     {
+      "Name": "ORBIT_TYPE",
+      "Values": [
+       "FOE"
+      ]
+     },
+     {
+      "Name": "PROCESSING_CENTER",
+      "Values": [
+       "JPL"
+      ]
+     },
+     {
+      "Name": "PROCESSING_LEVEL",
+      "Values": [
+       "L2"
+      ]
+     },
+     {
+      "Name": "PRODUCTION_PIPELINE",
+      "Values": [
+       "UR"
+      ]
+     },
+     {
+      "Name": "PRODUCT_TYPE",
+      "Values": [
+       "GCOV"
+      ]
+     },
+     {
+      "Name": "PRODUCT_TYPE_DESC",
+      "Values": [
+       "Geocoded Polarimetric Covariance"
+      ]
+     },
+     {
+      "Name": "PRODUCT_VERSION",
+      "Values": [
+       "1.0.20"
+      ]
+     },
+     {
+      "Name": "RANGE_BANDWIDTH_CONCAT",
+      "Values": [
+       "20+5"
+      ]
+     },
+     {
+      "Name": "STACK_ID",
+      "Values": [
+       "091_D_077"
+      ]
+     },
+     {
+      "Name": "TRACK_NUMBER",
+      "Values": [
+       "91"
+      ]
+     },
+     {
+      "Name": "URGENT_REQUEST_ID",
+      "Values": [
+       "UR_geological_hazards_20261030T000000000Z_INDIA_UR_REQUEST_ramani"
+      ]
+     }
+    ],
+    "SpatialExtent": {
+     "GranuleLocalities": [
+      "Land",
+      "Asia"
+     ],
+     "HorizontalSpatialDomain": {
+      "Geometry": {
+       "GPolygons": [
+        {
+         "Boundary": {
+          "Points": [
+           {
+            "Latitude": 24.18923,
+            "Longitude": 89.7566
+           },
+           {
+            "Latitude": 23.12166,
+            "Longitude": 89.4594
+           },
+           {
+            "Latitude": 22.52558,
+            "Longitude": 91.88289
+           },
+           {
+            "Latitude": 23.5867,
+            "Longitude": 92.19947
+           },
+           {
+            "Latitude": 24.18923,
+            "Longitude": 89.7566
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    },
+    "ProviderDates": [
+     {
+      "Type": "Insert",
+      "Date": "2026-11-11T19:07:48.072220Z"
+     },
+     {
+      "Type": "Update",
+      "Date": "2026-11-11T19:07:48.072220Z"
+     }
+    ],
+    "CollectionReference": {
+     "ShortName": "NISAR_UR_L2",
+     "Version": "1"
+    },
+    "RelatedUrls": [
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR-UR/UR_L2_L_GCOV/NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001/NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001.h5",
+      "Type": "GET DATA",
+      "Description": "Download NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001.h5",
+      "Format": "HDF5"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/BROWSE/UR_L2_L_GCOV/NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001/NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_LATLON.png",
+      "Type": "GET RELATED VISUALIZATION",
+      "Description": "Download NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_LATLON.png",
+      "Format": "PNG"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/BROWSE/UR_L2_L_GCOV/NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001/NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_LATLON_thumbnail.png",
+      "Type": "GET RELATED VISUALIZATION",
+      "Description": "Download NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_LATLON_thumbnail.png",
+      "Format": "PNG"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/BROWSE/UR_L2_L_GCOV/NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001/NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_LATLON.kml",
+      "Type": "EXTENDED METADATA",
+      "Description": "Download NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_LATLON.kml",
+      "Format": "KML"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR-UR/UR_L2_L_GCOV/NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001/NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_QA_STATS.h5",
+      "Type": "VIEW RELATED INFORMATION",
+      "Subtype": "PRODUCT QUALITY ASSESSMENT",
+      "Description": "Download NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_QA_STATS.h5",
+      "Format": "HDF5"
+     }
+    ],
+    "InputGranules": [
+     "NISAR_L1_UR_RSLC_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001.h5"
+    ],
+    "DataGranule": {
+     "DayNightFlag": "Unspecified",
+     "ProductionDateTime": "2026-11-11T19:01:36.000000Z",
+     "ArchiveAndDistributionInformation": [
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001.h5",
+       "SizeInBytes": 4433379328,
+       "Format": "HDF5",
+       "Checksum": {
+        "Value": "7f75543156873244164f0343e0abdf83",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_LATLON.png",
+       "SizeInBytes": 2196651,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "43e10a8426e4558313ad04e62fa6b03e",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE.png",
+       "SizeInBytes": 2468099,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "b9e80d3337e3036da0fe0c34f378bdb9",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_A_HHHH.png",
+       "SizeInBytes": 832423,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "072fe6a3d084a4ef1b34f3d9bd9dbe7a",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_A_HHHV.png",
+       "SizeInBytes": 838267,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "4fda3e10cf4d0a8c0dd6b2c8ab718311",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_A_HHVH.png",
+       "SizeInBytes": 841230,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "4aab2e20b74ce3f832e1fa5c22386a6b",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_A_HHVV.png",
+       "SizeInBytes": 833491,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "ef57b685d566087f7e5f964c0e15edbb",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_A_HVHV.png",
+       "SizeInBytes": 838136,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "c89c9736a7b8f09f2aa078e5566dbf9e",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_A_HVVH.png",
+       "SizeInBytes": 854518,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "a0a561d2db7312d6e884f96eb8b5c7df",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_A_HVVV.png",
+       "SizeInBytes": 831634,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "54e6b77b7709ef2df78d5e46bba4fc4d",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_A_VHVH.png",
+       "SizeInBytes": 838262,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "78d4c98d6b791b0a667ec0ce4f81d429",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_A_VHVV.png",
+       "SizeInBytes": 829422,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "f28b7e2d3ca3927588dd94d8357d989b",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_A_VVVV.png",
+       "SizeInBytes": 820797,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "b01cf16057222fb30f646251da57ee46",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_B_HHHH.png",
+       "SizeInBytes": 463768,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "2f9335bdb6d85fd2fb9e44e6a85d2b87",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_B_HHHV.png",
+       "SizeInBytes": 477917,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "d2fab10f727bc614bc5e7d9b5c5640fb",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_B_HVHV.png",
+       "SizeInBytes": 466839,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "5e10f31359c912dcb553fb5f534d1869",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001.h5.iso.xml",
+       "SizeInBytes": 133026,
+       "Format": "XML",
+       "Checksum": {
+        "Value": "71a1f3a3fa8c391be04c6a14e5c8df96",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_QA_REPORT.pdf",
+       "SizeInBytes": 1504504,
+       "Format": "PDF",
+       "Checksum": {
+        "Value": "4787fd7390f0ba42c75262ac62019e18",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_QA_STATS.h5",
+       "SizeInBytes": 142650,
+       "Format": "HDF5",
+       "Checksum": {
+        "Value": "8c0e77edb7c768088cca880ca98b972c",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_QA_SUMMARY.csv",
+       "SizeInBytes": 5927,
+       "Format": "CSV",
+       "Checksum": {
+        "Value": "39ee11f80436e1d3deb370b806f2ee16",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_LATLON.kml",
+       "SizeInBytes": 567,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "a53ab6cb3f76013c8a792bf3a1491dde",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE.kml",
+       "SizeInBytes": 571,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "e18cdcd2a0da9f0e1543e175cc92ba61",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_A_HHHH.kml",
+       "SizeInBytes": 578,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "3625d82fafa7444c0c2f878748be7ad5",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_A_HHHV.kml",
+       "SizeInBytes": 578,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "82b9eec80c52718fd0531c44aa2e5006",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_A_HHVH.kml",
+       "SizeInBytes": 578,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "febc012816ea23d246effb0f6d66d4be",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_A_HHVV.kml",
+       "SizeInBytes": 578,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "598c6b436d3fcb4af0fcc1e68b777397",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_A_HVHV.kml",
+       "SizeInBytes": 578,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "943831bee710d8ff5dba96ae025034d5",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_A_HVVH.kml",
+       "SizeInBytes": 578,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "adb4a16fb731189ed85d03e6c0c6155c",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_A_HVVV.kml",
+       "SizeInBytes": 578,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "dfe57cc414755ca150657a5b73c33a73",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_A_VHVH.kml",
+       "SizeInBytes": 578,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "b224ad7667a8801cdd3e0b51d41db924",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_A_VHVV.kml",
+       "SizeInBytes": 578,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "7e0afd08f4a6d4e11053a4735b0e827a",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_A_VVVV.kml",
+       "SizeInBytes": 578,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "afee51df4b4267fdf15ad7d7a5006733",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_B_HHHH.kml",
+       "SizeInBytes": 578,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "84c0c8b9803e3ac79c8b6042304d713f",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_B_HHHV.kml",
+       "SizeInBytes": 578,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "37821c214b8ab5cf4eaca845c4622955",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001_NATIVE_B_HVHV.kml",
+       "SizeInBytes": 578,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "527f573782a8b767144edce29045c3e8",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001.rc.yaml",
+       "SizeInBytes": 5888,
+       "Format": "YAML",
+       "Checksum": {
+        "Value": "ec418d1469b4751f84d707478ad2bd0d",
+        "Algorithm": "MD5"
+       }
+      }
+     ],
+     "Identifiers": [
+      {
+       "IdentifierType": "ProducerGranuleId",
+       "Identifier": "NISAR_L2_UR_GCOV_035_091_D_077_2005_QPDH_A_20261111T123455_20261111T123512_P05036_F_P_J_001"
+      },
+      {
+       "IdentifierType": "Other",
+       "Identifier": "ISCE3 0.25.21",
+       "IdentifierName": "SASVersionId"
+      },
+      {
+       "IdentifierType": "CRID",
+       "Identifier": "P05036"
+      },
+      {
+       "IdentifierType": "Other",
+       "Identifier": "1",
+       "IdentifierName": "ProductCounter"
+      }
+     ]
+    },
+    "Platforms": [
+     {
+      "ShortName": "NISAR",
+      "Instruments": [
+       {
+        "ShortName": "L-SAR",
+        "Characteristics": [
+         {
+          "Name": "LookDirection",
+          "Value": "LEFT"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "MetadataSpecification": {
+     "URL": "https://cdn.earthdata.nasa.gov/umm/granule/v1.6.7",
+     "Name": "UMM-G",
+     "Version": "1.6.7"
+    }
+   }
+  },
+  {
+   "meta": {
+    "concept-type": "granule",
+    "concept-id": "G4408740361-ASF",
+    "revision-id": 1,
+    "native-id": "NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001",
+    "collection-concept-id": "C2887502657-ASF",
+    "provider-id": "ASF",
+    "format": "application/vnd.nasa.cmr.umm+json",
+    "revision-date": "2026-11-11T19:08:27.924Z"
+   },
+   "umm": {
+    "TemporalExtent": {
+     "RangeDateTime": {
+      "BeginningDateTime": "2026-11-11T12:34:55.000000Z",
+      "EndingDateTime": "2026-11-11T12:35:29.999342Z"
+     }
+    },
+    "OrbitCalculatedSpatialDomains": [
+     {
+      "OrbitNumber": 6764
+     }
+    ],
+    "GranuleUR": "NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001",
+    "AdditionalAttributes": [
+     {
+      "Name": "ASCENDING_DESCENDING",
+      "Values": [
+       "DESCENDING"
+      ]
+     },
+     {
+      "Name": "FRAME_NUMBER",
+      "Values": [
+       "77"
+      ]
+     },
+     {
+      "Name": "FREQUENCIES",
+      "Values": [
+       "A"
+      ]
+     },
+     {
+      "Name": "FREQUENCY_A_POLARIZATION",
+      "Values": [
+       "VH",
+       "VV"
+      ]
+     },
+     {
+      "Name": "FREQUENCY_A_POLARIZATION_CONCAT",
+      "Values": [
+       "VV+VH"
+      ]
+     },
+     {
+      "Name": "FREQUENCY_A_RANGE_BANDWIDTH",
+      "Values": [
+       "20"
+      ]
+     },
+     {
+      "Name": "FULL_FRAME",
+      "Values": [
+       "TRUE"
+      ]
+     },
+     {
+      "Name": "JOINT_OBSERVATION",
+      "Values": [
+       "TRUE"
+      ]
+     },
+     {
+      "Name": "ORBIT_TYPE",
+      "Values": [
+       "FOE"
+      ]
+     },
+     {
+      "Name": "PROCESSING_CENTER",
+      "Values": [
+       "JPL"
+      ]
+     },
+     {
+      "Name": "PROCESSING_LEVEL",
+      "Values": [
+       "L2"
+      ]
+     },
+     {
+      "Name": "PRODUCTION_PIPELINE",
+      "Values": [
+       "UR"
+      ]
+     },
+     {
+      "Name": "PRODUCT_TYPE",
+      "Values": [
+       "GCOV"
+      ]
+     },
+     {
+      "Name": "PRODUCT_TYPE_DESC",
+      "Values": [
+       "Geocoded Polarimetric Covariance"
+      ]
+     },
+     {
+      "Name": "PRODUCT_VERSION",
+      "Values": [
+       "1.0.20"
+      ]
+     },
+     {
+      "Name": "RANGE_BANDWIDTH_CONCAT",
+      "Values": [
+       "20"
+      ]
+     },
+     {
+      "Name": "STACK_ID",
+      "Values": [
+       "091_D_077"
+      ]
+     },
+     {
+      "Name": "TRACK_NUMBER",
+      "Values": [
+       "91"
+      ]
+     },
+     {
+      "Name": "URGENT_REQUEST_ID",
+      "Values": [
+       "UR_geological_hazards_20261030T000000000Z_INDIA_UR_REQUEST_ramani"
+      ]
+     }
+    ],
+    "SpatialExtent": {
+     "GranuleLocalities": [
+      "Land",
+      "Asia"
+     ],
+     "HorizontalSpatialDomain": {
+      "Geometry": {
+       "GPolygons": [
+        {
+         "Boundary": {
+          "Points": [
+           {
+            "Latitude": 24.18923,
+            "Longitude": 89.7566
+           },
+           {
+            "Latitude": 22.1128,
+            "Longitude": 89.18318
+           },
+           {
+            "Latitude": 21.5227,
+            "Longitude": 91.58912
+           },
+           {
+            "Latitude": 23.58699,
+            "Longitude": 92.19835
+           },
+           {
+            "Latitude": 24.18923,
+            "Longitude": 89.7566
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    },
+    "ProviderDates": [
+     {
+      "Type": "Insert",
+      "Date": "2026-11-11T19:08:25.492392Z"
+     },
+     {
+      "Type": "Update",
+      "Date": "2026-11-11T19:08:25.492392Z"
+     }
+    ],
+    "CollectionReference": {
+     "ShortName": "NISAR_UR_L2",
+     "Version": "1"
+    },
+    "RelatedUrls": [
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR-UR/UR_L2_L_GCOV/NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001/NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001.h5",
+      "Type": "GET DATA",
+      "Description": "Download NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001.h5",
+      "Format": "HDF5"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/BROWSE/UR_L2_L_GCOV/NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001/NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001_LATLON.png",
+      "Type": "GET RELATED VISUALIZATION",
+      "Description": "Download NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001_LATLON.png",
+      "Format": "PNG"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/BROWSE/UR_L2_L_GCOV/NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001/NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001_LATLON_thumbnail.png",
+      "Type": "GET RELATED VISUALIZATION",
+      "Description": "Download NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001_LATLON_thumbnail.png",
+      "Format": "PNG"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/BROWSE/UR_L2_L_GCOV/NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001/NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001_LATLON.kml",
+      "Type": "EXTENDED METADATA",
+      "Description": "Download NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001_LATLON.kml",
+      "Format": "KML"
+     },
+     {
+      "URL": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR-UR/UR_L2_L_GCOV/NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001/NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001_QA_STATS.h5",
+      "Type": "VIEW RELATED INFORMATION",
+      "Subtype": "PRODUCT QUALITY ASSESSMENT",
+      "Description": "Download NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001_QA_STATS.h5",
+      "Format": "HDF5"
+     }
+    ],
+    "InputGranules": [
+     "NISAR_L1_UR_RSLC_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001.h5"
+    ],
+    "DataGranule": {
+     "DayNightFlag": "Unspecified",
+     "ProductionDateTime": "2026-11-11T19:04:04.000000Z",
+     "ArchiveAndDistributionInformation": [
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001.h5",
+       "SizeInBytes": 1736441856,
+       "Format": "HDF5",
+       "Checksum": {
+        "Value": "741140c1bfdefc587294a307e15dd6d1",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001_LATLON.png",
+       "SizeInBytes": 3967929,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "b6a94b8218f8e1898ea238024790f0f7",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001_NATIVE.png",
+       "SizeInBytes": 4515299,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "1812dccbc88dfa18ced1a6832eb4acc4",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001_NATIVE_A_VHVH.png",
+       "SizeInBytes": 1530777,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "62588e3168a4e05d1d46ae571f389ff4",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001_NATIVE_A_VVVV.png",
+       "SizeInBytes": 1515412,
+       "Format": "PNG",
+       "Checksum": {
+        "Value": "3f74f6209e340d1c2e98caa588c56bcf",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001.h5.iso.xml",
+       "SizeInBytes": 98342,
+       "Format": "XML",
+       "Checksum": {
+        "Value": "3ac778c280ee838208919aeba7c9846a",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001_QA_REPORT.pdf",
+       "SizeInBytes": 420787,
+       "Format": "PDF",
+       "Checksum": {
+        "Value": "8a45a03ea228bd384caad2e46e843d95",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001_QA_STATS.h5",
+       "SizeInBytes": 60829,
+       "Format": "HDF5",
+       "Checksum": {
+        "Value": "784c43727da129779a5d455df815faf0",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001_QA_SUMMARY.csv",
+       "SizeInBytes": 875,
+       "Format": "CSV",
+       "Checksum": {
+        "Value": "54d8fd0fadade8cb72ec273444aa572d",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001_LATLON.kml",
+       "SizeInBytes": 567,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "60a40026a31d411e5525baa29bacb779",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001_NATIVE.kml",
+       "SizeInBytes": 571,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "47f3123bd25b3deb1934415569da7756",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001_NATIVE_A_VHVH.kml",
+       "SizeInBytes": 578,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "61830680be627cb32016cea2aa72f7a1",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001_NATIVE_A_VVVV.kml",
+       "SizeInBytes": 578,
+       "Format": "KML",
+       "Checksum": {
+        "Value": "2bebe7038b055dcda742863cfe8d03a2",
+        "Algorithm": "MD5"
+       }
+      },
+      {
+       "Name": "NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001.rc.yaml",
+       "SizeInBytes": 5864,
+       "Format": "YAML",
+       "Checksum": {
+        "Value": "540bb8220021c86206b06d9b0eefc7c9",
+        "Algorithm": "MD5"
+       }
+      }
+     ],
+     "Identifiers": [
+      {
+       "IdentifierType": "ProducerGranuleId",
+       "Identifier": "NISAR_L2_UR_GCOV_035_091_D_077_2000_DVNA_M_20261111T123455_20261111T123529_P05036_F_F_J_001"
+      },
+      {
+       "IdentifierType": "Other",
+       "Identifier": "ISCE3 0.25.21",
+       "IdentifierName": "SASVersionId"
+      },
+      {
+       "IdentifierType": "CRID",
+       "Identifier": "P05036"
+      },
+      {
+       "IdentifierType": "Other",
+       "Identifier": "1",
+       "IdentifierName": "ProductCounter"
+      }
+     ]
+    },
+    "Platforms": [
+     {
+      "ShortName": "NISAR",
+      "Instruments": [
+       {
+        "ShortName": "L-SAR",
+        "Characteristics": [
+         {
+          "Name": "LookDirection",
+          "Value": "LEFT"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "MetadataSpecification": {
+     "URL": "https://cdn.earthdata.nasa.gov/umm/granule/v1.6.7",
+     "Name": "UMM-G",
+     "Version": "1.6.7"
+    }
+   }
+  }
+ ]
+}

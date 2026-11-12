@@ -1,0 +1,438 @@
+{
+  "stories": [
+    {
+      "id": "mojana",
+      "kind": "change",
+      "lens": "agua",
+      "title": {
+        "es": "Las ciénagas respiran",
+        "en": "The wetlands breathe"
+      },
+      "place": {
+        "es": "La Mojana",
+        "en": "La Mojana"
+      },
+      "country": {
+        "es": "Colombia",
+        "en": "Colombia"
+      },
+      "tempo": {
+        "es": "de junio a octubre de 2026",
+        "en": "June to October 2026"
+      },
+      "center": [
+        -74.85,
+        8.8
+      ],
+      "aoi": [
+        -75.35,
+        8.15,
+        -74.25,
+        9.45
+      ],
+      "stack": "011_D_084",
+      "before": "2026-06-26",
+      "after": "2026-10-24",
+      "summary": {
+        "es": "Donde el Cauca y el San Jorge se encuentran con el Magdalena, las ciénagas se llenan y se vacían con las lluvias. El radar de NISAR las sigue aunque el cielo esté cubierto.",
+        "en": "Where the Cauca and San Jorge rivers meet the Magdalena, the wetlands fill and drain with the rains. NISAR's radar follows them even under full cloud cover."
+      },
+      "steps": [
+        {
+          "layer": "after",
+          "title": {
+            "es": "Un territorio hecho de agua",
+            "en": "A land made of water"
+          },
+          "text": {
+            "es": "Lo negro es agua quieta: refleja la señal del radar lejos del satélite y casi nada regresa. Los ríos dibujan líneas oscuras y las ciénagas, manchas. Lo claro es tierra con vegetación.",
+            "en": "Black is still water: it reflects the radar signal away from the satellite, so almost nothing returns. Rivers draw dark lines and wetlands dark patches. Bright areas are vegetated land."
+          }
+        },
+        {
+          "layer": "swipe",
+          "title": {
+            "es": "Dos pasadas, cuatro meses",
+            "en": "Two passes, four months apart"
+          },
+          "text": {
+            "es": "A la izquierda, el 26 de junio; a la derecha, el 24 de octubre, en plena segunda temporada de lluvias. Mueve la cortina y fíjate en los bordes de las ciénagas.",
+            "en": "On the left, June 26; on the right, October 24, deep into the second rainy season. Drag the curtain and watch the edges of the wetlands."
+          }
+        },
+        {
+          "layer": "change_hh",
+          "title": {
+            "es": "Lo que cambió",
+            "en": "What changed"
+          },
+          "text": {
+            "es": "En azul, donde el radar recibe menos señal que antes; en naranja, donde recibe más. El azul bordea las ciénagas: es compatible con agua que avanzó sobre sus orillas. No es una medición de inundación: es una pista para mirar más de cerca.",
+            "en": "Blue marks where the radar now receives less signal than before; orange, where it receives more. Blue hugs the wetland edges, consistent with water spreading over their shores. This is not a flood measurement: it is a lead worth a closer look."
+          }
+        },
+        {
+          "layer": "dance",
+          "title": {
+            "es": "La danza completa",
+            "en": "The whole dance"
+          },
+          "text": {
+            "es": "NISAR volvió diez veces entre junio y octubre. Reproduce la secuencia y mira cómo late el paisaje, un compás cada doce días.",
+            "en": "NISAR came back ten times between June and October. Play the sequence and watch the landscape pulse, one beat every twelve days."
+          }
+        },
+        {
+          "layer": "zoom",
+          "title": {
+            "es": "La lupa calibrada",
+            "en": "The calibrated lens"
+          },
+          "text": {
+            "es": "Hasta aquí usamos las imágenes de vista previa, con píxeles de unos 170 metros. La lupa lee el producto científico completo en una ventana de 15 km: retorno calibrado y celdas de 30 metros. Aparecen los caños, las parcelas y el borde exacto de cada ciénaga.",
+            "en": "So far we used the preview images, with pixels about 170 metres wide. The lens reads the full science product over a 15 km window: calibrated return and 30-metre cells. Channels, fields and the exact edge of each wetland come into view."
+          }
+        }
+      ],
+      "sources": [
+        {
+          "label": {
+            "es": "Misión NISAR (NASA)",
+            "en": "NISAR mission (NASA)"
+          },
+          "url": "https://science.nasa.gov/mission/nisar/"
+        },
+        {
+          "label": {
+            "es": "Productos GCOV en ASF",
+            "en": "GCOV products at ASF"
+          },
+          "url": "https://nisar-docs.asf.alaska.edu/gcov/"
+        }
+      ],
+      "lupa": {
+        "lon": -74.85,
+        "lat": 8.72,
+        "size_km": 15
+      }
+    },
+    {
+      "id": "sanjoaquin",
+      "kind": "change",
+      "lens": "vegetacion",
+      "title": {
+        "es": "El tablero de los cultivos",
+        "en": "The checkerboard of crops"
+      },
+      "place": {
+        "es": "Valle de San Joaquín",
+        "en": "San Joaquin Valley"
+      },
+      "country": {
+        "es": "Estados Unidos",
+        "en": "United States"
+      },
+      "tempo": {
+        "es": "de julio a octubre de 2026",
+        "en": "July to October 2026"
+      },
+      "center": [
+        -120.3,
+        36.58
+      ],
+      "aoi": [
+        -120.75,
+        36.2,
+        -119.85,
+        36.95
+      ],
+      "stack": "042_D_070",
+      "before": "2026-07-23",
+      "after": "2026-10-27",
+      "lupa": {
+        "lon": -120.3,
+        "lat": 36.55,
+        "size_km": 15
+      },
+      "summary": {
+        "es": "En una de las regiones agrícolas más productivas del mundo, el paisaje no cambia con las lluvias sino con el calendario de trabajo. Cada parcela se siembra, se riega y se cosecha por decisión de alguien, y el radar lo registra una por una.",
+        "en": "In one of the most productive farming regions on Earth, the landscape does not change with the rains but with the work calendar. Each field is planted, irrigated and harvested by someone's decision, and the radar records them one by one."
+      },
+      "steps": [
+        {
+          "layer": "after",
+          "title": {
+            "es": "Un valle trazado con regla",
+            "en": "A valley drawn with a ruler"
+          },
+          "text": {
+            "es": "El valle es una cuadrícula de parcelas y cada una devuelve la señal a su manera. Lo oscuro suele ser suelo liso o recién trabajado; lo claro, cultivos altos y huertos, donde las ramas y las hojas dispersan la onda en todas direcciones.",
+            "en": "The valley is a grid of fields, and each one returns the signal in its own way. Dark areas are usually smooth or freshly worked soil; bright ones are tall crops and orchards, where branches and leaves scatter the wave in every direction."
+          }
+        },
+        {
+          "layer": "swipe",
+          "title": {
+            "es": "Pleno verano y fin de cosecha",
+            "en": "High summer and the end of harvest"
+          },
+          "text": {
+            "es": "A la izquierda, el 23 de julio, con los cultivos de temporada crecidos. A la derecha, el 27 de octubre, cuando buena parte ya se recogió. Mueve la cortina: las parcelas cambian de tono una por una, no todas a la vez.",
+            "en": "On the left, July 23, with the seasonal crops fully grown. On the right, October 27, when much of the harvest is in. Drag the curtain: fields change tone one at a time, not all together."
+          }
+        },
+        {
+          "layer": "change_hv",
+          "title": {
+            "es": "La polarización que ve las plantas",
+            "en": "The polarization that sees the plants"
+          },
+          "text": {
+            "es": "El radar emite la onda en horizontal. Parte regresa en horizontal (HH) y parte regresa girada, en vertical (HV). Ese giro ocurre sobre todo cuando la onda rebota varias veces dentro de la vegetación. Por eso aquí se muestra el cambio en HV: en azul, parcelas que perdieron volumen vegetal, como ocurre tras una cosecha; en naranja, las que lo ganaron.",
+            "en": "The radar transmits a horizontal wave. Part of it returns horizontal (HH) and part returns rotated, vertical (HV). That rotation happens mostly when the wave bounces several times inside vegetation. So this view shows the change in HV: blue marks fields that lost plant volume, as happens after a harvest; orange marks those that gained it."
+          }
+        },
+        {
+          "layer": "dance",
+          "title": {
+            "es": "Un año agrícola completo",
+            "en": "A full farming year"
+          },
+          "text": {
+            "es": "Esta serie tiene 29 pasadas desde noviembre de 2025. Reproduce la danza y verás el valle encenderse y apagarse por parcelas, al ritmo de la siembra, el riego y la cosecha.",
+            "en": "This stack holds 29 passes since November 2025. Play the dance and watch the valley light up and fade field by field, to the rhythm of planting, irrigation and harvest."
+          }
+        },
+        {
+          "layer": "zoom",
+          "title": {
+            "es": "La lupa calibrada: parcela por parcela",
+            "en": "The calibrated lens: field by field"
+          },
+          "text": {
+            "es": "La lupa lee el producto científico completo en una ventana de 15 km, con celdas de 30 metros. Los bordes rectos lo dicen todo: el cambio sigue los linderos de cada finca. Qué se sembró o se cosechó en cada una no se puede saber solo con el radar; hace falta información de campo.",
+            "en": "The lens reads the full science product over a 15 km window, with 30-metre cells. The straight edges say it all: change follows the boundaries of each farm. What was planted or harvested in each one cannot be told from radar alone; that takes information from the ground."
+          }
+        }
+      ],
+      "sources": [
+        {
+          "label": {
+            "es": "Misión NISAR (NASA)",
+            "en": "NISAR mission (NASA)"
+          },
+          "url": "https://science.nasa.gov/mission/nisar/"
+        },
+        {
+          "label": {
+            "es": "Productos GCOV en ASF",
+            "en": "GCOV products at ASF"
+          },
+          "url": "https://nisar-docs.asf.alaska.edu/gcov/"
+        }
+      ]
+    },
+    {
+      "id": "vatnajokull",
+      "kind": "change",
+      "lens": "hielo",
+      "title": {
+        "es": "El glaciar se moja",
+        "en": "The glacier gets wet"
+      },
+      "place": {
+        "es": "Vatnajökull",
+        "en": "Vatnajökull"
+      },
+      "country": {
+        "es": "Islandia",
+        "en": "Iceland"
+      },
+      "tempo": {
+        "es": "de marzo a julio de 2026",
+        "en": "March to July 2026"
+      },
+      "center": [
+        -16.9,
+        64.4
+      ],
+      "aoi": [
+        -18.8,
+        63.8,
+        -15.0,
+        65.0
+      ],
+      "stack": "053_D_056",
+      "before": "2026-03-01",
+      "after": "2026-07-23",
+      "summary": {
+        "es": "En invierno la nieve seca deja pasar el radar; en verano la nieve mojada lo absorbe. El mayor casquete de hielo de Islandia se apaga entero cuando empieza el deshielo.",
+        "en": "In winter dry snow lets the radar through; in summer wet snow absorbs it. Iceland's largest ice cap goes dark all at once when the melt begins."
+      },
+      "steps": [
+        {
+          "layer": "before",
+          "title": {
+            "es": "Invierno: hielo brillante",
+            "en": "Winter: bright ice"
+          },
+          "text": {
+            "es": "El 1 de marzo la nieve está seca y fría. La señal de banda L la atraviesa y rebota en el hielo y el firn de abajo: el casquete se ve claro.",
+            "en": "On March 1 the snow is dry and cold. The L-band signal passes through it and bounces off the ice and firn below: the ice cap looks bright."
+          }
+        },
+        {
+          "layer": "swipe",
+          "title": {
+            "es": "Verano: el mismo hielo, otra señal",
+            "en": "Summer: same ice, different signal"
+          },
+          "text": {
+            "es": "El 23 de julio la superficie tiene agua líquida. El agua absorbe la señal y el casquete se oscurece. Mueve la cortina para comparar.",
+            "en": "By July 23 the surface holds liquid water. Water absorbs the signal and the ice cap darkens. Drag the curtain to compare."
+          }
+        },
+        {
+          "layer": "change_hh",
+          "title": {
+            "es": "Una mancha azul del tamaño del glaciar",
+            "en": "A blue patch the size of the glacier"
+          },
+          "text": {
+            "es": "La caída de señal cubre casi todo el casquete. Alrededor, en naranja, la tierra que pasó de estar nevada a estar descubierta. Aquí cambió casi toda la escena, así que las cifras son orientativas: el aviso de confianza lo dice.",
+            "en": "The drop in signal covers nearly the whole ice cap. Around it, in orange, land that went from snow-covered to bare. Almost the entire scene changed here, so the numbers are indicative: the confidence note says so."
+          }
+        },
+        {
+          "layer": "dance",
+          "title": {
+            "es": "Un año de pasadas",
+            "en": "A year of passes"
+          },
+          "text": {
+            "es": "Esta pila tiene 29 fechas desde noviembre de 2025. Reproduce la danza y mira cuándo empieza el deshielo y cuándo vuelve el frío.",
+            "en": "This stack holds 29 dates since November 2025. Play the dance and see when the melt begins and when the cold returns."
+          }
+        },
+        {
+          "layer": "zoom",
+          "title": {
+            "es": "La lupa calibrada: más de diez decibelios",
+            "en": "The calibrated lens: more than ten decibels"
+          },
+          "text": {
+            "es": "Las imágenes de vista previa comprimen la magnitud del cambio. La lupa lee el producto científico calibrado en una ventana de 20 km sobre el hielo: entre marzo y julio el retorno cae más de 10 dB, es decir, a menos de una décima parte. Es la firma de la nieve mojada.",
+            "en": "The preview images compress the size of the change. The lens reads the calibrated science product over a 20 km window on the ice: between March and July the return drops by more than 10 dB, to less than a tenth. This is the signature of wet snow."
+          }
+        }
+      ],
+      "sources": [
+        {
+          "label": {
+            "es": "Misión NISAR (NASA)",
+            "en": "NISAR mission (NASA)"
+          },
+          "url": "https://science.nasa.gov/mission/nisar/"
+        },
+        {
+          "label": {
+            "es": "Productos GCOV en ASF",
+            "en": "GCOV products at ASF"
+          },
+          "url": "https://nisar-docs.asf.alaska.edu/gcov/"
+        }
+      ],
+      "lupa": {
+        "lon": -16.9,
+        "lat": 64.35,
+        "size_km": 20
+      }
+    },
+    {
+      "id": "kilauea",
+      "kind": "interferogram",
+      "lens": "deformacion",
+      "title": {
+        "es": "Franjas sobre el volcán",
+        "en": "Fringes over the volcano"
+      },
+      "place": {
+        "es": "Isla de Hawái",
+        "en": "Island of Hawaii"
+      },
+      "country": {
+        "es": "Estados Unidos",
+        "en": "United States"
+      },
+      "tempo": {
+        "es": "pasadas separadas por 12 días",
+        "en": "passes twelve days apart"
+      },
+      "center": [
+        -155.5,
+        19.6
+      ],
+      "zoom": 7.4,
+      "point": [
+        -155.28,
+        19.41
+      ],
+      "limit": 4,
+      "summary": {
+        "es": "Además de medir cuánta señal regresa, NISAR compara la fase de la onda entre dos pasadas. El resultado es un interferograma: el producto con el que se vigila cómo se deforma el suelo.",
+        "en": "Besides measuring how much signal returns, NISAR compares the phase of the wave between two passes. The result is an interferogram: the product used to watch how the ground deforms."
+      },
+      "steps": [
+        {
+          "layer": "interferogram",
+          "title": {
+            "es": "Dos pasadas, una diferencia",
+            "en": "Two passes, one difference"
+          },
+          "text": {
+            "es": "El radar repite la misma órbita cada 12 días. Si entre una pasada y la siguiente cambia la distancia entre el satélite y el suelo, la onda regresa con la fase corrida. Los colores muestran ese corrimiento sobre toda la isla.",
+            "en": "The radar repeats the same orbit every 12 days. If the distance between satellite and ground changes from one pass to the next, the wave returns with its phase shifted. The colours show that shift across the whole island."
+          }
+        },
+        {
+          "layer": "interferogram",
+          "title": {
+            "es": "Lo que las franjas no dicen solas",
+            "en": "What the fringes do not say on their own"
+          },
+          "text": {
+            "es": "No todo corrimiento es suelo que se mueve. La atmósfera y la ionosfera también retrasan la onda y dibujan franjas amplias. Por eso un interferograma sin corregir es una pista, no una medida de deformación. Aquí se muestra la imagen oficial tal como NASA la publica, sin procesar.",
+            "en": "Not every shift is ground moving. The atmosphere and the ionosphere also delay the wave and draw broad fringes. That is why an uncorrected interferogram is a lead, not a deformation measurement. This is the official image exactly as NASA publishes it, unprocessed."
+          }
+        },
+        {
+          "layer": "interferogram",
+          "title": {
+            "es": "Una pasada tras otra",
+            "en": "One pass after another"
+          },
+          "text": {
+            "es": "Cambia entre los pares de fechas disponibles. Lo que se repite en todos puede venir del terreno; lo que cambia de un par a otro suele ser atmósfera.",
+            "en": "Switch between the available date pairs. What repeats in all of them may come from the terrain; what changes from one pair to the next is usually atmosphere."
+          }
+        }
+      ],
+      "sources": [
+        {
+          "label": {
+            "es": "Misión NISAR (NASA)",
+            "en": "NISAR mission (NASA)"
+          },
+          "url": "https://science.nasa.gov/mission/nisar/"
+        },
+        {
+          "label": {
+            "es": "Documentación de NISAR en ASF",
+            "en": "NISAR documentation at ASF"
+          },
+          "url": "https://nisar-docs.asf.alaska.edu/"
+        }
+      ]
+    }
+  ]
+}

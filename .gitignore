@@ -1,0 +1,17 @@
+node_modules/
+dist/
+__pycache__/
+*.pyc
+.venv/
+.env
+*.log
+data/private/
+data/cache/
+tsconfig.tsbuildinfo
+
+# Archivos de configuración personal y restos de la primera versión (no forman parte del proyecto)
+docs/configuracion/
+docs/superpowers/
+docs/catalog-probe.json
+scripts/import_personal_skills.py
+scripts/probe_catalog.py

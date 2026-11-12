@@ -1,0 +1,14 @@
+<kml xmlns:ns0="http://www.google.com/kml/ext/2.2">
+  <Document>
+    <name>overlay image</name>
+    <GroundOverlay>
+      <name>overlay image</name>
+      <Icon>
+        <href>NISAR_L2_PR_GCOV_034_011_D_084_4005_DHDH_A_20261024T232804_20261024T232838_P05036_N_F_J_001_LATLON.png</href>
+      </Icon>
+      <ns0:LatLonQuad>
+        <coordinates>-76.71268802309066,7.363792710265506 -73.62892706633426,7.363792710265506 -73.62892706633426,10.362750240711122 -76.71268802309066,10.362750240711122</coordinates>
+      </ns0:LatLonQuad>
+    </GroundOverlay>
+  </Document>
+</kml>
