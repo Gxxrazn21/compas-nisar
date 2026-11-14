@@ -1,5 +1,5 @@
 // Panel izquierdo de En vivo: eventos naturales de EONET y adquisiciones urgentes de NISAR.
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useI18n } from '../../i18n';
 import { es } from '../../i18n/es';
 import type { Key } from '../../i18n/es';
@@ -7,9 +7,19 @@ import { categoryColor, countByCategory, urgentId } from '../../lib/events';
 import type { UrgentGroup } from '../../lib/events';
 import { formatDate, formatDateTime } from '../../lib/format';
 import type { Compas } from '../../state/useCompas';
+import { EVENT_DAYS } from '../../state/useLive';
 import type { NaturalEvent } from '../../types';
 
 const PAGE = 60;
+
+/** La ficha del elemento elegido sube a la vista: la lista puede estar desplazada muy abajo al elegirlo. */
+function useReveal(id: string) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    ref.current?.scrollIntoView({ block: 'nearest' });
+  }, [id]);
+  return ref;
+}
 
 function categoryName(t: (key: Key) => string, key: string, fallback: string): string {
   const name = `cat.${key}`;
@@ -25,10 +35,10 @@ export function LivePanel({ compas }: { compas: Compas }) {
       <p className="resumen">{t('live.intro')}</p>
 
       <div className="segmentos pestanas" role="group" aria-label={t('live.tabs')}>
-        <button type="button" aria-pressed={live.tab === 'events'} onClick={() => live.setTab('events')}>
+        <button type="button" aria-pressed={live.tab === 'events'} onClick={() => compas.setLiveTab('events')}>
           {t('live.tab.events')}
         </button>
-        <button type="button" aria-pressed={live.tab === 'urgent'} onClick={() => live.setTab('urgent')}>
+        <button type="button" aria-pressed={live.tab === 'urgent'} onClick={() => compas.setLiveTab('urgent')}>
           {t('live.tab.urgent')}
         </button>
       </div>
@@ -59,22 +69,42 @@ function Events({ compas }: { compas: Compas }) {
     );
   }
   const all = live.events.data;
-  const counts = countByCategory(all);
+  const counts = countByCategory(live.onlyOpen ? all.filter((event) => !event.closed) : all);
+  const updated = live.updatedAt
+    ? new Date(live.updatedAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })
+    : null;
   const names = new Map(all.map((event) => [event.category, event.category_label]));
   const selected = live.selectedEvent;
 
   return (
     <>
-      <p className="ayuda">{t('live.events.count', { n: live.visibleEvents.length, days: 20 })}</p>
+      <p className="ayuda vivo-estado" role="status">
+        {t('live.events.count', { n: live.visibleEvents.length, days: EVENT_DAYS })}
+        {'. '}
+        {live.stale ? t('live.stale') : updated ? t('live.updated', { time: updated }) : ''}{' '}
+        <button type="button" className="enlace-texto" onClick={live.reload} disabled={live.refreshing}>
+          {t(live.refreshing ? 'live.refreshing' : 'live.refresh')}
+        </button>
+      </p>
       {live.visibleEvents.length > 30 && <p className="ayuda">{t('live.clusterHint')}</p>}
       <div className="filtros" role="group" aria-label={t('live.filter')}>
+        <button
+          type="button"
+          className="filtro filtro-activos"
+          aria-pressed={live.onlyOpen}
+          title={t('live.onlyOpenHint')}
+          onClick={live.toggleOnlyOpen}
+        >
+          <span>{t('live.onlyOpen')}</span>
+          <span className="filtro-n">{live.openCount}</span>
+        </button>
         {live.categories.map((key) => {
           const off = live.hidden.has(key);
           return (
             <button key={key} type="button" className="filtro" aria-pressed={!off} onClick={() => live.toggleCategory(key)}>
               <span className="filtro-color" style={{ background: categoryColor(key) }} aria-hidden="true" />
               <span>{categoryName(t, key, names.get(key) ?? key)}</span>
-              <span className="filtro-n">{counts[key]}</span>
+              <span className="filtro-n">{counts[key] ?? 0}</span>
             </button>
           );
         })}
@@ -88,7 +118,7 @@ function Events({ compas }: { compas: Compas }) {
       {selected && <EventCard event={selected} compas={compas} />}
 
       {live.visibleEvents.length === 0 ? (
-        <p className="ayuda">{t('live.events.none')}</p>
+        <p className="ayuda">{t(live.onlyOpen && live.openCount === 0 ? 'live.events.noneOpen' : 'live.events.none')}</p>
       ) : (
         <ul className="lista-vivo" aria-label={t('live.events.list')}>
           {live.visibleEvents.slice(0, shown).map((event) => (
@@ -122,8 +152,9 @@ function Events({ compas }: { compas: Compas }) {
 
 function EventCard({ event, compas }: { event: NaturalEvent; compas: Compas }) {
   const { t, lang } = useI18n();
+  const ref = useReveal(event.id);
   return (
-    <div className="ficha" role="region" aria-label={t('live.card')}>
+    <div ref={ref} className="ficha" role="region" aria-label={t('live.card')}>
       <p className="ficha-titulo">{event.title}</p>
       <p className="ayuda">
         {categoryName(t, event.category, event.category_label)}, {formatDate(event.date, lang)},{' '}
@@ -150,6 +181,7 @@ function EventCard({ event, compas }: { event: NaturalEvent; compas: Compas }) {
 function Urgent({ compas }: { compas: Compas }) {
   const { t, lang } = useI18n();
   const { live } = compas;
+  const reveal = useReveal(live.selection?.kind === 'urgent' ? live.selection.id : '');
   if (live.urgent.status === 'loading') {
     return <p className="estado" role="status">{t('live.urgent.loading')}</p>;
   }
@@ -169,7 +201,7 @@ function Urgent({ compas }: { compas: Compas }) {
     <>
       <p className="ayuda">{t('live.urgent.intro')}</p>
       {selected && (
-        <div className="ficha" role="region" aria-label={t('live.card')}>
+        <div ref={reveal} className="ficha" role="region" aria-label={t('live.card')}>
           <p className="ficha-titulo">{formatDateTime(selected.datetime, lang)}</p>
           <p className="ayuda">{t('live.urgent.stack', { stack: selected.stack, products: selected.products.join(', ') })}</p>
           <p className="ficha-enlaces">

@@ -58,7 +58,7 @@ def _consultar(consulta, idioma):
 
 
 @router.get('/api/places')
-def places(q: str = Query(max_length=120), lang: str = Query('es', pattern='^(es|en)$')):
+def places(q: str = Query(max_length=120), lang: str = Query('en', pattern='^(es|en)$')):
     """Lugares que coinciden con un nombre o una dirección, con caché de un día."""
     consulta = ' '.join(q.split())
     if len(consulta) < 2:

@@ -3,6 +3,7 @@ import type { Key } from './es';
 
 export const en: Record<Key, string> = {
   'brand': 'compás',
+  'doc.title': 'Compás, the NISAR radar through time',
   'top.method': 'Method',
   'top.langLabel': 'Language',
   'top.home': 'Compás, go to the cover',
@@ -726,4 +727,112 @@ export const en: Record<Key, string> = {
     'Validation with field data: Compás does not yet check its signals against measurements taken on the ground.',
   'live.clusterHint':
     'Numbered circles group nearby events; select one to zoom in and split it apart.',
+  'ref.group':
+    'Map reference',
+  'ref.borders':
+    'Borders',
+  'ref.names':
+    'Names',
+  'ref.bordersHint':
+    'Show or hide country borders and state or province boundaries',
+  'ref.namesHint':
+    'Show or hide the names of countries, regions and cities',
+  'ref.attribution':
+    'Borders and names: Natural Earth.',
+  'score.soundOn':
+    'Note sound: on',
+  'score.soundOff':
+    'Note sound: off',
+  'help.open':
+    'How to use Compás and keyboard shortcuts',
+  'help.title':
+    'How to use Compás',
+  'help.step.1':
+    'Pick a story on the cover, or open Explore and click any place on the map.',
+  'help.step.2':
+    'On the score at the bottom, each note is one radar pass. Pick the “before” note and the “after” note, then press “Compare these dates”.',
+  'help.step.3':
+    'Click a point on the map to measure how much it changed there, switch layers on the map bar, and press “Watch the dance” to hear and see the whole series.',
+  'help.keys':
+    'Keyboard shortcuts',
+  'help.keysNote':
+    'Shortcuts are off while you type in a field. On the score, the arrow keys move between notes and Enter picks one.',
+  'help.space':
+    'Space',
+  'help.key.stories':
+    'Go to Stories',
+  'help.key.explore':
+    'Go to Explore',
+  'help.key.live':
+    'Go to Live',
+  'help.key.prev':
+    'Previous step of the story',
+  'help.key.next':
+    'Next step of the story',
+  'help.key.dance':
+    'Start or leave the dance',
+  'help.key.playPause':
+    'Pause or resume the dance',
+  'help.key.sound':
+    'Turn the note sound on or off',
+  'help.key.borders':
+    'Show or hide borders',
+  'help.key.names':
+    'Show or hide names',
+  'help.key.zoomIn':
+    'Zoom in',
+  'help.key.zoomOut':
+    'Zoom out',
+  'help.key.recenter':
+    'Back to the area',
+  'help.key.help':
+    'Open this help',
+  'help.prefs':
+    'Preferences',
+  'help.pref.borders':
+    'Borders and internal boundaries on the map',
+  'help.pref.names':
+    'Names of countries, regions and cities',
+  'help.pref.sound':
+    'Sound of the notes on the score',
+  'help.pref.hints':
+    'Hints on the map',
+  'hint.dismiss':
+    'Hide hints',
+  'hint.pickPlace':
+    'Click any place on the map, or search for it by name in the panel.',
+  'hint.pickStack':
+    'In the panel, choose one of the stacks of passes that cover this point.',
+  'hint.pickNotes':
+    'On the score below, pick the “before” note and the “after” note.',
+  'hint.probe':
+    'Click the map to measure how much a point changed.',
+  'hint.interferogram':
+    'Follow the steps in the panel to read the interferogram.',
+  'hint.dance':
+    'Each pass plays its note: the higher the pitch, the more radar return.',
+  'hint.live':
+    'Click a point on the map or a row in the list to see the event.',
+  'hint.keys.steps':
+    '← and → change steps.',
+  'hint.keys.dance':
+    'Space pauses it.',
+  'live.updated':
+    'Updated at {time}.',
+  'live.stale':
+    'The service did not respond: showing the last copy received.',
+  'live.refresh':
+    'Refresh',
+  'live.refreshing':
+    'Refreshing…',
+  'live.onlyOpen':
+    'Ongoing only',
+  'live.onlyOpenHint':
+    'Hides the events NASA has already closed',
+  'live.events.noneOpen':
+    'There are no ongoing events in the visible categories right now.',
+  'hint.liveUrgent':
+    'Click a violet footprint or a row in the list to see that acquisition.',
+  'hint.liveSelected':
+    'The gold button in the panel takes you to the NISAR passes over this point.',
 };

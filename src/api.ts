@@ -46,7 +46,9 @@ export function aoiParam(aoi: Bounds | null | undefined): string | undefined {
 async function getJson<T>(url: string, signal?: AbortSignal): Promise<T> {
   let response: Response;
   try {
-    response = await fetch(url, { signal, headers: { Accept: 'application/json' } });
+    // El backend redacta los mensajes de error en el idioma de la interfaz (inglés si no se indica).
+    const lang = typeof document !== 'undefined' && document.documentElement.lang === 'es' ? 'es' : 'en';
+    response = await fetch(url, { signal, headers: { Accept: 'application/json', 'Accept-Language': lang } });
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') throw error;
     throw new ApiError(0, '');
@@ -136,7 +138,7 @@ export const api = {
     ),
 
   events: (days = 20, signal?: AbortSignal) =>
-    getJson<{ events: NaturalEvent[]; source: string }>(buildUrl('/api/events', { days }), signal),
+    getJson<{ events: NaturalEvent[]; source: string; stale?: boolean }>(buildUrl('/api/events', { days }), signal),
 
   urgent: (limit = 30, signal?: AbortSignal) =>
     getJson<{ scenes: UrgentScene[] }>(buildUrl('/api/urgent', { limit }), signal).then((body) => body.scenes),

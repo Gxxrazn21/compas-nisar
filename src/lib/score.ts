@@ -113,3 +113,27 @@ export function noteY(
 export function stemUp(y: number, centerY: number): boolean {
   return y >= centerY;
 }
+
+/**
+ * Grado de una nota respecto de la línea central del pentagrama: cada medio espacio es un grado
+ * de la escala (positivo, más agudo). Es la misma altura que dibuja `noteY`, redondeada a la
+ * línea o al espacio más cercano, así que lo que suena es lo que se ve.
+ */
+export function staffStep(db: number | null | undefined, range: PitchRange | null): number {
+  const step = Math.round(-noteY(db, range, 0, 1) * 2);
+  return step === 0 ? 0 : step;
+}
+
+/** Semitonos de cada grado de la escala de do mayor, contados desde do. */
+const MAJOR_SCALE = [0, 2, 4, 5, 7, 9, 11];
+/** La línea central en clave de sol es el si de la cuarta octava (nota MIDI 71): el séptimo grado. */
+const CENTER_DEGREE = 6;
+const C4_MIDI = 60;
+
+/** Frecuencia en hercios del grado `step` leído en clave de sol (0 = línea central, si4). */
+export function stepFrequency(step: number): number {
+  const degree = CENTER_DEGREE + Math.round(step);
+  const octave = Math.floor(degree / 7);
+  const midi = C4_MIDI + octave * 12 + (MAJOR_SCALE[((degree % 7) + 7) % 7] as number);
+  return 440 * 2 ** ((midi - 69) / 12);
+}

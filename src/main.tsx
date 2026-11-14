@@ -15,6 +15,7 @@ import './styles/reading.css';
 import './styles/score.css';
 import './styles/sections.css';
 import './styles/contexto.css';
+import './styles/guia.css';
 import { App } from './App';
 import { I18nProvider } from './i18n';
 import { parseHash } from './lib/hash';

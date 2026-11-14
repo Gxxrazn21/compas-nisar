@@ -24,11 +24,14 @@ import {
   setContext,
   setEvents,
   setFootprint,
+  setLiveSelection,
   setOverlayImage,
   setOverlayOpacity,
   setUrgent,
 } from './overlays';
 import { coverPadding, coverZoom } from './padding';
+import { setReference } from './reference';
+import type { Reference } from './reference';
 import { SwipeOverlay } from './SwipeOverlay';
 
 export interface StageApi {
@@ -73,6 +76,8 @@ interface Props {
   /** Capas de contexto de GIBS encendidas y fecha que pide la de Sentinel-1. */
   context: ContextLayers;
   contextDate: string;
+  /** Fronteras y nombres sobre el mapa. */
+  reference: Reference;
   apiRef: RefObject<StageApi | null>;
 }
 
@@ -89,7 +94,7 @@ function markerElement(label: string, className: string): HTMLElement {
 
 export function Stage(props: Props) {
   const { projection, camera, change, layer, opacity, series, danceIndex, probePoint, probing } = props;
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const hostRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<MapLibreMap | null>(null);
   const [ready, setReady] = useState(false);
@@ -170,6 +175,8 @@ export function Stage(props: Props) {
       // Las teselas de contexto de GIBS fallan a veces (500 o fechas sin datos): no es un error de la aplicación.
       const sourceId = (event as { sourceId?: unknown }).sourceId;
       if (typeof sourceId === 'string' && sourceId.startsWith('contexto-')) return;
+      // Sin los archivos de referencia el mapa sigue sirviendo: solo faltan fronteras y nombres.
+      if (typeof sourceId === 'string' && sourceId.startsWith('ref-')) return;
       console.error('mapa:', event.error?.message ?? event);
     });
     return () => {
@@ -289,9 +296,13 @@ export function Stage(props: Props) {
   const liveLayers = props.live;
   useEffect(() => {
     if (!map || !ready) return;
-    setEvents(map, liveLayers?.events ?? null, liveLayers?.selectedEvent ?? null);
-    setUrgent(map, liveLayers?.urgent ?? null, liveLayers?.selectedUrgent ?? null);
-  }, [map, ready, liveLayers?.events, liveLayers?.urgent, liveLayers?.selectedEvent, liveLayers?.selectedUrgent]);
+    setEvents(map, liveLayers?.events ?? null);
+    setUrgent(map, liveLayers?.urgent ?? null);
+  }, [map, ready, liveLayers?.events, liveLayers?.urgent]);
+
+  useEffect(() => {
+    if (map && ready) setLiveSelection(map, liveLayers?.selectedEvent ?? null, liveLayers?.selectedUrgent ?? null);
+  }, [map, ready, liveLayers?.selectedEvent, liveLayers?.selectedUrgent]);
 
   // Imagen de un interferograma.
   const overlayUrl = props.overlay?.url ?? '';
@@ -320,6 +331,12 @@ export function Stage(props: Props) {
     setContext(map, props.context, props.contextDate);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, ready, contextKey]);
+
+  // Fronteras, límites internos y nombres.
+  const { borders, names } = props.reference;
+  useEffect(() => {
+    if (map && ready) setReference(map, { borders, names }, lang);
+  }, [map, ready, borders, names, lang]);
 
   // Marcador de la sonda y del punto de exploración.
   useEffect(() => {
@@ -379,7 +396,14 @@ export function Stage(props: Props) {
     <div className="escenario">
       <div ref={hostRef} className="escenario-mapa" role="application" aria-label={t('map.label')} />
       {map && layer === 'swipe' && (
-        <SwipeOverlay map={map} change={change} opacity={opacity} visible={!flying} projection={projection} />
+        <SwipeOverlay
+          map={map}
+          change={change}
+          opacity={opacity}
+          visible={!flying}
+          projection={projection}
+          reference={props.reference}
+        />
       )}
     </div>
   );

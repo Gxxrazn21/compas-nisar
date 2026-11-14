@@ -1,4 +1,8 @@
-"""Errores de dominio. main.py los traduce a respuestas HTTP con cuerpo {"detail": mensaje}."""
+"""Errores de dominio. main.py los traduce a respuestas HTTP con cuerpo {"detail": mensaje}.
+
+Los mensajes se escriben en español; backend/i18n.py los entrega en inglés salvo que la petición pida español.
+Un mensaje nuevo necesita su línea en la tabla de ese módulo.
+"""
 
 
 class ApiError(Exception):

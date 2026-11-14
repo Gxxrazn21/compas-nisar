@@ -12,12 +12,15 @@ import {
   noteY,
   pitchRange,
   scoreWidth,
+  staffStep,
   stemUp,
+  stepFrequency,
   xOfDate,
   xOfDay,
 } from '../../lib/score';
 import { blockReason } from '../../lib/selection';
 import type { Blocked, Selection } from '../../lib/selection';
+import { playNote } from '../../lib/sound';
 import type { Scene, SeriesResult, Stack } from '../../types';
 
 export const STAFF_HEIGHT = 126;
@@ -33,6 +36,8 @@ interface Props {
   selection: Selection;
   series: SeriesResult | null;
   cursorDate: string | null;
+  /** Las notas suenan al elegirlas o recorrerlas con el teclado. */
+  sound: boolean;
   onPick: (scene: Scene) => void;
   onBlocked: (reason: Blocked, scene: Scene) => void;
 }
@@ -42,7 +47,7 @@ function monthLabel(date: string, index: number, lang: 'es' | 'en'): string {
   return index === 0 || date.slice(5, 7) === '01' ? `${month} ${date.slice(0, 4)}` : month;
 }
 
-export function Staff({ stack, containerWidth, selection, series, cursorDate, onPick, onBlocked }: Props) {
+export function Staff({ stack, containerWidth, selection, series, cursorDate, sound, onPick, onBlocked }: Props) {
   const { t, lang } = useI18n();
   const scenes = stack.scenes;
   const first = scenes[0]?.date;
@@ -83,14 +88,21 @@ export function Staff({ stack, containerWidth, selection, series, cursorDate, on
     return t(key, { date: formatDate(scene.date, lang), quality: qualityText(scene) });
   };
 
+  /** Suena la nota a la altura a la que está dibujada; apagada si no se puede elegir. */
+  const sing = (scene: Scene, blocked = false) => {
+    if (!sound) return;
+    playNote(stepFrequency(staffStep(heights.get(scene.date), range)), { muted: blocked || !scene.analyzable });
+  };
+
   const activate = (scene: Scene) => {
     const reason = blockReason(scene, selection, scenes);
+    sing(scene, reason !== null);
     if (reason) onBlocked(reason, scene);
     else onPick(scene);
   };
 
   const keyDown = (event: KeyboardEvent<SVGGElement>, index: number, scene: Scene) => {
-    const target: Record<string, number> = {
+    const moves: Record<string, number> = {
       ArrowRight: index + 1,
       ArrowUp: index + 1,
       ArrowLeft: index - 1,
@@ -98,11 +110,13 @@ export function Staff({ stack, containerWidth, selection, series, cursorDate, on
       Home: 0,
       End: scenes.length - 1,
     };
-    if (event.key in target) {
+    if (event.key in moves) {
       event.preventDefault();
-      const next = Math.min(scenes.length - 1, Math.max(0, target[event.key] as number));
+      const next = Math.min(scenes.length - 1, Math.max(0, moves[event.key] as number));
       setFocusIndex(next);
       refs.current[next]?.focus();
+      const target = scenes[next];
+      if (target && next !== index) sing(target, blockReason(target, selection, scenes) !== null);
     } else if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       activate(scene);

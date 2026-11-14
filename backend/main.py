@@ -11,8 +11,9 @@ from fastapi import FastAPI, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from . import browse, catalog, change, config, geo, series, zoom
+from . import browse, catalog, change, config, geo, i18n, series, zoom
 from .errors import ApiError, InvalidInput, NotFound
 from .extras import router as extras_router
 from .places import router as places_router
@@ -22,16 +23,26 @@ VERSION = '0.2.0'
 app = FastAPI(title='Observatorio NISAR', version=VERSION)
 
 
+def _error(request: Request, status: int, detail, headers=None):
+    """Respuesta de error en el idioma de la petición (inglés si no pide español)."""
+    idioma = i18n.request_lang(request.headers.get('accept-language'))
+    return JSONResponse(status_code=status, content={'detail': i18n.translate(detail, idioma)}, headers=headers)
+
+
 @app.exception_handler(ApiError)
-def _api_error(_request: Request, error: ApiError):
-    return JSONResponse(status_code=error.status, content={'detail': error.detail})
+def _api_error(request: Request, error: ApiError):
+    return _error(request, error.status, error.detail)
+
+
+@app.exception_handler(StarletteHTTPException)
+def _http_error(request: Request, error: StarletteHTTPException):
+    return _error(request, error.status_code, error.detail, getattr(error, 'headers', None))
 
 
 @app.exception_handler(RequestValidationError)
-def _validation_error(_request: Request, error: RequestValidationError):
+def _validation_error(request: Request, error: RequestValidationError):
     campos = sorted({str(e['loc'][-1]) for e in error.errors() if e.get('loc')})
-    return JSONResponse(status_code=422, content={
-        'detail': 'Parámetros ausentes o inválidos: ' + (', '.join(campos) or 'consulta') + '.'})
+    return _error(request, 422, 'Parámetros ausentes o inválidos: ' + (', '.join(campos) or 'consulta') + '.')
 
 
 # ---------------------------------------------------------------- validaciones de entrada
@@ -157,7 +168,30 @@ app.include_router(extras_router)
 app.include_router(places_router)
 
 # Estáticos: /derived siempre; el frontend compilado, si existe, va al final (captura todo lo demás).
-app.mount('/derived', StaticFiles(directory=config.DERIVED_DIR), name='derived')
+CACHE_INMUTABLE = 'public, max-age=31536000, immutable'
+
+
+class InmutableFiles(StaticFiles):
+    """Archivos cuyo nombre o carpeta es un hash del contenido: el navegador puede guardarlos un año."""
+
+    def file_response(self, *args, **kwargs):
+        respuesta = super().file_response(*args, **kwargs)
+        respuesta.headers['Cache-Control'] = CACHE_INMUTABLE
+        return respuesta
+
+
+class FrontendFiles(StaticFiles):
+    """Frontend compilado: /assets/* lleva hash en el nombre (inmutable); el resto, p. ej. index.html, se revalida."""
+
+    async def get_response(self, path, scope):
+        respuesta = await super().get_response(path, scope)
+        if respuesta.status_code == 200:
+            inmutable = path.replace('\\', '/').startswith('assets/')
+            respuesta.headers['Cache-Control'] = CACHE_INMUTABLE if inmutable else 'no-cache'
+        return respuesta
+
+
+app.mount('/derived', InmutableFiles(directory=config.DERIVED_DIR), name='derived')
 _dist = config.ROOT / 'dist'
 if _dist.exists():
-    app.mount('/', StaticFiles(directory=_dist, html=True), name='frontend')
+    app.mount('/', FrontendFiles(directory=_dist, html=True), name='frontend')

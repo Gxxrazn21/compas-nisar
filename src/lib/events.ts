@@ -25,10 +25,10 @@ export function categoryColor(key: string): string {
   return COLORS[key] ?? FALLBACK_COLOR;
 }
 
-/** Eventos de las categorías visibles, del más reciente al más antiguo. */
-export function filterEvents(events: NaturalEvent[], hidden: ReadonlySet<string>): NaturalEvent[] {
+/** Eventos de las categorías visibles (y, si se pide, solo los que siguen en curso), del más reciente al más antiguo. */
+export function filterEvents(events: NaturalEvent[], hidden: ReadonlySet<string>, onlyOpen = false): NaturalEvent[] {
   return events
-    .filter((event) => !hidden.has(event.category))
+    .filter((event) => !hidden.has(event.category) && (!onlyOpen || !event.closed))
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 

@@ -77,7 +77,14 @@ SVG. Pentagrama de cinco líneas a lo ancho del panel inferior.
 - Pasada no analizable (colección beta): nota hueca y tenue; el texto emergente explica que solo tiene vista previa.
 - Las notas «antes» y «después» son doradas, con plica y rótulo de fecha; una **ligadura** las une. La primera pulsación elige «antes», la segunda «después».
 - «Ver la danza» reproduce los cuadros de la serie; un cursor recorre el pentagrama y la nota del cuadro actual se enciende.
+- Sonido: cada nota suena a la altura a la que está dibujada, leída en clave de sol (la línea central es si). Suena al elegirla, al recorrerlas con el teclado y en cada cuadro de la danza. El altavoz de la cabecera lo apaga; una pasada que no se puede elegir suena apagada y breve.
 - Teclado: flechas para moverse entre notas, Enter o Espacio para elegir. Cada nota es un botón con nombre accesible («24 de octubre de 2026, validada»).
+
+## Orientación
+
+- **Fronteras y nombres.** Líneas en `--papel` con sombra `--noche` (la interfaz no usa color). Los países van en Bodoni con un punto; departamentos, estados y ciudades, en IBM Plex. Se dibujan sobre los datos y bajo la huella y los eventos. Dos interruptores en la barra superior los quitan.
+- **Pista.** Una sola línea sobre el mapa con el paso siguiente de la vista actual. Nunca más de una, y se puede ocultar para siempre.
+- **Ayuda.** El botón de la barra superior abre tres pasos de uso, los atajos de teclado y las preferencias. Los atajos son de una tecla y aparecen en el texto emergente del botón que disparan.
 
 ## Movimiento
 
@@ -85,7 +92,7 @@ Un solo momento orquestado: al abrir una historia el globo vuela al lugar y la c
 
 ## Voz
 
-Español claro, frases completas, sin jerga cuando hay palabra común: «retorno del radar» antes que «retrodispersión» en la primera mención; el término técnico aparece en Método. Los botones dicen lo que hacen («Comparar estas fechas», «Ver la danza»). Los errores explican qué pasó y qué hacer. Cada texto existe en español e inglés.
+Español claro, frases completas, sin jerga cuando hay palabra común: «retorno del radar» antes que «retrodispersión» en la primera mención; el término técnico aparece en Método. Los botones dicen lo que hacen («Comparar estas fechas», «Ver la danza»). Los errores explican qué pasó y qué hacer. Cada texto existe en inglés y español. La aplicación abre en inglés; el español se elige en la barra superior.
 
 ## Lentes: la misma señal, distinta lectura
 

@@ -1,6 +1,7 @@
-// Diccionario en español (idioma por defecto). Los marcadores {nombre} se reemplazan al usar t().
+// Diccionario en español (define las claves; el idioma por defecto de la app es el inglés). Los marcadores {nombre} se reemplazan al usar t().
 export const es = {
   'brand': 'compás',
+  'doc.title': 'Compás, el radar NISAR en el tiempo',
   'top.method': 'Método',
   'top.langLabel': 'Idioma',
   'top.home': 'Compás, ir a la portada',
@@ -727,6 +728,114 @@ export const es = {
     'Validación con datos de campo: Compás todavía no contrasta sus señales con mediciones hechas en el terreno.',
   'live.clusterHint':
     'Los círculos con número agrupan eventos cercanos; púlsalos para acercarte y separarlos.',
+  'ref.group':
+    'Referencia sobre el mapa',
+  'ref.borders':
+    'Fronteras',
+  'ref.names':
+    'Nombres',
+  'ref.bordersHint':
+    'Mostrar u ocultar las fronteras de países y los límites de departamentos o estados',
+  'ref.namesHint':
+    'Mostrar u ocultar los nombres de países, regiones y ciudades',
+  'ref.attribution':
+    'Fronteras y nombres: Natural Earth.',
+  'score.soundOn':
+    'Sonido de las notas: encendido',
+  'score.soundOff':
+    'Sonido de las notas: apagado',
+  'help.open':
+    'Cómo usar Compás y atajos de teclado',
+  'help.title':
+    'Cómo usar Compás',
+  'help.step.1':
+    'Elige una historia de la portada, o entra en Explorar y pulsa cualquier lugar del mapa.',
+  'help.step.2':
+    'En la partitura de abajo, cada nota es una pasada del radar. Elige la de «antes» y la de «después», y pulsa «Comparar estas fechas».',
+  'help.step.3':
+    'Pulsa un punto del mapa para medir cuánto cambió ahí, cambia de capa en la barra del mapa y pulsa «Ver la danza» para oír y ver toda la serie.',
+  'help.keys':
+    'Atajos de teclado',
+  'help.keysNote':
+    'Los atajos no actúan mientras escribes en un campo. En la partitura, las flechas recorren las notas y Enter elige.',
+  'help.space':
+    'Espacio',
+  'help.key.stories':
+    'Ir a Historias',
+  'help.key.explore':
+    'Ir a Explorar',
+  'help.key.live':
+    'Ir a En vivo',
+  'help.key.prev':
+    'Paso anterior de la historia',
+  'help.key.next':
+    'Paso siguiente de la historia',
+  'help.key.dance':
+    'Empezar la danza o salir de ella',
+  'help.key.playPause':
+    'Pausar o reanudar la danza',
+  'help.key.sound':
+    'Encender o apagar el sonido de las notas',
+  'help.key.borders':
+    'Mostrar u ocultar las fronteras',
+  'help.key.names':
+    'Mostrar u ocultar los nombres',
+  'help.key.zoomIn':
+    'Acercar el mapa',
+  'help.key.zoomOut':
+    'Alejar el mapa',
+  'help.key.recenter':
+    'Volver al área',
+  'help.key.help':
+    'Abrir esta ayuda',
+  'help.prefs':
+    'Preferencias',
+  'help.pref.borders':
+    'Fronteras y límites internos sobre el mapa',
+  'help.pref.names':
+    'Nombres de países, regiones y ciudades',
+  'help.pref.sound':
+    'Sonido de las notas de la partitura',
+  'help.pref.hints':
+    'Pistas sobre el mapa',
+  'hint.dismiss':
+    'Ocultar las pistas',
+  'hint.pickPlace':
+    'Pulsa cualquier lugar del mapa, o búscalo por nombre en el panel.',
+  'hint.pickStack':
+    'Elige en el panel una de las pilas de pasadas que cubren este punto.',
+  'hint.pickNotes':
+    'En la partitura de abajo, elige la nota de «antes» y la de «después».',
+  'hint.probe':
+    'Pulsa el mapa para medir cuánto cambió un punto.',
+  'hint.interferogram':
+    'Sigue los pasos del panel para leer el interferograma.',
+  'hint.dance':
+    'Cada pasada hace sonar su nota: más aguda, más retorno del radar.',
+  'hint.live':
+    'Pulsa un punto del mapa o una fila de la lista para ver el evento.',
+  'hint.keys.steps':
+    '← y → cambian de paso.',
+  'hint.keys.dance':
+    'Espacio la pausa.',
+  'live.updated':
+    'Actualizado a las {time}.',
+  'live.stale':
+    'El servicio no respondió: se muestra la última copia recibida.',
+  'live.refresh':
+    'Actualizar',
+  'live.refreshing':
+    'Actualizando…',
+  'live.onlyOpen':
+    'Solo en curso',
+  'live.onlyOpenHint':
+    'Oculta los eventos que la NASA ya dio por cerrados',
+  'live.events.noneOpen':
+    'Ahora mismo no hay eventos en curso en las categorías visibles.',
+  'hint.liveUrgent':
+    'Pulsa una huella violeta o una fila de la lista para ver esa adquisición.',
+  'hint.liveSelected':
+    'El botón dorado del panel te lleva a las pasadas de NISAR sobre este punto.',
 } as const;
 
 export type Key = keyof typeof es;

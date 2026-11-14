@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { en } from './en';
 import { es } from './es';
-import { interpolate, localize } from './index';
+import { DEFAULT_LANG, interpolate, localize } from './index';
 
 const placeholders = (text: string) => [...text.matchAll(/\{(\w+)\}/g)].map((match) => match[1]).sort();
 
@@ -31,5 +31,9 @@ describe('interpolación', () => {
     expect(localize({ es: 'hola', en: 'hello' }, 'en')).toBe('hello');
     expect(localize('solo', 'en')).toBe('solo');
     expect(localize(undefined, 'es')).toBe('');
+  });
+  it('el idioma principal es el inglés y es el respaldo de un texto incompleto', () => {
+    expect(DEFAULT_LANG).toBe('en');
+    expect(localize({ es: '', en: 'hello' }, 'es')).toBe('hello');
   });
 });

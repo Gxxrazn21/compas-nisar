@@ -435,7 +435,7 @@ class LupaCompletaTests(unittest.TestCase):
         self.assertEqual(len(r['coordinates']), 4)
         carpeta = config.DERIVED_DIR / r['id']
         for nombre in ('before', 'after', 'change_hh', 'change_hv', 'classes', 'composite'):
-            self.assertTrue((carpeta / f'{nombre}.png').exists(), nombre)
+            self.assertTrue((carpeta / f'{nombre}.webp').exists(), nombre)
         self.assertTrue((carpeta / 'arrays.npz').exists())
         self.assertNotIn(TOKEN_FALSO, (carpeta / 'result.json').read_text(encoding='utf-8'))
         agua = next(c for c in r['stats']['classes'] if c['key'] == 'agua_nueva')
@@ -496,7 +496,9 @@ class EndpointTests(unittest.TestCase):
                 mock.patch.object(config, 'EARTHDATA_TOKEN', ''):
             r = self.cliente.get('/api/zoom', params=params)
             self.assertEqual(r.status_code, 503)
-            self.assertIn('Falta EARTHDATA_TOKEN en .env', r.json()['detail'])
+            self.assertIn('EARTHDATA_TOKEN is missing in .env', r.json()['detail'])
+            en_espanol = self.cliente.get('/api/zoom', params=params, headers={'Accept-Language': 'es'})
+            self.assertIn('Falta EARTHDATA_TOKEN en .env', en_espanol.json()['detail'])
             invertidas = {'before': '2026-10-24', 'after': '2026-06-26'}
             for malo in ({'size_km': 4}, {'size_km': 31}, {'size_km': 'nan'}, invertidas):
                 self.assertEqual(self.cliente.get('/api/zoom', params={**params, **malo}).status_code, 422, malo)

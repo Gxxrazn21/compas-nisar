@@ -13,10 +13,12 @@ NISAR vuelve sobre cada sitio cada 12 días. Ese es el compás de la danza, y po
 - **Contexto.** Capas opcionales de NASA: agua superficial vista por Sentinel-1 (otro radar, de banda C), cobertura del suelo y densidad de población.
 - **Explorar.** Un clic en cualquier punto del globo, o el nombre de una ciudad o una dirección, consulta el catálogo de NASA, lista las series de pasadas que cubren ese punto y permite comparar dos fechas.
 - **Lectura del cambio.** Mapa de aumento y disminución del retorno del radar, clases de cambio con su área en km², sonda por punto, histograma, procedencia de cada dato y límites del análisis.
-- **La danza.** Animación de todas las pasadas de una serie, con la partitura siguiendo el ritmo.
+- **La danza.** Animación de todas las pasadas de una serie, con la partitura siguiendo el ritmo. Cada nota suena a la altura a la que está dibujada: más retorno del radar, más aguda. El altavoz de la partitura (o la tecla M) lo apaga.
 - **Lupa calibrada.** Con un token de Earthdata, lee una ventana del producto científico completo (retorno calibrado, celdas de 30 m) directamente desde la nube de NASA, sin descargar el archivo de 6 GB.
 - **En vivo.** Eventos naturales recientes de NASA EONET y las últimas adquisiciones de respuesta urgente de NISAR, con acceso directo a explorar cada lugar.
-- Interfaz en español e inglés. Cada vista tiene un enlace permanente.
+- **Fronteras y nombres.** Fronteras de países, límites de departamentos o estados y nombres con su punto, dibujados sobre los datos. Se quitan y se ponen desde la barra superior (teclas B y N).
+- **Ayuda y atajos.** El botón de ayuda (tecla ?) explica el uso en tres pasos y lista los atajos de teclado. Una pista sobre el mapa indica el paso siguiente en cada vista y se puede ocultar.
+- Interfaz en inglés y español. Abre en inglés; el idioma se cambia en la barra superior (o con `#lang=es` en el enlace) y la elección se recuerda. Cada vista tiene un enlace permanente.
 
 ![Historia de La Mojana](docs/capturas/03-mojana-cambio.png)
 
@@ -41,6 +43,7 @@ NISAR vuelve sobre cada sitio cada 12 días. Ese es el compás de la danza, y po
 | NASA GIBS, GPW 2020 | Densidad de población | Público |
 | Esri World Imagery | Mapa base satelital | Público |
 | OpenStreetMap Nominatim | Buscador de ciudades y direcciones en Explorar | Público |
+| Natural Earth | Fronteras, límites internos y nombres sobre el mapa (archivos en `public/ref/`) | Dominio público |
 
 No se usan datos sintéticos. Todo lo que aparece en pantalla viene de estos servicios. El buscador de lugares solo traduce un nombre a coordenadas; los datos de radar siguen siendo los de NISAR.
 
@@ -152,6 +155,42 @@ npm test                                       # interfaz
 python -X utf8 scripts\smoke_backend.py        # backend contra los servicios reales
 ```
 
+### Atajos de teclado
+
+| Tecla | Acción |
+|---|---|
+| 1, 2, 3 | Historias, Explorar, En vivo |
+| ← → | Paso anterior o siguiente de la historia |
+| D | Empezar la danza o salir de ella |
+| Espacio | Pausar o reanudar la danza |
+| M | Sonido de las notas |
+| B, N | Fronteras, nombres |
+| + − 0 | Acercar, alejar, volver al área |
+| ? | Ayuda |
+
+Los atajos no actúan mientras se escribe en un campo.
+
+### Datos de referencia del mapa
+
+`public/ref/` guarda las fronteras, los límites internos y los nombres, ya simplificados. Para regenerarlos desde Natural Earth (necesita `shapely`):
+
+```powershell
+python -X utf8 scripts\build_reference.py
+```
+
+## Video explicativo
+
+La carpeta `video/` genera un video de 92 segundos (1920 × 1080) que muestra la aplicación en uso, en inglés y en español. No usa capturas a mano: graba la aplicación real con Chrome y la monta sobre una composición animada.
+
+```powershell
+# Con la aplicación corriendo en http://127.0.0.1:8000
+node video\capture.mjs en          # graba las tomas de la aplicación (repite con "es")
+python -X utf8 video\music.py      # pista de fondo, generada por síntesis
+node video\render.mjs en --audio video\out\music.wav   # video\out\compas-en.mp4
+```
+
+Necesita Google Chrome y ffmpeg. Los textos y los tiempos de cada escena están en `video/composition/script.js`. Las tomas y los MP4 no se versionan.
+
 ## Estructura
 
 ```
@@ -160,6 +199,7 @@ src/        Interfaz React + TypeScript + MapLibre GL
 data/       Historias (stories.json) y caché local (no se versiona)
 docs/       Contrato de la API, dirección de diseño, validación y capturas
 scripts/    Lanzador, precálculo, pruebas de humo, validación y prototipos
+video/      Video explicativo: grabación de la app, composición animada y render
 tests/      Pruebas del backend
 ```
 
@@ -175,7 +215,7 @@ Código bajo licencia MIT (ver `LICENSE`). Los datos pertenecen a sus fuentes y 
 
 ## Créditos
 
-Datos de NISAR por cortesía de NASA, ISRO y el Alaska Satellite Facility DAAC. Eventos de NASA EONET. Imagen diaria de NASA EPIC. Teselas de NASA GIBS y de Esri (Esri, Maxar, Earthstar Geographics y la comunidad de usuarios de GIS). Búsqueda de lugares con Nominatim, © colaboradores de OpenStreetMap. Proyecto independiente: no es un producto oficial de NASA ni de ISRO.
+Datos de NISAR por cortesía de NASA, ISRO y el Alaska Satellite Facility DAAC. Eventos de NASA EONET. Imagen diaria de NASA EPIC. Teselas de NASA GIBS y de Esri (Esri, Maxar, Earthstar Geographics y la comunidad de usuarios de GIS). Búsqueda de lugares con Nominatim, © colaboradores de OpenStreetMap. Fronteras y nombres de Natural Earth (dominio público). Proyecto independiente: no es un producto oficial de NASA ni de ISRO.
 
 ## English summary
 

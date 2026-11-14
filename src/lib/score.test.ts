@@ -7,7 +7,9 @@ import {
   noteY,
   pitchRange,
   scoreWidth,
+  staffStep,
   stemUp,
+  stepFrequency,
   xOfDate,
 } from './score';
 
@@ -80,5 +82,27 @@ describe('altura de las notas', () => {
   it('la plica sube en las notas bajas y baja en las altas', () => {
     expect(stemUp(80, 60)).toBe(true);
     expect(stemUp(40, 60)).toBe(false);
+  });
+});
+
+describe('sonido de las notas', () => {
+  it('sin serie o sin dato, la nota va en la línea central y suena si4', () => {
+    expect(staffStep(undefined, null)).toBe(0);
+    expect(staffStep(-12, null)).toBe(0);
+    expect(stepFrequency(0)).toBeCloseTo(493.88, 1);
+  });
+  it('más retorno, más agudo: el rango completo recorre cinco grados hacia cada lado', () => {
+    const range = { min: -20, max: -10 };
+    expect(staffStep(-10, range)).toBe(5);
+    expect(staffStep(-20, range)).toBe(-5);
+    expect(staffStep(-15, range)).toBe(0);
+    expect(staffStep(-13, range)).toBeGreaterThan(staffStep(-17, range));
+  });
+  it('lee el pentagrama en clave de sol', () => {
+    expect(stepFrequency(-1)).toBeCloseTo(440, 2); // la4, segundo espacio
+    expect(stepFrequency(-4)).toBeCloseTo(329.63, 1); // mi4, primera línea
+    expect(stepFrequency(1)).toBeCloseTo(523.25, 1); // do5, tercer espacio
+    expect(stepFrequency(4)).toBeCloseTo(698.46, 1); // fa5, quinta línea
+    expect(stepFrequency(5)).toBeGreaterThan(stepFrequency(4));
   });
 });

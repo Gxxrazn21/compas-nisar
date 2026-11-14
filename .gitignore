@@ -15,3 +15,7 @@ docs/superpowers/
 docs/catalog-probe.json
 scripts/import_personal_skills.py
 scripts/probe_catalog.py
+
+# Video explicativo: las tomas grabadas y los MP4 se regeneran (ver video/capture.mjs y video/render.mjs)
+video/footage/
+video/out/

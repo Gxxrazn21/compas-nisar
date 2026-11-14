@@ -1,4 +1,5 @@
 // Contexto de idioma: diccionarios, interpolación y recuerdo de la elección en localStorage.
+// El idioma principal es el inglés; el español se elige en la barra superior o con #lang=es.
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Lang, Localized } from '../types';
@@ -8,6 +9,7 @@ import type { Key } from './es';
 
 const DICTIONARIES: Record<Lang, Record<Key, string>> = { es, en };
 const STORAGE_KEY = 'compas.lang';
+export const DEFAULT_LANG: Lang = 'en';
 
 export type Vars = Record<string, string | number>;
 
@@ -21,7 +23,7 @@ export function interpolate(template: string, vars?: Vars): string {
 export function localize(value: Localized | undefined | null, lang: Lang): string {
   if (!value) return '';
   if (typeof value === 'string') return value;
-  return value[lang] || value.es || value.en || '';
+  return value[lang] || value.en || value.es || '';
 }
 
 function readStoredLang(): Lang | null {
@@ -43,7 +45,12 @@ interface I18n {
 const Context = createContext<I18n | null>(null);
 
 export function I18nProvider({ initial, children }: { initial: Lang | null; children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>(() => initial ?? readStoredLang() ?? 'es');
+  const [lang, setLangState] = useState<Lang>(() => {
+    const first = initial ?? readStoredLang() ?? DEFAULT_LANG;
+    // Antes del primer render: las peticiones iniciales ya salen con el idioma correcto (ver api.ts).
+    document.documentElement.lang = first;
+    return first;
+  });
 
   const setLang = useCallback((next: Lang) => {
     setLangState(next);
@@ -56,6 +63,7 @@ export function I18nProvider({ initial, children }: { initial: Lang | null; chil
 
   useEffect(() => {
     document.documentElement.lang = lang;
+    document.title = DICTIONARIES[lang]['doc.title'];
   }, [lang]);
 
   const value = useMemo<I18n>(

@@ -10,6 +10,8 @@ import type { ChangeResult } from '../../types';
 import { installChange, showLayer } from './dataLayers';
 import { baseStyle } from './mapStyle';
 import { coverPadding } from './padding';
+import { setReference } from './reference';
+import type { Reference } from './reference';
 
 interface Props {
   map: MapLibreMap;
@@ -17,13 +19,14 @@ interface Props {
   opacity: number;
   visible: boolean;
   projection: 'globe' | 'mercator';
+  reference: Reference;
 }
 
 function clamp(value: number): number {
   return Math.min(0.98, Math.max(0.02, value));
 }
 
-export function SwipeOverlay({ map, change, opacity, visible, projection }: Props) {
+export function SwipeOverlay({ map, change, opacity, visible, projection, reference }: Props) {
   const { t, lang } = useI18n();
   const hostRef = useRef<HTMLDivElement>(null);
   const areaRef = useRef<HTMLDivElement>(null);
@@ -90,6 +93,12 @@ export function SwipeOverlay({ map, change, opacity, visible, projection }: Prop
   useEffect(() => {
     if (top) showLayer(top, 'before', opacity, visible);
   }, [top, changeId, opacity, visible]);
+
+  // El lado «antes» lleva las mismas fronteras y nombres que el resto del mapa.
+  const { borders, names } = reference;
+  useEffect(() => {
+    if (top) setReference(top, { borders, names }, lang);
+  }, [top, borders, names, lang]);
 
   const move = (event: PointerEvent<HTMLDivElement>) => {
     const area = areaRef.current;

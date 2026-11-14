@@ -7,6 +7,7 @@ import type { Corners, LonLat } from '../../types';
 import { CONTEXT, CONTEXT_IDS, contextTiles } from '../../lib/context';
 import type { ContextId, ContextLayers } from '../../lib/context';
 import type { FeatureCollection } from '../../lib/events';
+import { REFERENCE_LAYERS } from './reference';
 
 export const FOOTPRINT = 'huella';
 export const EVENTS = 'eventos';
@@ -145,8 +146,8 @@ export function installOverlays(map: MapLibreMap) {
     filter: ['has', 'point_count'],
     layout: {
       'icon-image': ['concat', 'grupo-', ['to-string', ['get', 'point_count']]],
+      // Siempre visibles, y ocupan su sitio: un nombre del mapa no se dibuja debajo de un grupo.
       'icon-allow-overlap': true,
-      'icon-ignore-placement': true,
     },
   });
   map.addLayer({
@@ -203,9 +204,9 @@ export function installClusterImages(map: MapLibreMap) {
   });
 }
 
-/** Sube las capas vectoriales por encima de las imágenes recién instaladas. */
+/** Sube la referencia (fronteras y nombres) y las capas vectoriales sobre las imágenes recién instaladas. */
 export function raiseOverlays(map: MapLibreMap) {
-  for (const id of TOP_LAYERS) if (map.getLayer(id)) map.moveLayer(id);
+  for (const id of [...REFERENCE_LAYERS, ...TOP_LAYERS]) if (map.getLayer(id)) map.moveLayer(id);
 }
 
 function setData(map: MapLibreMap, id: string, data: FeatureCollection) {
@@ -225,16 +226,20 @@ export function setFootprint(map: MapLibreMap, ring: LonLat[] | null) {
   );
 }
 
-export function setEvents(map: MapLibreMap, data: FeatureCollection | null, selected: string | null) {
+/** Eventos y huellas urgentes. La selección va aparte: cambiarla no obliga a reagrupar los puntos. */
+export function setEvents(map: MapLibreMap, data: FeatureCollection | null) {
   setData(map, EVENTS, data ?? EMPTY);
-  if (map.getLayer(`${EVENTS}-sel`)) {
-    map.setFilter(`${EVENTS}-sel`, ['all', SINGLE, ['==', ['get', 'id'], selected ?? '']] as never);
-  }
 }
 
-export function setUrgent(map: MapLibreMap, data: FeatureCollection | null, selected: string | null) {
+export function setUrgent(map: MapLibreMap, data: FeatureCollection | null) {
   setData(map, URGENT, data ?? EMPTY);
-  if (map.getLayer(`${URGENT}-sel`)) map.setFilter(`${URGENT}-sel`, ['==', ['get', 'id'], selected ?? '']);
+}
+
+export function setLiveSelection(map: MapLibreMap, event: string | null, urgent: string | null) {
+  if (map.getLayer(`${EVENTS}-sel`)) {
+    map.setFilter(`${EVENTS}-sel`, ['all', SINGLE, ['==', ['get', 'id'], event ?? '']] as never);
+  }
+  if (map.getLayer(`${URGENT}-sel`)) map.setFilter(`${URGENT}-sel`, ['==', ['get', 'id'], urgent ?? '']);
 }
 
 /** Imagen superpuesta (interferograma). `null` la quita. */

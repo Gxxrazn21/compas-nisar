@@ -1,11 +1,13 @@
 // Composición de la aplicación: escenario a toda la ventana y paneles flotantes encima.
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ExplorePanel } from './components/explore/ExplorePanel';
 import { LivePanel } from './components/live/LivePanel';
 import { MethodDialog } from './components/method/MethodDialog';
 import type { LupaControls } from './components/reading/LupaBlock';
 import { ReadingPanel } from './components/reading/ReadingPanel';
 import { Score } from './components/score/Score';
+import { HelpDialog } from './components/shell/HelpDialog';
+import { MapHint } from './components/shell/MapHint';
 import { Sheet } from './components/shell/Sheet';
 import { TopBar } from './components/shell/TopBar';
 import { MapToolbar } from './components/stage/MapToolbar';
@@ -19,7 +21,11 @@ import type { Key } from './i18n/es';
 import { activeContext } from './lib/context';
 import type { ContextLayers } from './lib/context';
 import { eventsGeoJSON, urgentGeoJSON } from './lib/events';
+import { parseHash } from './lib/hash';
+import { unlockSound } from './lib/sound';
 import { useCompas } from './state/useCompas';
+import { usePrefs } from './state/usePrefs';
+import { useShortcuts } from './state/useShortcuts';
 
 const NO_CONTEXT: ContextLayers = {};
 
@@ -27,7 +33,12 @@ type View = 'cover' | 'story' | 'interferogram' | 'explore' | 'live';
 
 export function App() {
   const { t } = useI18n();
-  const compas = useCompas();
+  // Un enlace permanente puede fijar las fronteras y los nombres; lo demás sale de lo guardado.
+  const linked = useRef(parseHash(window.location.hash).reference).current;
+  const { prefs, toggle } = usePrefs(linked);
+  const reference = useMemo(() => ({ borders: prefs.borders, names: prefs.names }), [prefs.borders, prefs.names]);
+  const compas = useCompas(reference);
+  const [helpOpen, setHelpOpen] = useState(false);
   const [methodOpen, setMethodOpen] = useState(false);
   const [methodAnchor, setMethodAnchor] = useState<'future' | null>(null);
   const openMethod = (anchor: 'future' | null = null) => {
@@ -62,19 +73,28 @@ export function App() {
   // Las capas de contexto acompañan a una comparación: solo se dibujan en Historias y Explorar.
   const contextOn = view === 'story' || (view === 'explore' && compas.readingState.status !== 'idle');
 
+  // `selectEvent` y `selectUrgent` se recrean en cada render: se llaman a través de una referencia para
+  // que el mapa no vuelva a cargar y agrupar los quinientos eventos cada vez que algo cambia en pantalla.
+  const liveActions = useRef({ event: compas.selectEvent, urgent: compas.selectUrgent });
+  liveActions.current = { event: compas.selectEvent, urgent: compas.selectUrgent };
+  const onLiveEvent = useCallback((id: string) => liveActions.current.event(id), []);
+  const onLiveUrgent = useCallback((id: string) => liveActions.current.urgent(id), []);
+  const eventsData = useMemo(() => eventsGeoJSON(live.visibleEvents), [live.visibleEvents]);
+  const urgentData = useMemo(
+    () => (live.urgent.status === 'ready' ? urgentGeoJSON(live.urgent.data) : null),
+    [live.urgent],
+  );
   const liveLayers = useMemo<LiveLayers | null>(() => {
     if (view !== 'live') return null;
     return {
-      events: live.tab === 'events' ? eventsGeoJSON(live.visibleEvents) : null,
+      events: live.tab === 'events' ? eventsData : null,
       selectedEvent: live.selection?.kind === 'event' ? live.selection.id : null,
-      urgent: live.tab === 'urgent' && live.urgent.status === 'ready' ? urgentGeoJSON(live.urgent.data) : null,
+      urgent: live.tab === 'urgent' ? urgentData : null,
       selectedUrgent: live.selection?.kind === 'urgent' ? live.selection.id : null,
-      onEvent: compas.selectEvent,
-      onUrgent: compas.selectUrgent,
+      onEvent: onLiveEvent,
+      onUrgent: onLiveUrgent,
     };
-    // `selectEvent` y `selectUrgent` cambian con el estado de En vivo: se recrean con él.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [view, live.tab, live.visibleEvents, live.urgent, live.selection, compas.selectEvent, compas.selectUrgent]);
+  }, [view, live.tab, eventsData, urgentData, live.selection, onLiveEvent, onLiveUrgent]);
 
   const overlay = useMemo(() => {
     if (view !== 'interferogram' || compas.interferograms.status !== 'ready') return null;
@@ -101,17 +121,95 @@ export function App() {
       dance={dance}
       comparing={compas.readingState.status === 'loading'}
       emptyText={view === 'explore' && !compas.stackId ? t('explore.scoreEmpty') : undefined}
+      sound={prefs.sound}
+      onSound={() => toggle('sound')}
       onPick={compas.pickScene}
       onCompare={onCompare}
     />
   );
+
+  // El primer gesto de la persona habilita el audio: las notas de la danza llegan mucho después del clic.
+  useEffect(() => {
+    if (!prefs.sound) return;
+    const unlock = () => unlockSound();
+    window.addEventListener('pointerdown', unlock, { once: true });
+    window.addEventListener('keydown', unlock, { once: true });
+    return () => {
+      window.removeEventListener('pointerdown', unlock);
+      window.removeEventListener('keydown', unlock);
+    };
+  }, [prefs.sound]);
+
+  useShortcuts((id) => {
+    switch (id) {
+      case 'stories':
+      case 'explore':
+      case 'live':
+        if (id !== compas.mode || (id === 'stories' && story)) compas.setMode(id);
+        return true;
+      case 'prev':
+      case 'next':
+        if (view !== 'story' && view !== 'interferogram') return false;
+        compas.setStep(compas.step + (id === 'next' ? 1 : -1));
+        return true;
+      case 'playPause':
+        if (!dance.active || dance.manualOnly) return false;
+        dance.toggle();
+        return true;
+      case 'dance':
+        if ((view !== 'story' && view !== 'explore') || !compas.stack || !dance.available) return false;
+        if (dance.phase === 'idle' || dance.phase === 'error') dance.start();
+        else if (dance.phase === 'ready') dance.stop();
+        else dance.cancel();
+        return true;
+      case 'borders':
+      case 'names':
+      case 'sound':
+        toggle(id);
+        return true;
+      case 'zoomIn':
+        stageApi.current?.zoomIn();
+        return true;
+      case 'zoomOut':
+        stageApi.current?.zoomOut();
+        return true;
+      case 'recenter':
+        if (view === 'cover' || view === 'live') return false;
+        compas.recenter();
+        return true;
+      case 'help':
+        setHelpOpen(true);
+        return true;
+    }
+  });
+
+  // Una sola pista a la vez: el paso siguiente de la vista actual.
+  const hint: { text: Key; keys?: Key } | null = !prefs.hints
+    ? null
+    : view === 'live'
+      ? { text: live.selection ? 'hint.liveSelected' : live.tab === 'urgent' ? 'hint.liveUrgent' : 'hint.live' }
+      : view === 'interferogram'
+        ? { text: 'hint.interferogram', keys: 'hint.keys.steps' }
+        : dance.active
+          ? { text: 'hint.dance', keys: dance.manualOnly ? undefined : 'hint.keys.dance' }
+          : view === 'explore' && !compas.stackId && !compas.explorePoint
+            ? { text: 'hint.pickPlace' }
+            : view === 'explore' && !compas.stackId
+              ? compas.stacksState.status === 'ready' && compas.stacksState.stacks.length > 0
+                ? { text: 'hint.pickStack' }
+                : null
+              : view === 'explore' && compas.readingState.status === 'idle'
+                ? { text: 'hint.pickNotes' }
+                : (view === 'story' || view === 'explore') && change && compas.mapLayer !== 'swipe'
+                  ? { text: 'hint.probe', keys: view === 'story' ? 'hint.keys.steps' : undefined }
+                  : null;
 
   return (
     <div
       className={
         view === 'cover'
           ? 'app portada-app'
-          : `app analisis vista-${view}${readingCollapsed && hasReading ? ' lectura-plegada' : ''}${
+          : `app analisis vista-${view}${hasReading ? ' con-lectura' : ''}${readingCollapsed && hasReading ? ' lectura-plegada' : ''}${
               view === 'explore' && compas.readingState.status === 'idle' ? ' sin-herramientas' : ''
             }`
       }
@@ -136,9 +234,23 @@ export function App() {
         opticalDate={optical}
         context={contextOn ? compas.context : NO_CONTEXT}
         contextDate={compas.contextDate}
+        reference={reference}
         apiRef={stageApi}
       />
-      <TopBar mode={compas.mode} onMode={compas.setMode} onHome={compas.goHome} onMethod={() => openMethod()} />
+      <TopBar
+        mode={compas.mode}
+        borders={prefs.borders}
+        names={prefs.names}
+        onMode={compas.setMode}
+        onHome={compas.goHome}
+        onMethod={() => openMethod()}
+        onBorders={() => toggle('borders')}
+        onNames={() => toggle('names')}
+        onHelp={() => setHelpOpen(true)}
+      />
+      {hint && (
+        <MapHint text={t(hint.text)} keys={hint.keys ? t(hint.keys) : undefined} onDismiss={() => toggle('hints')} />
+      )}
 
       {view === 'cover' ? (
         <>
@@ -218,11 +330,13 @@ export function App() {
       <footer className="pie">
         {t(view === 'live' ? 'live.footer' : 'map.attribution')}
         {optical ? ` ${t('basemap.attribution')}` : ''}
+        {prefs.borders || prefs.names ? ` ${t('ref.attribution')}` : ''}
         {contextOn && activeContext(compas.context).length > 0
           ? ` ${t('ctx.attr.pie', { names: activeContext(compas.context).map((id) => t(`ctx.attr.${id}` as Key)).join(', ') })}`
           : null}
       </footer>
       <MethodDialog open={methodOpen} anchor={methodAnchor} onClose={() => setMethodOpen(false)} />
+      <HelpDialog open={helpOpen} prefs={prefs} onToggle={toggle} onClose={() => setHelpOpen(false)} />
     </div>
   );
 }

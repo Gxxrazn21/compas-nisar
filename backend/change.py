@@ -23,6 +23,7 @@ from . import browse, cache, config, geo
 from .catalog import scene_public
 from .errors import InvalidInput, NotFound
 
+RENDER_VERSION = 2           # súbelo si cambia el formato de las capas (no el método): invalida la caché
 METHOD_VERSION = 3            # súbelo si cambia el método: invalida los resultados en caché
 THRESHOLD_DB = 3.0
 DARK_MARGIN = 0.04            # «oscuro» = valor recortado <= límite inferior + 0,04
@@ -323,8 +324,21 @@ def render_composite(a, b):
     return render_rgb(np.dstack([b[..., 0], a[..., 0], a[..., 0]]), mask)
 
 
-def save_png(rgba, path):
-    Image.fromarray(np.ascontiguousarray(rgba), 'RGBA').save(path, 'PNG', compress_level=2)
+# Parámetros WebP por capa: fotos de radar con pérdida (alfa 0 sin dato), rampas con alfa sin pérdida y
+# clases en WebP sin pérdida para que los colores coincidan exactamente con la leyenda.
+WEBP_PARAMS = {
+    'before': {'quality': 88},
+    'after': {'quality': 88},
+    'composite': {'quality': 88},
+    'change_hh': {'quality': 90, 'alpha_quality': 100},
+    'change_hv': {'quality': 90, 'alpha_quality': 100},
+    'classes': {'lossless': True},
+}
+
+
+def save_layer(rgba, path, name):
+    """Guarda una capa RGBA como WebP con los parámetros de `WEBP_PARAMS[name]`."""
+    Image.fromarray(np.ascontiguousarray(rgba), 'RGBA').save(path, 'WEBP', method=4, **WEBP_PARAMS[name])
 
 
 # ---------------------------------------------------------------- sondeo puntual
@@ -361,7 +375,7 @@ def probe_arrays(arrays, bounds, lon, lat, locate=None):
 
 def change_id(stack_id, before, after, aoi):
     """Identificador estable de 16 hex: pila, escenas concretas (por si cambia la calidad) y aoi."""
-    texto = '|'.join([str(METHOD_VERSION), stack_id, before['id'], after['id'],
+    texto = '|'.join([str(METHOD_VERSION), f'r{RENDER_VERSION}', stack_id, before['id'], after['id'],
                       ','.join(f'{x:.5f}' for x in aoi) if aoi else 'full'])
     return sha1(texto.encode('utf-8')).hexdigest()[:16]
 
@@ -513,13 +527,13 @@ def _compute(stack, before, after, aoi, change):
     stats = compute_stats(analysis, bounds)
 
     def construir(temporal):
-        save_png(render_rgb(a_w, a_w.max(axis=2) > 0), temporal / 'before.png')
-        save_png(render_rgb(b_w, b_w.max(axis=2) > 0), temporal / 'after.png')
-        save_png(render_change(analysis.hh.delta, analysis.valid), temporal / 'change_hh.png')
+        save_layer(render_rgb(a_w, a_w.max(axis=2) > 0), temporal / 'before.webp', 'before')
+        save_layer(render_rgb(b_w, b_w.max(axis=2) > 0), temporal / 'after.webp', 'after')
+        save_layer(render_change(analysis.hh.delta, analysis.valid), temporal / 'change_hh.webp', 'change_hh')
         if dual:
-            save_png(render_change(analysis.hv.delta, analysis.valid), temporal / 'change_hv.png')
-        save_png(render_classes(analysis.classes), temporal / 'classes.png')
-        save_png(render_composite(a_w, b_w), temporal / 'composite.png')
+            save_layer(render_change(analysis.hv.delta, analysis.valid), temporal / 'change_hv.webp', 'change_hv')
+        save_layer(render_classes(analysis.classes), temporal / 'classes.webp', 'classes')
+        save_layer(render_composite(a_w, b_w), temporal / 'composite.webp', 'composite')
         arreglos = {'valid': analysis.valid, 'classes': analysis.classes,
                     'hh_before': analysis.hh.before_db.astype(np.float16),
                     'hh_after': analysis.hh.after_db.astype(np.float16)}
@@ -542,7 +556,7 @@ def _compute(stack, before, after, aoi, change):
             'bounds': bounds_json,
             'coordinates': geo.corner_coordinates(bounds_json),
             'size': [int(c1 - c0), int(r1 - r0)],
-            'layers': {name: (f'{base}/{name}.png' if name != 'change_hv' or dual else None)
+            'layers': {name: (f'{base}/{name}.webp' if name != 'change_hv' or dual else None)
                        for name in LAYER_NAMES},
             'stats': stats,
             'method': {

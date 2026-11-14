@@ -94,8 +94,8 @@ Calcula (o lee de caché) el cambio. `before < after`; ambas fechas deben ser an
 {"id":"a1b2c3d4e5f60718","stack":"011_D_084","before":Scene,"after":Scene,"days_between":120,
  "dual_pol":true,"georef":"kml",
  "bounds":[w,s,e,n],"coordinates":[[w,n],[e,n],[e,s],[w,s]],"size":[ancho,alto],
- "layers":{"before":"/derived/ID/before.png","after":"/derived/ID/after.png","change_hh":"/derived/ID/change_hh.png",
-           "change_hv":"/derived/ID/change_hv.png","classes":"/derived/ID/classes.png","composite":"/derived/ID/composite.png"},
+ "layers":{"before":"/derived/ID/before.webp","after":"/derived/ID/after.webp","change_hh":"/derived/ID/change_hh.webp",
+           "change_hv":"/derived/ID/change_hv.webp","classes":"/derived/ID/classes.webp","composite":"/derived/ID/composite.webp"},
  "stats":{"valid_km2":41234.5,"changed_km2":1840.2,"changed_pct":4.5,"correlation":0.947,
           "confidence":{"level":"alta","reasons":[]},
           "classes":[{"key":"agua_nueva","label":"Posible agua abierta nueva","km2":312.4,"pct":0.76,"color":"#38bdf8"}],
@@ -178,7 +178,7 @@ Buscador de lugares: convierte el nombre de una ciudad o una dirección en coord
 `q` lleva de 2 a 120 caracteres (`422` si no). Sin coincidencias: `200` con lista vacía. Fallo del servicio: `502`. Se cumple la política de uso de Nominatim: cabecera `User-Agent`, una petición por segundo como máximo y caché en memoria de un día. La interfaz muestra el crédito «© colaboradores de OpenStreetMap».
 
 ### Archivos estáticos
-`/derived/…` sirve `data/cache/derived/`. `/` sirve `dist/` si existe.
+`/derived/…` sirve `data/cache/derived/` con `Cache-Control: public, max-age=31536000, immutable` (el identificador es un hash de la entrada). Las capas de `layers` son WebP RGBA: `before`, `after` y `composite` con pérdida (calidad 88), `change_hh` y `change_hv` con pérdida (calidad 90) y alfa sin pérdida, `classes` sin pérdida (colores exactos de la leyenda). En `dist/`, `/assets/*` es inmutable e `index.html` sale con `no-cache`. `/` sirve `dist/` si existe.
 
 ## Lupa calibrada: producto GCOV completo (requiere `EARTHDATA_TOKEN`)
 

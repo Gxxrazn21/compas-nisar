@@ -48,7 +48,7 @@ def open_scene(url):
 
 def zoom_id(stack_id, before, after, lon, lat, size_km):
     """Identificador de 16 hex que distingue lupa de browse y depende de escenas, punto y tamaño."""
-    texto = '|'.join(['gcov', str(METHOD_VERSION), stack_id, before['id'], after['id'],
+    texto = '|'.join(['gcov', str(METHOD_VERSION), f'r{change.RENDER_VERSION}', stack_id, before['id'], after['id'],
                       f'{lon:.5f}', f'{lat:.5f}', f'{size_km:g}'])
     return sha1(texto.encode('utf-8')).hexdigest()[:16]
 
@@ -156,7 +156,7 @@ def _compute(stack, before, after, lon, lat, size_km, ident):
         capas = gcov.render_layers(analysis)
         for nombre, rgba in capas.items():
             if rgba is not None:
-                change.save_png(rgba, temporal / f'{nombre}.png')
+                change.save_layer(rgba, temporal / f'{nombre}.webp', nombre)
         np.savez_compressed(temporal / 'arrays.npz', **gcov.arrays_for_probe(analysis))
         base = f'/derived/{ident}'
         return {
@@ -172,7 +172,7 @@ def _compute(stack, before, after, lon, lat, size_km, ident):
             'bounds': bounds,
             'coordinates': esquinas,
             'size': [int(ancho), int(alto)],
-            'layers': {nombre: (f'{base}/{nombre}.png' if capas[nombre] is not None else None)
+            'layers': {nombre: (f'{base}/{nombre}.webp' if capas[nombre] is not None else None)
                        for nombre in change.LAYER_NAMES},
             'stats': stats,
             'method': {'version': f'gcov-{METHOD_VERSION}', 'formula': 'Δ dB = 10·log10(γ⁰₂/γ⁰₁)',

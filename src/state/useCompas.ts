@@ -9,7 +9,7 @@ import { cameraFor, centerOfBounds, zoomForBounds, zoomForWindow } from '../lib/
 import { contextDate as contextDateFor, stepOffset } from '../lib/context';
 import type { ContextId, ContextLayers } from '../lib/context';
 import { buildHash, parseHash } from '../lib/hash';
-import type { HashState, Mode } from '../lib/hash';
+import type { HashState, Mode, ReferenceChoice } from '../lib/hash';
 import { asLens } from '../lib/lens';
 import { pick } from '../lib/selection';
 import type { Selection } from '../lib/selection';
@@ -37,7 +37,7 @@ import { prefersReducedMotion } from './useElapsed';
 import { useInterferograms } from './useInterferograms';
 import type { InterferogramsState } from './useInterferograms';
 import { useLive } from './useLive';
-import type { Live } from './useLive';
+import type { Live, LiveTab } from './useLive';
 import { useStacks } from './useStacks';
 import type { StacksState } from './useStacks';
 import { useI18n } from '../i18n';
@@ -125,6 +125,8 @@ export interface Compas {
   changeStack: () => void;
   // en vivo
   live: Live;
+  /** Cambia de pestaña en En vivo y devuelve el mapa a una vista donde se vea lo que la pestaña lista. */
+  setLiveTab: (tab: LiveTab) => void;
   exploreFromLive: () => void;
   selectEvent: (id: string) => void;
   selectUrgent: (id: string) => void;
@@ -173,7 +175,8 @@ function footprintBox(stack: Stack | null): Bounds | null {
   return bboxOfPolygon(stack?.footprint);
 }
 
-export function useCompas(): Compas {
+/** `reference`: fronteras y nombres a la vista, para que el enlace permanente los conserve. */
+export function useCompas(reference: ReferenceChoice | null = null): Compas {
   const { lang } = useI18n();
   const initial = useRef<HashState>(parseHash(window.location.hash));
   const start = initial.current;
@@ -400,8 +403,16 @@ export function useCompas(): Compas {
     }
   }, [stack, mode, start.stack, start.aoi, view, fitFootprint]);
 
-  // La danza usa el centro del área analizada y el mismo aoi guardado
-  const dancePoint: LonLat | null = aoi ? centerOfBounds(aoi) : browseChange ? centerOfBounds(browseChange.bounds) : null;
+  // La danza usa el centro del área analizada y el mismo aoi guardado. En Explorar, antes de comparar,
+  // sirve el punto elegido (o el centro de la huella): «Ver la danza» no depende de haber comparado.
+  const stackBox = mode === 'explore' && stack?.id === stackId ? footprintBox(stack) : null;
+  const dancePoint: LonLat | null = aoi
+    ? centerOfBounds(aoi)
+    : browseChange
+      ? centerOfBounds(browseChange.bounds)
+      : mode === 'explore' && stackId
+        ? (exPoint ?? (stackBox ? centerOfBounds(stackBox) : null))
+        : null;
   const danceTarget = useMemo(
     () => (stackId && dancePoint ? { stack: stackId, point: dancePoint, aoi } : null),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -468,13 +479,14 @@ export function useCompas(): Compas {
     } else {
       state = {};
     }
-    const next = buildHash({ ...state, lang, proj: start.proj });
+    const next = buildHash({ ...state, lang, proj: start.proj, reference });
     if (next !== window.location.hash) {
       window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}${next}`);
     }
   }, [
     mode, story, interferogramStory, stackId, dates, rawLayer, step, pairIndex, lupaForHash, basemap,
     exStackId, exPoint, exDates, exLens, exAoi, lang, start.proj, context, contextDays,
+    reference?.borders, reference?.names,
   ]);
 
   // Cámara al abrir o cerrar la lupa
@@ -766,6 +778,17 @@ export function useCompas(): Compas {
     [live, view],
   );
 
+  const setLiveTab = useCallback(
+    (tab: LiveTab) => {
+      live.setTab(tab);
+      live.select(null);
+      // Las huellas urgentes ocupan poco: el globo se centra en la más reciente para que se vean.
+      const latest = tab === 'urgent' && live.urgent.status === 'ready' ? live.urgent.data[0] : undefined;
+      view(latest ? latest.center : [-30, 14], GLOBE_ZOOM, prefersReducedMotion(), 1600);
+    },
+    [live, view],
+  );
+
   const exploreFromLive = useCallback(() => {
     const event = live.selectedEvent;
     const urgent = live.selectedUrgent;
@@ -844,6 +867,7 @@ export function useCompas(): Compas {
     changePlace,
     changeStack,
     live,
+    setLiveTab,
     exploreFromLive,
     selectEvent,
     selectUrgent,

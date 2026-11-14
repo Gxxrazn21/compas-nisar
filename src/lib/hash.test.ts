@@ -18,6 +18,7 @@ const EMPTY = {
   pair: null,
   context: {},
   contextDays: 0,
+  reference: null,
   proj: 'globe',
 };
 
@@ -116,5 +117,14 @@ describe('enlace de exploración', () => {
   it('ignora capas de contexto inválidas', () => {
     expect(parseHash('#cx=z50,a,a999,c5').context).toEqual({ agua: 1, suelo: 0.2 });
     expect(parseHash('#cd=banana').contextDays).toBe(0);
+  });
+
+  it('guarda las fronteras y los nombres solo cuando no están los dos a la vista', () => {
+    expect(buildHash({ story: 'mojana', reference: { borders: true, names: true } })).toBe('#s=mojana');
+    expect(buildHash({ story: 'mojana', reference: { borders: true, names: false } })).toBe('#s=mojana&ref=b');
+    expect(buildHash({ story: 'mojana', reference: { borders: false, names: false } })).toBe('#s=mojana&ref=0');
+    expect(parseHash('#ref=n').reference).toEqual({ borders: false, names: true });
+    expect(parseHash('#ref=bn').reference).toEqual({ borders: true, names: true });
+    expect(parseHash('#ref=zz').reference).toBeNull();
   });
 });

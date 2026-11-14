@@ -1,9 +1,11 @@
 // La partitura: panel inferior con el pentagrama, la selección de fechas y la danza.
+import { Volume2, VolumeX } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useI18n } from '../../i18n';
 import type { Key } from '../../i18n/es';
-import { xOfDate, makeAxis, scoreWidth } from '../../lib/score';
+import { xOfDate, makeAxis, pitchRange, scoreWidth, staffStep, stepFrequency } from '../../lib/score';
 import type { Blocked, Selection } from '../../lib/selection';
+import { playNote, unlockSound } from '../../lib/sound';
 import type { Dance } from '../../state/useDance';
 import type { Scene, Stack } from '../../types';
 import { DanceBar } from './DanceBar';
@@ -17,11 +19,14 @@ interface Props {
   comparing: boolean;
   /** Texto cuando aún no hay pila (Explorar sin lugar elegido). */
   emptyText?: string;
+  /** Las notas suenan; el botón del altavoz lo cambia. */
+  sound: boolean;
+  onSound: () => void;
   onPick: (sceneId: string) => void;
   onCompare: () => void;
 }
 
-export function Score({ stack, selection, applied, dance, comparing, emptyText, onPick, onCompare }: Props) {
+export function Score({ stack, selection, applied, dance, comparing, emptyText, sound, onSound, onPick, onCompare }: Props) {
   const { t } = useI18n();
   const scroller = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(900);
@@ -80,6 +85,20 @@ export function Score({ stack, selection, applied, dance, comparing, emptyText, 
   const cursorDate =
     dance.active && dance.series ? (dance.series.frames[dance.index]?.date ?? null) : null;
 
+  // En la danza, cada cuadro hace sonar su nota: la melodía es la serie de retornos del radar.
+  const danceSeries = dance.active ? dance.series : null;
+  const danceIndex = dance.index;
+  useEffect(() => {
+    if (!sound || !danceSeries) return;
+    const date = danceSeries.frames[danceIndex]?.date;
+    if (!date) return;
+    const range = pitchRange(danceSeries.series.map((point) => point.hh_db));
+    const db = danceSeries.series.find((point) => point.date === date)?.hh_db;
+    playNote(stepFrequency(staffStep(db, range)));
+  }, [sound, danceSeries, danceIndex]);
+
+  const soundLabel = t(sound ? 'score.soundOn' : 'score.soundOff');
+
   return (
     <section className="partitura" data-cubre="bottom" aria-labelledby="partitura-h">
       <div className="partitura-cabeza">
@@ -90,6 +109,19 @@ export function Score({ stack, selection, applied, dance, comparing, emptyText, 
           {status}
         </p>
         <div className="partitura-acciones">
+          <button
+            type="button"
+            className="icono sonido"
+            aria-pressed={sound}
+            aria-label={soundLabel}
+            title={`${soundLabel} (M)`}
+            onClick={() => {
+              unlockSound();
+              onSound();
+            }}
+          >
+            {sound ? <Volume2 size={18} aria-hidden="true" /> : <VolumeX size={18} aria-hidden="true" />}
+          </button>
           {dance.phase === 'idle' || dance.phase === 'error' ? (
             <>
               <button
@@ -101,7 +133,16 @@ export function Score({ stack, selection, applied, dance, comparing, emptyText, 
               >
                 {t('score.compare')}
               </button>
-              <button type="button" className="primario" disabled={!stack} onClick={dance.start}>
+              <button
+                type="button"
+                className="primario"
+                disabled={!stack || !dance.available}
+                title={`${t('story.danceHint')} (D)`}
+                onClick={() => {
+                  unlockSound();
+                  dance.start();
+                }}
+              >
                 {t('score.dance')}
               </button>
             </>
@@ -123,6 +164,7 @@ export function Score({ stack, selection, applied, dance, comparing, emptyText, 
             selection={selection}
             series={dance.series}
             cursorDate={cursorDate}
+            sound={sound}
             onPick={(scene) => onPick(scene.id)}
             onBlocked={blocked}
           />

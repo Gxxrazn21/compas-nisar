@@ -32,8 +32,21 @@ export interface HashState {
   context: ContextLayers;
   /** Días de desfase de la capa de Sentinel-1 respecto de la fecha «después». */
   contextDays: number;
+  /** Fronteras y nombres sobre el mapa; `null` deja lo que la persona tenga guardado. */
+  reference: ReferenceChoice | null;
   /** Para depuración y capturas: `mercator` evita el globo en navegadores sin WebGL potente. */
   proj: 'globe' | 'mercator';
+}
+
+export interface ReferenceChoice {
+  borders: boolean;
+  names: boolean;
+}
+
+/** `ref=0` nada, `ref=b` solo fronteras, `ref=n` solo nombres, `ref=bn` ambas. */
+function reference(value: string | null): ReferenceChoice | null {
+  if (value === null || !/^(0|b|n|bn)$/.test(value)) return null;
+  return { borders: value.includes('b'), names: value.includes('n') };
 }
 
 const LAYERS: MapLayer[] = [
@@ -111,6 +124,7 @@ export function parseHash(hash: string): HashState {
     pair: Number.isInteger(pair) && pair >= 0 ? pair : null,
     context: parseContext(params.get('cx')),
     contextDays: parseDays(params.get('cd')),
+    reference: reference(params.get('ref')),
     proj: params.get('proj') === 'mercator' ? 'mercator' : 'globe',
   };
 }
@@ -139,6 +153,10 @@ export function buildHash(state: Partial<HashState>): string {
   const context = stringifyContext(state.context ?? {});
   put('cx', context);
   if (context.includes('a') && state.contextDays) put('cd', state.contextDays);
+  // Solo se escribe cuando difiere de lo normal (fronteras y nombres a la vista).
+  if (state.reference && !(state.reference.borders && state.reference.names)) {
+    put('ref', `${state.reference.borders ? 'b' : ''}${state.reference.names ? 'n' : ''}` || '0');
+  }
   put('lang', state.lang);
   if (state.proj === 'mercator') put('proj', 'mercator');
   const text = params.toString();

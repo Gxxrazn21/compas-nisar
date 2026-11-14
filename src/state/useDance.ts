@@ -16,6 +16,8 @@ export interface DanceTarget {
 
 export interface Dance {
   phase: DancePhase;
+  /** Hay pila y punto para pedir la serie: sin esto, empezar la danza no haría nada. */
+  available: boolean;
   /** La serie queda cargada tras salir de la danza: la partitura la usa para las alturas. */
   series: SeriesResult | null;
   active: boolean;
@@ -141,6 +143,7 @@ export function useDance(target: DanceTarget | null): Dance {
 
   return {
     phase,
+    available: target !== null,
     series,
     active: phase === 'ready',
     index,
