@@ -839,3 +839,12 @@
 .exploracion.con-pila {
   gap: 12px;
 }
+.demo-entry { text-decoration: none; margin: 16px 0 8px; }
+.demo-loading { max-width: 600px; margin: 15vh auto; padding: 24px; }
+.demo-loading p { margin: 20px 0; }
+.demo-header-actions { display: flex; gap: 8px; margin-left: auto; }
+.demo-app .barra-superior { gap: 24px; }
+.demo-map-controls { gap: 6px; flex-wrap: wrap; }
+.demo-map-controls [aria-pressed='true'] { background: var(--oro); color: var(--noche); }
+.demo-app .historia > .ayuda { margin-top: 8px; }
+@media(max-width:720px){.demo-app .barra-superior{gap:8px}.demo-app .barra-superior > strong{font-size:var(--t13)}.demo-map-controls .secundario{flex:1 1 100px}}

@@ -4,19 +4,23 @@ import { useI18n } from '../../i18n';
 import type { Key } from '../../i18n/es';
 import { buildReport, copyText, downloadJson } from '../../lib/report';
 import type { ChangeResult, Stack } from '../../types';
+import type { EvidenceReview } from '../../lib/evidence';
+import { buildBriefHtml, downloadBrief, layerDataUrl } from '../../lib/brief';
 
 interface Props {
   change: ChangeResult;
   stack: Stack | null;
   lens: string;
+  evidence?: EvidenceReview;
 }
 
 const LAYER_KEYS = ['before', 'after', 'change_hh', 'change_hv', 'classes', 'composite'] as const;
 
-export function ExportBlock({ change, stack, lens }: Props) {
+export function ExportBlock({ change, stack, lens, evidence }: Props) {
   const { t, lang } = useI18n();
   const [copied, setCopied] = useState<'ok' | 'fail' | null>(null);
   const calibrated = change.source === 'gcov';
+  const [briefState, setBriefState] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
 
   const limits = (): string[] => {
     const keys: Key[] = calibrated
@@ -27,8 +31,7 @@ export function ExportBlock({ change, stack, lens }: Props) {
     return list;
   };
 
-  const download = () => {
-    const report = buildReport(change, {
+  const report = () => buildReport(change, {
       lang,
       lens,
       stack,
@@ -36,9 +39,20 @@ export function ExportBlock({ change, stack, lens }: Props) {
       origin: window.location.origin,
       limits: limits(),
       generatedAt: new Date().toISOString(),
+      evidence,
     });
+  const download = () => {
     const name = `compas-${change.stack}-${change.before.date}-${change.after.date}${calibrated ? '-lupa' : ''}.json`;
-    downloadJson(name, report);
+    downloadJson(name, report());
+  };
+
+  const brief = async () => {
+    setBriefState('loading');
+    try {
+      const image = await layerDataUrl(change.layers.change_hh);
+      downloadBrief(`compas-${change.stack}-${change.after.date}.html`, buildBriefHtml(report(), lang, image));
+      setBriefState('done');
+    } catch { setBriefState('error'); }
   };
 
   const copy = async () => {
@@ -53,6 +67,9 @@ export function ExportBlock({ change, stack, lens }: Props) {
     <section className="bloque exportar" aria-labelledby="exportar-h">
       <h3 id="exportar-h">{t('export.title')}</h3>
       <div className="exportar-botones">
+        <button type="button" className="primario" onClick={() => void brief()} disabled={briefState === 'loading'}>
+          {lang === 'es' ? (briefState === 'loading' ? 'Preparando informe…' : 'Informe para compartir') : (briefState === 'loading' ? 'Preparing brief…' : 'Shareable brief')}
+        </button>
         <button type="button" className="secundario" onClick={download}>
           {t('export.json')}
         </button>
@@ -60,6 +77,9 @@ export function ExportBlock({ change, stack, lens }: Props) {
           {t('export.copy')}
         </button>
       </div>
+      <p className="ayuda" role="status">{briefState === 'error'
+        ? (lang === 'es' ? 'No se pudo preparar la imagen. Reintenta para descargar el informe completo.' : 'The image could not be prepared. Retry to download the complete brief.')
+        : briefState === 'done' ? (lang === 'es' ? 'Informe HTML preparado. Revisa tus descargas; ábrelo para imprimir o guardar como PDF.' : 'HTML brief prepared. Check your downloads; open it to print or save as PDF.') : ''}</p>
       <p className="ayuda" role="status" aria-live="polite">
         {copied === 'ok' ? t('export.copied') : copied === 'fail' ? t('export.copyFail') : t('export.help')}
       </p>
@@ -68,7 +88,7 @@ export function ExportBlock({ change, stack, lens }: Props) {
         <ul className="descargas">
           {layers.map((key) => (
             <li key={key}>
-              <a href={change.layers[key] ?? '#'} download={`compas-${change.id}-${key}.png`}>
+              <a href={change.layers[key] ?? '#'} download={`compas-${change.id}-${key}.${change.layers[key]?.split('.').pop() === 'webp' ? 'webp' : 'png'}`}>
                 {t(`layer.${key}` as Key)}
               </a>
             </li>

@@ -58,6 +58,7 @@ export function MethodDialog({ open, anchor = null, onClose }: Props) {
           <section key={id}>
             <h3>{t(`method.${id}.title` as Key)}</h3>
             <p>{t(`method.${id}.text` as Key)}</p>
+            {id === 's8' && <p>{t('method.s8.expanded')}</p>}
           </section>
         ))}
         <section>

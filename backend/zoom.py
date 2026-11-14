@@ -12,7 +12,7 @@ from . import change, config, gcov, geo, rangefile
 from .catalog import scene_public
 from .errors import InvalidInput, ServiceUnavailable, UpstreamError
 
-METHOD_VERSION = 2            # súbelo si cambia el método: invalida los resultados en caché
+METHOD_VERSION = 3            # súbelo si cambia el método: invalida los resultados en caché
 POLARIZATIONS = (('HH', 'HHHH'), ('HV', 'HVHV'))
 
 _slots = threading.Semaphore(1)     # una lupa a la vez: descarga y memoria son los cuellos de botella
@@ -48,7 +48,7 @@ def open_scene(url):
 
 def zoom_id(stack_id, before, after, lon, lat, size_km):
     """Identificador de 16 hex que distingue lupa de browse y depende de escenas, punto y tamaño."""
-    texto = '|'.join(['gcov', str(METHOD_VERSION), f'r{change.RENDER_VERSION}', stack_id, before['id'], after['id'],
+    texto = '|'.join(['gcov', str(METHOD_VERSION), f'classes{change.METHOD_VERSION}', f'r{change.RENDER_VERSION}', stack_id, before['id'], after['id'],
                       f'{lon:.5f}', f'{lat:.5f}', f'{size_km:g}'])
     return sha1(texto.encode('utf-8')).hexdigest()[:16]
 
@@ -79,7 +79,7 @@ def _read_scene(scene, rows, cols, n, pols):
 
 def _limitations(before, after, dual, window, side_km):
     notas = [
-        f'γ⁰ calibrado leído del producto GCOV de NISAR (10 m), promediado {window.n}×{window.n} en '
+        f'γ⁰ calibrado leído del producto GCOV de NISAR (paso nativo {abs(window.step_x):g} m), promediado {window.n}×{window.n} en '
         f'potencia lineal: cada píxel mide {window.n * abs(window.step_x):g} m. Ventana de {side_km:.1f} km.',
         'Δ = 10·log10(P₂/P₁) sin normalización entre fechas: un cambio general de humedad o de rugosidad '
         'sí aparece, y el moteado (speckle) deja un ruido de pocos dB en píxeles individuales.',

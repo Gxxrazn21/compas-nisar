@@ -2,6 +2,22 @@
 import type { Key } from './es';
 
 export const en: Record<Key, string> = {
+  'score.fixedPair': 'Saved comparison: fixed dates',
+  'score.channel': 'Listen to',
+  'score.scaleShort': 'What you hear',
+  'score.pointSelected': 'selected point: {lat}, {lon}',
+  'score.pointCenter': 'area center: {lat}, {lon}',
+  'score.noPoint': 'no point selected',
+  'score.scale': 'HH and HV share a scale of −16 to +1 approximate dB relative to the scene. More return produces a higher note. These are measurements converted to sound, not audio captured by the satellite. Each channel is normalized independently, so their absolute powers cannot be compared.',
+  'score.timing': 'One observation plays every 0.7 seconds. Dates and intervals show actual elapsed time; missing acquisitions are not interpolated.',
+  'score.reference': 'Images and notes are normalized to the {date} reference; each note averages a window with radius {radius} pixels around the point.',
+  'score.noValue': 'no return value',
+  'score.value': '{channel}: {db} approximate dB',
+  'dance.first': 'First observation',
+  'dance.gap': '{days} days since the previous observation',
+  'dance.partial': 'Partial playback: {n} of {total} images did not load.',
+  'dance.failed': '{n} of {total} images did not load.',
+  'dance.retry': 'Retry images',
   'brand': 'compás',
   'doc.title': 'Compás, the NISAR radar through time',
   'top.method': 'Method',
@@ -80,17 +96,24 @@ export const en: Record<Key, string> = {
   'read.summary': '{between}, a possible change showed up across {changed} of the {valid} observed.',
   'read.summaryNone': '{between}, no change above the threshold showed up across the {valid} observed.',
   'read.days': 'There were {days} days between the two passes.',
-  'conf.alta': 'High confidence in this comparison',
-  'conf.media': 'Medium confidence: read the figures with care',
-  'conf.baja': 'Low confidence: read the figures as guidance',
+  'conf.reason.missing': 'HH correlation between dates could not be measured.',
+  'conf.coverage': 'Common data coverage: {value} of cells in this window.',
+  'conf.coverage.unknown': 'Numeric coverage is unavailable in this saved result.',
+  'conf.interpretation': 'Interpretation has no independent corroboration: no class confirms an event.',
+  'conf.alta':
+    'High quality of the global HH fit',
+  'conf.media':
+    'Medium quality of the global HH fit',
+  'conf.baja':
+    'Low quality of the global HH fit',
   'conf.reason.corr':
-    'The correlation between the two dates is {value}: a large part of the scene changed or the brightness stretches differ.',
+    'HH correlation between dates is {value}. This may reflect widespread change or different stretches; it does not validate the classes.',
   'conf.reason.fit':
-    'Only {value} of the pixels agree with the fit between dates; at least 80% was expected.',
+    '{value} of pixels agree with the fit between dates; the method criterion is at least 80%.',
   'conf.lead.media':
-    'A sizeable part of the scene changed between these dates. The patches are reliable as leads; the figures, less so.',
+    'Global normalization has limitations. Classified areas require independent verification.',
   'conf.lead.baja':
-    'This does not mean the result is wrong: so much of the scene changed between these dates that the radar loses its reference point. The patches still work as leads; the square kilometers, only as an order of magnitude.',
+    'The global fit has limited support. Class and area accuracy have not been measured.',
 
   'classes.title': 'What changed',
   'classes.legend': 'Map classes and their extent',
@@ -213,12 +236,12 @@ export const en: Record<Key, string> = {
     'A change that affects the whole scene equally, such as general moisture after rain, is absorbed by the normalization.',
   'method.s6.4': 'It only compares passes taken in the same acquisition mode.',
   'method.s6.5':
-    'When confidence is low, so much of the scene changed that the normalization stops being reliable.',
+    'Image fit quality is not certainty about the cause. A poor fit may indicate extensive change or comparability problems; data coverage is reported separately.',
   'method.formula': 'Reference formula',
   'method.formulaText': 'Δ ≈ 10·log10((q₂ + c) / (α·q₁ + β + c)), with q = ((ND − 1) / 254)² and c = 0.03',
   'method.sources': 'Sources and version',
   'method.sourcesText':
-    'Images: NISAR GCOV (NASA and ISRO), distributed by ASF DAAC. Base map: Esri World Imagery. Earth today: NASA EPIC. Method version: 3.',
+    'Images: NISAR GCOV (NASA and ISRO), distributed by ASF DAAC. Base map: Esri World Imagery. Earth today: NASA EPIC. Browse method: 4; GCOV lens: 3; series: 2.',
 
   'resources.title': 'Open resources from the challenge',
   'resources.intro':
@@ -490,9 +513,9 @@ export const en: Record<Key, string> = {
   'lupa.err.title':
     'The calibrated lens could not be opened',
   'conf.gcov.title':
-    'Less than half of the window has data',
+    'Calibrated return: no global fit between dates',
   'conf.gcov.text':
-    'Part of the window falls outside the product or in strips without signal: the figures describe only the area with data.',
+    'Calibration allows power comparison. It does not guarantee class accuracy or confirm a cause.',
   'probe.noteCal':
     'Values in real dB of calibrated γ⁰.',
   'hist.axisCal':
@@ -590,11 +613,12 @@ export const en: Record<Key, string> = {
   'method.s7.title':
     'The calibrated lens',
   'method.s7.text':
-    'The lens reads, in a 10 to 20 km window, the full NISAR GCOV product (γ⁰ at 10 m, averaged to 30 m) instead of the preview image. Decibels are real and there is no normalization between dates: a general change in moisture does show up. The threshold is still 3 dB and “dark” means HH of −18 dB or less. In exchange, it needs an Earthdata account on the server and the first time it downloads 50 to 90 MB. The overview covers the whole scene in seconds, but with approximate dB.',
+    'The lens reads GCOV γ⁰ in a 10 to 20 km window. Spacing comes from product metadata and power is averaged; in the La Mojana case, output cells are 30 m. No global fit between dates is applied. The threshold is 3 dB and “dark” means HH of −18 dB or less. Classes remain hypotheses: a 30 m cell does not guarantee an exact boundary. Preparing a new window requires Earthdata on the server; the saved walkthrough already includes its data.',
+  'method.s8.expanded': 'An extension to three area/date combinations, HH/HV and thresholds of 2, 3 and 4 dB also retains unfavorable results. In another 10 km window, HH correlation is 0.471 at the smoothed scale, with no joint detections at 3 dB (2 preview detections and 41 calibrated detections). Consecutive passes have few strong changes and some ratios cannot be calculated. All three cases are in La Mojana: this is not independent geographic validation.',
   'method.s8.title':
     'How close the overview is to the calibrated data',
   'method.s8.text':
-    'We checked it in a 15 km window of La Mojana, between June 26 and October 24, 2026. At a scale of about 1 km, the overview change matches the calibrated data: correlation of 0.86, typical error of 0.7 dB (almost all of it a constant offset, not noise) and the same sign wherever both detect change. At 170 m, the actual pixel size of the preview, it captures only half of the variability of the calibrated data (correlation of 0.49). It is good for locating areas, not for measuring single pixels. It is one window, not a general figure: a check, not a guarantee.',
+    'November 14, 2026 audit: one 15 km window in La Mojana, June 26 to October 24, with 7,744 common pixels. Against GCOV aggregated to about 170 m: correlation 0.517, median absolute error 0.78 dB, precision 50.0% and recall 12.2% at the 3 dB HH threshold. With an additional 5×5 average (about 1 km): correlation 0.861, error 0.69 dB, precision 12.5% and recall 45.0%. At this latter scale, 9 of 72 browse detections and 20 reference detections overlap; 100% correct sign applies only to those 9 joint hits. Spatial correlation does not measure detection accuracy. Smoothed pixels are not independent observations. This window does not validate other areas, HV or physical classes; calibrated GCOV is not ground truth.',
   'method.s9.title':
     'The preview stretch is confirmed',
   'method.s9.text':

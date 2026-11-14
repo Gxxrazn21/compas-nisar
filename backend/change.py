@@ -24,7 +24,7 @@ from .catalog import scene_public
 from .errors import InvalidInput, NotFound
 
 RENDER_VERSION = 2           # súbelo si cambia el formato de las capas (no el método): invalida la caché
-METHOD_VERSION = 3            # súbelo si cambia el método: invalida los resultados en caché
+METHOD_VERSION = 4            # súbelo si cambia el método: invalida los resultados en caché
 THRESHOLD_DB = 3.0
 DARK_MARGIN = 0.04            # «oscuro» = valor recortado <= límite inferior + 0,04
 VEG_FLOOD_HV_MAX = 1.5
@@ -55,7 +55,7 @@ _id_locks = {}
 _id_locks_guard = threading.Lock()
 
 
-# ---------------------------------------------------------------- matemática pura (método v3)
+# ---------------------------------------------------------------- matemática pura (método v4)
 
 def valid_mask(a, b, erosion=ERODE_PX):
     """Píxeles con dato en ambas fechas (algún canal > 0), erosionados `erosion` px (bordes de franja)."""
@@ -172,7 +172,7 @@ def classify(delta_hh, delta_hv, dark_before, dark_after, valid, dual):
     if dual:
         hv_up = delta_hv >= THRESHOLD_DB
         hv_down = delta_hv <= -THRESHOLD_DB
-        rules += [(3, up & (delta_hv < VEG_FLOOD_HV_MAX) & ~dark_before), (4, hv_down), (5, hv_up)]
+        rules += [(3, up & (np.abs(delta_hv) <= VEG_FLOOD_HV_MAX) & ~dark_before), (4, hv_down), (5, hv_up)]
     rules += [(6, up), (7, down)]
     classes = np.zeros(valid.shape, np.uint8)
     free = valid.copy()
@@ -219,7 +219,7 @@ def analyze(a, b, dual, erosion=ERODE_PX):
 
 
 def confidence(channel):
-    """Confianza de la comparación (paso 8) con razones legibles en español."""
+    """Indicador heredado de calidad del ajuste global HH; no certeza del fenómeno."""
     corr, inliers = channel.corr, channel.inliers
     razones = []
     if corr is None or corr < 0.85:
@@ -277,6 +277,10 @@ def compute_stats(analysis, bounds):
         'changed_pct': round(changed_km2 / valid_km2 * 100, 2) if valid_km2 else 0.0,
         'correlation': round(corr, 3) if corr is not None else None,
         'confidence': confidence(analysis.hh),
+        'quality': {'normalization': 'global_fit', 'level': confidence(analysis.hh)['level'],
+                    'scope': 'full_scene', 'interpretation': 'not_corroborated'},
+        'coverage': {'valid_pixels': int(analysis.valid.sum()), 'total_pixels': int(analysis.valid.size),
+                     'fraction': round(float(analysis.valid.mean()), 6)},
         'classes': classes,
         'hh': channel_stats(analysis.hh, analysis.valid),
         'hv': channel_stats(analysis.hv, analysis.valid) if analysis.dual else None,

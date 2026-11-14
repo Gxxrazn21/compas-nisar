@@ -45,8 +45,8 @@
             "en": "A land made of water"
           },
           "text": {
-            "es": "Lo negro es agua quieta: refleja la señal del radar lejos del satélite y casi nada regresa. Los ríos dibujan líneas oscuras y las ciénagas, manchas. Lo claro es tierra con vegetación.",
-            "en": "Black is still water: it reflects the radar signal away from the satellite, so almost nothing returns. Rivers draw dark lines and wetlands dark patches. Bright areas are vegetated land."
+            "es": "En estas ciénagas, las zonas oscuras pueden corresponder a agua quieta, que refleja la señal lejos del satélite. También hay otras causas de poco retorno, como superficies lisas o sombra del radar. El brillo orienta la interpretación; no identifica por sí solo el terreno.",
+            "en": "In these wetlands, dark areas may be still water reflecting the signal away from the satellite. Other causes of low return include smooth surfaces or radar shadow. Brightness guides interpretation; it does not identify the terrain on its own."
           }
         },
         {
@@ -89,8 +89,8 @@
             "en": "The calibrated lens"
           },
           "text": {
-            "es": "Hasta aquí usamos las imágenes de vista previa, con píxeles de unos 170 metros. La lupa lee el producto científico completo en una ventana de 15 km: retorno calibrado y celdas de 30 metros. Aparecen los caños, las parcelas y el borde exacto de cada ciénaga.",
-            "en": "So far we used the preview images, with pixels about 170 metres wide. The lens reads the full science product over a 15 km window: calibrated return and 30-metre cells. Channels, fields and the exact edge of each wetland come into view."
+            "es": "Hasta aquí usamos vistas previas, con píxeles de unos 170 metros y suavizado adicional. La lupa lee el producto científico en una ventana de 15 km: retorno calibrado y celdas de 30 metros en este caso. Se aprecian con más detalle caños, parcelas y bordes de ciénagas. Verifica las zonas señaladas con observaciones locales fechadas; el tamaño de celda no garantiza un contorno exacto.",
+            "en": "So far we used previews with pixels about 170 metres wide and additional smoothing. The lens reads the science product over a 15 km window: calibrated return and 30-metre cells in this case. Channels, fields and wetland edges become more detailed. Check highlighted areas against dated local observations; cell size does not guarantee an exact boundary."
           }
         }
       ],

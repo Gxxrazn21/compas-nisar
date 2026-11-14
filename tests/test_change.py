@@ -158,7 +158,7 @@ class ClasesTests(unittest.TestCase):
         self.assertEqual(self._clase(5, oscuro_antes=True), 2)                 # agua_retirada
         self.assertEqual(self._clase(5, d_hv=0.0), 3)                          # veg_inundada
         self.assertEqual(self._clase(0, d_hv=-4), 4)                           # veg_perdida
-        self.assertEqual(self._clase(5, d_hv=-4), 3)                           # prioridad: veg_inundada primero
+        self.assertEqual(self._clase(5, d_hv=-4), 4)                           # HV cae: no está estable
         self.assertEqual(self._clase(0, d_hv=4), 5)                            # veg_aumento
         self.assertEqual(self._clase(5, d_hv=2), 6)                            # aumento
         self.assertEqual(self._clase(-5), 7)                                   # disminucion
@@ -167,6 +167,15 @@ class ClasesTests(unittest.TestCase):
     def test_polarizacion_simple_ignora_clases_de_vegetacion(self):
         self.assertEqual(self._clase(5, d_hv=-9, dual=False), 6)
         self.assertEqual(self._clase(-5, dual=False), 7)
+
+    def test_hv_estable_intervalo_cerrado_y_caida_fuerte(self):
+        for hv in (-1.5, 0, 1.5):
+            with self.subTest(hv=hv):
+                self.assertEqual(self._clase(4, d_hv=hv), 3)
+        for hv in (-1.5001, 1.5001):
+            with self.subTest(hv=hv):
+                self.assertEqual(self._clase(4, d_hv=hv), 6)
+        self.assertEqual(self._clase(4, d_hv=-6), 4)
 
     def test_sin_dato_es_cero_y_la_mediana_quita_puntos_aislados(self):
         forma = (9, 9)
@@ -215,6 +224,15 @@ class EstadisticasTests(unittest.TestCase):
         self.assertEqual(len(s['hh']['hist']['edges']), len(s['hh']['hist']['counts']) + 1)
         self.assertEqual(set(s['hh']), {'gain', 'bias', 'inliers', 'range', 'p5', 'p95', 'hist'})
         self.assertIn(s['confidence']['level'], ('alta', 'media', 'baja'))
+
+    def test_ajuste_y_cobertura_no_confirman_interpretacion(self):
+        a = textura()
+        r = change.analyze(a, a.copy(), dual=True, erosion=0).crop((0, 0, 10, 10))
+        r.valid[0] = False
+        s = change.compute_stats(r, (-75, 8, -74, 9))
+        self.assertEqual(s.get('quality'), {'normalization': 'global_fit', 'level': 'alta',
+                         'scope': 'full_scene', 'interpretation': 'not_corroborated'})
+        self.assertEqual(s.get('coverage'), {'valid_pixels': 90, 'total_pixels': 100, 'fraction': 0.9})
 
 
 class CapasTests(unittest.TestCase):
@@ -331,6 +349,29 @@ class SerieTests(unittest.TestCase):
         self.assertTrue(valid.any())
         interior = valid & change.valid_mask(ref, ref)
         self.assertLess(float(np.abs(q[interior] - q_ref[interior]).mean()), 0.02)
+
+
+class ValidacionTests(unittest.TestCase):
+    def test_metricas_denominadores_y_sensibilidad_umbral(self):
+        from scripts.validar_browse_vs_gcov import metricas
+        b = np.array([4., -4., 4., 0., 0.])
+        r = np.array([4., 4., 0., 4., 0.])
+        m = metricas(b, r)
+        self.assertEqual(m.get('aciertos_conjuntos'), 2)
+        self.assertEqual(m.get('signo_correcto_n'), 1)
+        self.assertEqual(m.get('signo_denominador'), 2)
+        self.assertEqual(m.get('falsos_positivos'), 1)
+        self.assertEqual(m.get('falsos_negativos'), 1)
+        self.assertEqual(metricas(b, r, 5)['detecta_browse'], 0)
+
+    def test_metricas_estables_y_sin_celdas_no_producen_nan(self):
+        from scripts.validar_browse_vs_gcov import metricas, delta_calibrado
+        m = metricas(np.zeros(5), np.zeros(5))
+        self.assertIsNone(m['pearson_r'])
+        self.assertIsNone(m['pendiente_ols'])
+        self.assertIsNone(m['precision'])
+        _, valid = delta_calibrado(np.zeros((2, 2)), np.zeros((2, 2)), np.zeros((2, 2)), True)
+        self.assertFalse(valid.any())
 
 
 if __name__ == '__main__':

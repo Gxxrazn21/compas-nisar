@@ -6,9 +6,10 @@ import type { ChangeStats } from '../../types';
 
 export function ConfidenceNote({ stats, calibrated = false }: { stats: ChangeStats; calibrated?: boolean }) {
   const { t, lang } = useI18n();
-  const level = stats.confidence.level;
+  const level = calibrated ? 'media' : (stats.quality?.level ?? stats.confidence.level);
   const reasons: string[] = [];
-  if (!calibrated && stats.correlation < 0.85) {
+  if (!calibrated && stats.correlation === null) reasons.push(t('conf.reason.missing'));
+  if (!calibrated && stats.correlation !== null && stats.correlation < 0.85) {
     reasons.push(t('conf.reason.corr', { value: formatNumber(stats.correlation, lang, 2) }));
   }
   // Solo el browse tiene ajuste entre fechas; la lupa calibrada no normaliza.
@@ -16,22 +17,13 @@ export function ConfidenceNote({ stats, calibrated = false }: { stats: ChangeSta
     reasons.push(t('conf.reason.fit', { value: formatPercent(stats.hh.inliers * 100, lang) }));
   }
 
-  if (level === 'alta') {
-    return <p className="confianza alta">{t('conf.alta')}</p>;
-  }
-  if (calibrated) {
-    return (
-      <div className={`confianza ${level}`} role="note">
-        <p className="confianza-titulo">{t('conf.gcov.title')}</p>
-        <p>{t('conf.gcov.text')}</p>
-      </div>
-    );
-  }
-  // La confianza media se pliega a su titular para dejar a la vista las clases; la baja va abierta.
   return (
-    <details className={`confianza ${level}`} open={level === 'baja'}>
-      <summary className="confianza-titulo">{t(level === 'media' ? 'conf.media' : 'conf.baja')}</summary>
-      <p>{t(level === 'media' ? 'conf.lead.media' : 'conf.lead.baja')}</p>
+    <div className={`confianza ${level}`} role="note">
+      <p className="confianza-titulo">{t(calibrated ? 'conf.gcov.title' : `conf.${level}`)}</p>
+      {calibrated && <p>{t('conf.gcov.text')}</p>}
+      {stats.coverage && <p>{t('conf.coverage', { value: formatPercent(stats.coverage.fraction * 100, lang) })}</p>}
+      {!stats.coverage && <p>{t('conf.coverage.unknown')}</p>}
+      <p>{t('conf.interpretation')}</p>
       {reasons.length > 0 && (
         <ul>
           {reasons.map((reason) => (
@@ -39,6 +31,6 @@ export function ConfidenceNote({ stats, calibrated = false }: { stats: ChangeSta
           ))}
         </ul>
       )}
-    </details>
+    </div>
   );
 }

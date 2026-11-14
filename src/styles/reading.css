@@ -456,3 +456,13 @@ details.confianza > summary {
 details.confianza[open] > summary {
   margin-bottom: 6px;
 }
+/* La revisión independiente conserva el tono de lectura y controles táctiles. */
+.evidencia { display: grid; gap: 12px; }
+.evidencia label { display: grid; gap: 6px; margin-top: 12px; }
+.evidencia input, .evidencia select, .evidencia textarea {
+  width: 100%; min-height: 44px; padding: 8px; border: 1px solid var(--linea);
+  border-radius: 6px; background: var(--noche); color: var(--papel); font: inherit;
+}
+.evidencia textarea { resize: vertical; }
+.evidencia-estado { border-left: 2px solid var(--oro); padding-left: 12px; }
+.evidencia .desplegable > p, .evidencia .desplegable > a { margin-top: 10px; display: block; }

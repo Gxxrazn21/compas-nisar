@@ -11,6 +11,9 @@ import {
   stemUp,
   stepFrequency,
   xOfDate,
+  COMMON_DB_RANGE,
+  noteFrequency,
+  observationGap,
 } from './score';
 
 describe('eje de la partitura', () => {
@@ -86,6 +89,17 @@ describe('altura de las notas', () => {
 });
 
 describe('sonido de las notas', () => {
+  it('usa una escala común y silencio para datos ausentes', () => {
+    expect(noteFrequency(null)).toBeNull();
+    expect(noteFrequency(Number.NaN)).toBeNull();
+    expect(noteFrequency(-8)).toBe(stepFrequency(staffStep(-8, COMMON_DB_RANGE)));
+    expect(noteY(-99, COMMON_DB_RANGE, 60, 10)).toBe(85);
+    expect(noteY(99, COMMON_DB_RANGE, 60, 10)).toBe(35);
+  });
+  it('expone los días reales entre observaciones irregulares', () => {
+    expect(observationGap(['2026-01-01', '2026-01-13', '2026-02-06'], 2)).toBe(24);
+    expect(observationGap(['2026-01-01'], 0)).toBeNull();
+  });
   it('sin serie o sin dato, la nota va en la línea central y suena si4', () => {
     expect(staffStep(undefined, null)).toBe(0);
     expect(staffStep(-12, null)).toBe(0);

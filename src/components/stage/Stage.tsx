@@ -54,6 +54,7 @@ export interface LiveLayers {
 }
 
 interface Props {
+  offline?: boolean;
   projection: 'globe' | 'mercator';
   camera: CameraTarget;
   change: ChangeResult | null;
@@ -115,7 +116,7 @@ export function Stage(props: Props) {
     const padding = coverPadding(host);
     const instance = new maplibregl.Map({
       container: host,
-      style: baseStyle(projection, firstOptical.current ?? undefined),
+      style: baseStyle(projection, firstOptical.current ?? undefined, props.offline),
       center: start.kind === 'view' ? start.center : [-30, 14],
       zoom: start.kind === 'view' ? start.zoom : coverZoom(host, padding),
       attributionControl: false,

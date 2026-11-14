@@ -2,13 +2,14 @@
 import { Pause, Play, Repeat, SkipBack, SkipForward, X } from 'lucide-react';
 import { useI18n } from '../../i18n';
 import { formatDate } from '../../lib/format';
+import { observationGap } from '../../lib/score';
 import type { Dance } from '../../state/useDance';
 
 export function DanceBar({ dance }: { dance: Dance }) {
   const { t, lang } = useI18n();
 
   if (dance.phase === 'series' || dance.phase === 'preload') {
-    const total = dance.series?.frames.length ?? 0;
+    const total = dance.totalFrames;
     return (
       <div className="danza-carga" role="status">
         {dance.phase === 'series' ? (
@@ -31,10 +32,12 @@ export function DanceBar({ dance }: { dance: Dance }) {
 
   const total = dance.series?.frames.length ?? 0;
   const frame = dance.series?.frames[dance.index];
+  const gap = observationGap(dance.series?.frames.map(item => item.date) ?? [], dance.index);
   return (
     <div className="danza-controles" role="group" aria-label={t('dance.controls')}>
       <span className="danza-cuadro" aria-live="off">
         {frame ? t('dance.frame', { n: dance.index + 1, total, date: formatDate(frame.date, lang) }) : ''}
+        <small>{gap === null ? t('dance.first') : t('dance.gap', { days: gap })}</small>
       </span>
       <button type="button" className="icono" onClick={() => dance.step(-1)} aria-label={t('dance.prev')} title={t('dance.prev')}>
         <SkipBack size={18} aria-hidden="true" />

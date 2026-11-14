@@ -13,6 +13,8 @@ from . import browse, cache, change, config, geo
 from .errors import InvalidInput
 
 FRAME_MAX_SIDE = 1024
+SERIES_VERSION = 2
+SCALE_DB = (-16, 1)
 SERIES_DIR = config.DERIVED_DIR / 'series'
 
 
@@ -65,16 +67,18 @@ def normalized_q(rgb, referencia, canal):
     return np.clip(alpha * qa + beta, lo, hi), valid
 
 
-def make_frame(rgb, window, path):
-    """Escribe el cuadro como WebP con alfa (alfa 0 sin dato), recortado y de máximo 1024 px."""
+def make_frame(q, valid, window, path):
+    """Gris de potencia normalizada, escala dB fija HH/HV; alfa 0 sin dato."""
     c0, r0, c1, r1 = window
-    corte = rgb[r0:r1, c0:c1]
-    rgba = np.dstack([corte, np.where(corte.max(axis=2) > 0, 255, 0).astype(np.uint8)])
+    db = change.to_db(q[r0:r1, c0:c1])
+    gray = np.round(255 * np.clip((db - SCALE_DB[0]) / (SCALE_DB[1] - SCALE_DB[0]), 0, 1)).astype(np.uint8)
+    alpha = np.where(valid[r0:r1, c0:c1], 255, 0).astype(np.uint8)
+    rgba = np.dstack([gray, gray, gray, alpha])
     imagen = Image.fromarray(np.ascontiguousarray(rgba), 'RGBA')
     imagen.thumbnail((FRAME_MAX_SIDE, FRAME_MAX_SIDE), Image.LANCZOS)
     temporal = path.with_name(f'{path.stem}.{uuid.uuid4().hex[:8]}.part')
     try:
-        imagen.save(temporal, 'WEBP', quality=80, method=4)
+        imagen.save(temporal, 'WEBP', lossless=True, method=4)
         os.replace(temporal, path)
     finally:
         temporal.unlink(missing_ok=True)
@@ -87,7 +91,7 @@ def _scene_shape(ruta):
 
 def build_series(stack, lon, lat, maximum=12, radius=4, aoi=None):
     """Serie en un punto + cuadros de animación de una pila. Descarga con máximo 4 hilos."""
-    candidatas = [e for e in stack['scenes'] if e['analyzable']]
+    candidatas = sorted([e for e in stack['scenes'] if e['analyzable']], key=lambda e: e['date'])
     if not candidatas:
         raise InvalidInput(f'La pila {stack["id"]} no tiene escenas analizables.')
     modo = dominant_mode(candidatas)          # mezclar modos produce franjas falsas
@@ -112,7 +116,8 @@ def build_series(stack, lon, lat, maximum=12, radius=4, aoi=None):
     ventana = geo.pixel_window(aoi, bbox, forma) if aoi else (0, 0, forma[1], forma[0])
     limites = geo.window_bounds(bbox, forma, ventana)
 
-    clave = sha1('|'.join([stack['id'], ','.join(e['id'] for e, _ in elegidas),
+    clave = sha1('|'.join([str(SERIES_VERSION), str(change.METHOD_VERSION), str(SCALE_DB),
+                           str(change.C_OFFSET), stack['id'], ','.join(e['id'] for e, _ in elegidas),
                            ','.join(map(str, ventana)), str(FRAME_MAX_SIDE)]).encode()).hexdigest()[:12]
     carpeta = SERIES_DIR / clave
     carpeta.mkdir(parents=True, exist_ok=True)
@@ -124,20 +129,22 @@ def build_series(stack, lon, lat, maximum=12, radius=4, aoi=None):
     def procesar(par):
         escena, ruta = par
         rgb = browse.load_array(ruta, 'RGB')
-        archivo = carpeta / f'{escena["date"]}.webp'
-        if not archivo.exists():
-            make_frame(rgb, ventana, archivo)
         con_hv = 'HV' in escena['polarizations'] and 'HV' in elegidas[-1][0]['polarizations']
         valores = {}
+        frame = {'date': escena['date']}
         for nombre, canal in (('hh_db', 0), ('hv_db', 1)):
             if canal == 1 and not con_hv:
                 valores[nombre] = None
                 continue
             q, valid = normalized_q(rgb if escena is not elegidas[-1][0] else reciente, reciente, canal)
             valores[nombre] = window_db(q, valid, pixel, radius)
+            archivo = carpeta / f'{escena["date"]}_{nombre[:2]}.webp'
+            if not archivo.exists():
+                make_frame(q, valid, ventana, archivo)
+            frame['url' if canal == 0 else 'hv_url'] = f'/derived/series/{clave}/{archivo.name}'
         return {
             'date': escena['date'], 'granule': escena['granule'], 'quality': escena['quality'], **valores,
-        }, {'date': escena['date'], 'url': f'/derived/series/{clave}/{escena["date"]}.webp'}, con_hv
+        }, frame, con_hv
 
     with ThreadPoolExecutor(max_workers=4) as pool:
         salidas = list(pool.map(procesar, elegidas))
@@ -146,6 +153,17 @@ def build_series(stack, lon, lat, maximum=12, radius=4, aoi=None):
         'stack': stack['id'],
         'point': [lon, lat],
         'dual_pol': all(s[2] for s in salidas),
+        'method': {
+            'version': SERIES_VERSION,
+            'normalization_version': change.METHOD_VERSION,
+            'reference_date': elegidas[-1][0]['date'],
+            'reference_granule': elegidas[-1][0]['granule'],
+            'scale_db': list(SCALE_DB),
+            'units': 'approximate_relative_db',
+            'calibrated': False,
+            'window_radius_pixels': radius,
+            'display': 'normalized_grayscale',
+        },
         'series': [s[0] for s in salidas],
         'bounds': [round(x, 6) for x in limites],
         'coordinates': geo.corner_coordinates([round(x, 6) for x in limites]),

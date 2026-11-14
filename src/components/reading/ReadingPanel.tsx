@@ -18,12 +18,15 @@ import { ProbeBlock } from './ProbeBlock';
 import { PolarizationGuide } from './PolarizationGuide';
 import { Provenance } from './Provenance';
 import { ReadingTabs, panelId, tabId } from './ReadingTabs';
+import { EvidencePanel } from './EvidencePanel';
+import { useEvidence } from '../../state/useEvidence';
 import type { TabItem } from './ReadingTabs';
 
 type TabKey = 'lectura' | 'punto' | 'datos';
 const PREFIX = 'lectura';
 
 interface Props {
+  initialTab?: TabKey;
   state: ChangeState;
   lens: string;
   stack: Stack | null;
@@ -103,22 +106,23 @@ function Failure({ state, lupa }: { state: ChangeState; lupa: LupaControls }) {
   );
 }
 
-export function ReadingPanel({ state, lens, stack, probe, lupa, collapsed, onCollapse, onMethod }: Props) {
+export function ReadingPanel({ state, lens, stack, probe, lupa, collapsed, onCollapse, onMethod, initialTab = 'lectura' }: Props) {
   const { t, lang } = useI18n();
   const { change, status } = state;
+  const [review, setReview] = useEvidence(change?.id ?? 'none', change?.after.date ?? '');
   const calibrated = change?.source === 'gcov';
   const tabs: TabItem<TabKey>[] = [
     { id: 'lectura', label: t('tabs.reading') },
     { id: 'punto', label: t('tabs.point') },
     { id: 'datos', label: t('tabs.data') },
   ];
-  const [tab, setTab] = useState<TabKey>('lectura');
+  const [tab, setTab] = useState<TabKey>(initialTab);
   const body = useRef<HTMLDivElement>(null);
   const shell = useRef<HTMLElement>(null);
 
   // Una comparación nueva vuelve a la lectura; una sonda nueva lleva a la pestaña del punto.
   const changeId = change?.id ?? '';
-  useEffect(() => setTab('lectura'), [changeId]);
+  useEffect(() => setTab(initialTab), [changeId, initialTab]);
   const probeKey = probe ? probe.point.join(',') : '';
   // Cada pestaña se abre desde arriba.
   useEffect(() => {
@@ -196,7 +200,8 @@ export function ReadingPanel({ state, lens, stack, probe, lupa, collapsed, onCol
             className="pestana-cuerpo"
           >
             <Histogram data={change.stats.hh.hist} calibrated={calibrated} />
-            <ExportBlock change={change} stack={stack} lens={lens} />
+            <EvidencePanel change={change} review={review} onReview={setReview} />
+            <ExportBlock change={change} stack={stack} lens={lens} evidence={review} />
             <Provenance change={change} stack={stack} onMethod={onMethod} />
           </div>
         </div>

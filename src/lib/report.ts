@@ -3,6 +3,8 @@ import { className } from './lens';
 import { zoomSummary } from './lupa';
 import { daysBetween } from './format';
 import type { ChangeResult, Lang, Scene, Stack } from '../types';
+import { evidenceReview, evidenceSummary, worldviewLink } from './evidence';
+import type { EvidenceReview } from './evidence';
 
 const ASF_SEARCH = 'https://search.asf.alaska.edu/#/?granule=';
 
@@ -17,6 +19,7 @@ export interface ReportOptions {
   /** Límites en el idioma de la interfaz. */
   limits: string[];
   generatedAt: string;
+  evidence?: EvidenceReview;
 }
 
 function sceneInfo(role: 'before' | 'after', scene: Scene) {
@@ -36,6 +39,7 @@ function sceneInfo(role: 'before' | 'after', scene: Scene) {
 export function buildReport(change: ChangeResult, options: ReportOptions) {
   const calibrated = change.source === 'gcov';
   const { stats } = change;
+  const review = evidenceReview(options.evidence, change.after.date);
   const layers = Object.fromEntries(
     Object.entries(change.layers)
       .filter((entry): entry is [string, string] => typeof entry[1] === 'string')
@@ -74,6 +78,15 @@ export function buildReport(change: ChangeResult, options: ReportOptions) {
     },
     lente: options.lens,
     metodo: change.method,
+    evidencia: {
+      tipo: 'revision_visual_usuario',
+      revision: review,
+      resumen: evidenceSummary(review, options.lang),
+      referencia: worldviewLink(change.bounds, review.date),
+      verificacion_campo: 'pendiente',
+      calidad_datos: stats.quality ?? null,
+      cobertura: stats.coverage ?? null,
+    },
     estadisticas: {
       cambio_km2: stats.changed_km2,
       cambio_pct: stats.changed_pct,

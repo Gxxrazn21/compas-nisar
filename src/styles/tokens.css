@@ -32,13 +32,13 @@
   --margen: 16px;
   --alto-barra: 56px;
   --alto-pie: 26px;
-  --alto-partitura: 194px;
+  --alto-partitura: 218px;
   --alto-herramientas: 48px;
   --radio: 8px;
 }
 
 @media (max-height: 800px) {
   :root {
-    --alto-partitura: 186px;
+    --alto-partitura: 210px;
   }
 }

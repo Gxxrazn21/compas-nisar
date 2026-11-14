@@ -1,5 +1,21 @@
 // Diccionario en español (define las claves; el idioma por defecto de la app es el inglés). Los marcadores {nombre} se reemplazan al usar t().
 export const es = {
+  'score.fixedPair': 'Comparación guardada: fechas fijas',
+  'score.channel': 'Escuchar',
+  'score.scaleShort': 'Qué suena',
+  'score.pointSelected': 'punto elegido: {lat}, {lon}',
+  'score.pointCenter': 'centro del área: {lat}, {lon}',
+  'score.noPoint': 'sin punto elegido',
+  'score.scale': 'HH y HV comparten una escala de −16 a +1 dB aproximados, relativos a la escena. Más retorno produce una nota más aguda. Son mediciones convertidas en sonido, no audio captado por el satélite. La normalización independiente de cada canal no permite comparar su potencia absoluta.',
+  'score.timing': 'Se reproduce una observación cada 0,7 segundos. Las fechas y los intervalos indican el tiempo real; una adquisición ausente no se interpola.',
+  'score.reference': 'Imágenes y notas normalizadas a la referencia del {date}; la nota promedia una ventana de radio {radius} píxeles alrededor del punto.',
+  'score.noValue': 'sin valor de retorno',
+  'score.value': '{channel}: {db} dB aproximados',
+  'dance.first': 'Primera observación',
+  'dance.gap': '{days} días desde la observación anterior',
+  'dance.partial': 'Reproducción parcial: {n} de {total} imágenes no cargaron.',
+  'dance.failed': 'No cargaron {n} de {total} imágenes.',
+  'dance.retry': 'Reintentar imágenes',
   'brand': 'compás',
   'doc.title': 'Compás, el radar NISAR en el tiempo',
   'top.method': 'Método',
@@ -81,17 +97,24 @@ export const es = {
   'read.summaryNone':
     '{between} no se registró cambio por encima del umbral en los {valid} observados.',
   'read.days': 'Entre ambas pasadas transcurrieron {days} días.',
-  'conf.alta': 'Confianza alta en esta comparación',
-  'conf.media': 'Confianza media: lee las cifras con cautela',
-  'conf.baja': 'Confianza baja: lee las cifras como orientación',
+  'conf.reason.missing': 'No se pudo medir la correlación HH entre fechas.',
+  'conf.coverage': 'Cobertura común de datos: {value} de las celdas de esta ventana.',
+  'conf.coverage.unknown': 'Cobertura numérica no disponible en este resultado guardado.',
+  'conf.interpretation': 'Interpretación sin corroboración independiente: ninguna clase confirma un evento.',
+  'conf.alta':
+    'Calidad alta del ajuste global HH',
+  'conf.media':
+    'Calidad media del ajuste global HH',
+  'conf.baja':
+    'Calidad baja del ajuste global HH',
   'conf.reason.corr':
-    'La correlación entre las dos fechas es {value}: cambió gran parte de la escena o los estiramientos de brillo difieren.',
+    'La correlación HH entre fechas es {value}. Puede reflejar cambios extensos o diferencias de estiramiento; no valida las clases.',
   'conf.reason.fit':
-    'Solo el {value} de los píxeles concuerda con el ajuste entre fechas; se esperaba al menos el 80 %.',
+    'El {value} de los píxeles concuerda con el ajuste entre fechas; el criterio del método es al menos 80 %.',
   'conf.lead.media':
-    'Entre estas fechas cambió una parte apreciable de la escena. Las manchas son fiables como pista; las cifras, menos.',
+    'La normalización global tiene limitaciones. Las áreas clasificadas requieren verificación independiente.',
   'conf.lead.baja':
-    'No quiere decir que el resultado esté mal: entre estas fechas cambió tanta parte de la escena que el radar pierde su punto de referencia. Las manchas siguen sirviendo como pista; los kilómetros cuadrados, solo como orden de magnitud.',
+    'El ajuste global tiene poco respaldo. No se ha medido la exactitud de las clases ni de sus áreas.',
 
   'classes.title': 'Qué cambió',
   'classes.legend': 'Clases del mapa y su extensión',
@@ -213,12 +236,12 @@ export const es = {
     'Un cambio que afecta por igual a toda la escena, como la humedad general tras lluvias, queda absorbido por la normalización.',
   'method.s6.4': 'Solo compara pasadas del mismo modo de adquisición.',
   'method.s6.5':
-    'Cuando la confianza es baja, cambió tanta parte de la escena que la normalización deja de ser fiable.',
+    'La calidad del ajuste entre imágenes no es certeza sobre la causa. Un ajuste bajo puede indicar cambios extensos o problemas de comparabilidad; la cobertura de datos se informa por separado.',
   'method.formula': 'Fórmula de referencia',
   'method.formulaText': 'Δ ≈ 10·log10((q₂ + c) / (α·q₁ + β + c)), con q = ((ND − 1) / 254)² y c = 0,03',
   'method.sources': 'Fuentes y versión',
   'method.sourcesText':
-    'Imágenes: NISAR GCOV (NASA e ISRO), distribuidas por ASF DAAC. Mapa base: Esri World Imagery. La Tierra hoy: NASA EPIC. Versión del método: 3.',
+    'Imágenes: NISAR GCOV (NASA e ISRO), distribuidas por ASF DAAC. Mapa base: Esri World Imagery. La Tierra hoy: NASA EPIC. Método browse: 4; lupa GCOV: 3; serie: 2.',
 
   'resources.title': 'Recursos abiertos del reto',
   'resources.intro':
@@ -491,9 +514,9 @@ export const es = {
   'lupa.err.title':
     'No se pudo abrir la lupa calibrada',
   'conf.gcov.title':
-    'Menos de la mitad de la ventana tiene datos',
+    'Retorno calibrado: sin ajuste global entre fechas',
   'conf.gcov.text':
-    'Parte de la ventana cae fuera del producto o en franjas sin señal: las cifras describen solo la zona con datos.',
+    'La calibración permite comparar la potencia. No garantiza la exactitud de una clase ni confirma su causa.',
   'probe.noteCal':
     'Valores en dB reales de γ⁰ calibrado.',
   'hist.axisCal':
@@ -591,11 +614,12 @@ export const es = {
   'method.s7.title':
     'La lupa calibrada',
   'method.s7.text':
-    'La lupa lee, en una ventana de 10 a 20 km, el producto GCOV completo de NISAR (γ⁰ a 10 m, promediado a 30 m) en lugar de la imagen de vista previa. Los decibelios son reales y no hay normalización entre fechas: un cambio general de humedad sí aparece. El umbral sigue siendo de 3 dB y «oscuro» significa HH de −18 dB o menos. A cambio, pide una cuenta de Earthdata en el servidor y la primera vez descarga entre 50 y 90 MB. La vista general cubre toda la escena en segundos, pero con dB aproximados.',
+    'La lupa lee γ⁰ del producto GCOV en una ventana de 10 a 20 km. El espaciado se obtiene de los metadatos y se promedia en potencia; en el caso de La Mojana, las celdas resultantes son de 30 m. No aplica ajuste global entre fechas. El umbral es 3 dB y «oscuro» significa HH de −18 dB o menos. Las clases siguen siendo hipótesis: una celda de 30 m no garantiza un borde exacto. Preparar una ventana nueva requiere Earthdata en el servidor; el recorrido guardado ya incluye sus datos.',
+  'method.s8.expanded': 'La ampliación a tres combinaciones de zona y fechas, HH/HV y umbrales de 2, 3 y 4 dB conserva también los resultados desfavorables. En otra ventana de 10 km, HH alcanza correlación 0,471 a la escala suavizada, pero ninguna coincidencia al umbral de 3 dB (2 detecciones browse y 41 calibradas). En pasadas consecutivas hay pocos cambios fuertes y algunas razones no se pueden calcular. Los tres casos pertenecen a La Mojana: no son una validación geográfica independiente.',
   'method.s8.title':
     'Cuánto se parece la vista general al dato calibrado',
   'method.s8.text':
-    'Lo comprobamos en una ventana de 15 km de La Mojana, entre el 26 de junio y el 24 de octubre de 2026. A escala de aproximadamente 1 km, el cambio de la vista general coincide con el del dato calibrado: correlación de 0,86, error típico de 0,7 dB (casi todo es un desfase constante, no ruido) y el mismo signo donde ambos detectan cambio. A 170 m, el tamaño real del píxel de la vista previa, solo captura la mitad de la variabilidad del dato calibrado (correlación de 0,49). Sirve para ubicar zonas, no para medir píxeles sueltos. Es una sola ventana, no una cifra general: es una comprobación, no una garantía.',
+    'Auditoría del 14 de noviembre de 2026: una ventana de 15 km de La Mojana, del 26 de junio al 24 de octubre, con 7.744 píxeles comunes. Frente al GCOV agregado a unos 170 m: correlación 0,517, mediana del error absoluto 0,78 dB, precisión 50,0 % y exhaustividad 12,2 % al umbral HH de 3 dB. Con media adicional 5×5 (cerca de 1 km): correlación 0,861, error 0,69 dB, precisión 12,5 % y exhaustividad 45,0 %. En esta última escala coinciden 9 de 72 detecciones browse y 20 de referencia; el 100 % de signo correcto corresponde solo a esos 9 aciertos conjuntos. La correlación espacial no mide exactitud de detección. Los píxeles suavizados no son observaciones independientes. Esta ventana no valida otras zonas, HV ni las clases físicas; GCOV calibrado tampoco es verdad de terreno.',
   'method.s9.title':
     'El estiramiento de la vista previa está confirmado',
   'method.s9.text':

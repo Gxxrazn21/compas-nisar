@@ -16,6 +16,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from . import browse, catalog, change, config, geo, i18n, series, zoom
 from .errors import ApiError, InvalidInput, NotFound
 from .extras import router as extras_router
+from .demo import router as demo_router
 from .places import router as places_router
 
 VERSION = '0.2.0'
@@ -166,6 +167,7 @@ def stories():
 app.include_router(extras_router)
 # Buscador de lugares por nombre o dirección (OpenStreetMap Nominatim).
 app.include_router(places_router)
+app.include_router(demo_router)
 
 # Estáticos: /derived siempre; el frontend compilado, si existe, va al final (captura todo lo demás).
 CACHE_INMUTABLE = 'public, max-age=31536000, immutable'

@@ -17,6 +17,7 @@ import './styles/sections.css';
 import './styles/contexto.css';
 import './styles/guia.css';
 import { App } from './App';
+import { DemoApp } from './components/story/DemoApp';
 import { I18nProvider } from './i18n';
 import { parseHash } from './lib/hash';
 
@@ -26,7 +27,7 @@ if (!root) throw new Error('Falta el elemento #root');
 createRoot(root).render(
   <StrictMode>
     <I18nProvider initial={parseHash(window.location.hash).lang}>
-      <App />
+      {new URLSearchParams(window.location.search).get('demo') === 'mojana' ? <DemoApp /> : <App />}
     </I18nProvider>
   </StrictMode>,
 );

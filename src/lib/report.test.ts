@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { ChangeResult } from '../types';
 import { buildReport } from './report';
+import { buildBriefHtml } from './brief';
 
 function change(overrides: Partial<ChangeResult> = {}): ChangeResult {
   const scene = (date: string) => ({
@@ -66,6 +67,23 @@ const options = {
 };
 
 describe('informe exportable', () => {
+  it('el resumen portable incluye evidencia y no convierte confianza en confirmación', () => {
+    const report = buildReport(change(), options);
+    const html = buildBriefHtml(report, 'es', 'data:image/png;base64,YQ==');
+    expect(html).toContain('Corroboración independiente pendiente');
+    expect(html).toContain('NISAR_2026-06-26');
+    expect(html).toContain('data:image/png;base64,YQ==');
+    expect(html).toContain('@media print');
+    expect(html).not.toContain('Confianza alta');
+  });
+  it('escapa notas externas y rechaza imágenes activas o remotas', () => {
+    const report = buildReport(change(), { ...options, limits: ['<script>alert(1)</script>'] });
+    const html = buildBriefHtml(report, 'en', 'javascript:alert(1)');
+    expect(html).not.toContain('<script>');
+    expect(html).toContain('&lt;script&gt;');
+    expect(html).not.toContain('src="javascript:');
+    expect(html).toContain('Image unavailable');
+  });
   it('reúne fechas, método, estadísticas, procedencia y límites', () => {
     const report = buildReport(change(), options);
     expect(report.fechas).toEqual({ antes: '2026-06-26', despues: '2026-10-24', dias_entre_pasadas: 120 });

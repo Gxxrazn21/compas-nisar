@@ -97,8 +97,15 @@ export interface ChangeStats {
   valid_km2: number;
   changed_km2: number;
   changed_pct: number;
-  correlation: number;
+  correlation: number | null;
   confidence: { level: ConfidenceLevel; reasons: string[] };
+  quality?: {
+    normalization: 'global_fit' | 'not_applicable';
+    level?: ConfidenceLevel;
+    scope: 'full_scene' | 'window';
+    interpretation: 'not_corroborated';
+  };
+  coverage?: { valid_pixels: number; total_pixels: number; fraction: number };
   classes: ClassStat[];
   hh: ChannelStats;
   hv: ChannelStats | null;
@@ -166,6 +173,7 @@ export interface SeriesPoint {
 export interface SeriesFrame {
   date: string;
   url: string;
+  hv_url?: string;
 }
 
 export interface SeriesResult {
@@ -176,6 +184,18 @@ export interface SeriesResult {
   bounds: Bounds;
   coordinates: Corners;
   frames: SeriesFrame[];
+  method?: {
+    version: number;
+    normalization_version: number;
+    reference_date: string;
+    reference_granule: string;
+    scale_db: [number, number];
+    units: 'approximate_relative_db';
+    calibrated: false;
+    window_radius_pixels: number;
+    display: 'normalized_grayscale';
+  };
+  skipped?: Array<{ date: string; reason: string }>;
 }
 
 export interface StoryStep {

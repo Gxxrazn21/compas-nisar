@@ -406,7 +406,7 @@ export function useCompas(reference: ReferenceChoice | null = null): Compas {
   // La danza usa el centro del área analizada y el mismo aoi guardado. En Explorar, antes de comparar,
   // sirve el punto elegido (o el centro de la huella): «Ver la danza» no depende de haber comparado.
   const stackBox = mode === 'explore' && stack?.id === stackId ? footprintBox(stack) : null;
-  const dancePoint: LonLat | null = aoi
+  const dancePoint: LonLat | null = probe?.result?.valid ? probe.point : aoi
     ? centerOfBounds(aoi)
     : browseChange
       ? centerOfBounds(browseChange.bounds)
@@ -414,9 +414,9 @@ export function useCompas(reference: ReferenceChoice | null = null): Compas {
         ? (exPoint ?? (stackBox ? centerOfBounds(stackBox) : null))
         : null;
   const danceTarget = useMemo(
-    () => (stackId && dancePoint ? { stack: stackId, point: dancePoint, aoi } : null),
+    () => (stackId && dancePoint ? { stack: stackId, point: dancePoint, aoi, pointKind: probe?.result?.valid ? 'selected' as const : 'center' as const } : null),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [stackId, dancePoint?.[0], dancePoint?.[1], aoi?.join(',')],
+    [stackId, dancePoint?.[0], dancePoint?.[1], aoi?.join(','), probe?.result?.valid],
   );
   const dance = useDance(danceTarget);
 

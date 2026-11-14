@@ -10,11 +10,10 @@ import {
   makeAxis,
   monthTicks,
   noteY,
-  pitchRange,
+  COMMON_DB_RANGE,
+  noteFrequency,
   scoreWidth,
-  staffStep,
   stemUp,
-  stepFrequency,
   xOfDate,
   xOfDay,
 } from '../../lib/score';
@@ -38,6 +37,8 @@ interface Props {
   cursorDate: string | null;
   /** Las notas suenan al elegirlas o recorrerlas con el teclado. */
   sound: boolean;
+  channel?: 'hh' | 'hv';
+  readOnly?: boolean;
   onPick: (scene: Scene) => void;
   onBlocked: (reason: Blocked, scene: Scene) => void;
 }
@@ -47,7 +48,7 @@ function monthLabel(date: string, index: number, lang: 'es' | 'en'): string {
   return index === 0 || date.slice(5, 7) === '01' ? `${month} ${date.slice(0, 4)}` : month;
 }
 
-export function Staff({ stack, containerWidth, selection, series, cursorDate, sound, onPick, onBlocked }: Props) {
+export function Staff({ stack, containerWidth, selection, series, cursorDate, sound, onPick, onBlocked, channel = 'hh', readOnly = false }: Props) {
   const { t, lang } = useI18n();
   const scenes = stack.scenes;
   const first = scenes[0]?.date;
@@ -66,8 +67,8 @@ export function Staff({ stack, containerWidth, selection, series, cursorDate, so
   if (!geometry || !first) return null;
   const { axis, width } = geometry;
 
-  const heights = new Map(series?.series.map((point) => [point.date, point.hh_db] as const));
-  const range = pitchRange(series?.series.map((point) => point.hh_db) ?? []);
+  const heights = new Map(series?.series.map((point) => [point.date, channel === 'hv' ? point.hv_db : point.hh_db] as const));
+  const range = COMMON_DB_RANGE;
   const y = (date: string) => noteY(heights.get(date), range, CENTER, SPACE);
 
   const bars = barDays(axis.days)
@@ -85,16 +86,20 @@ export function Staff({ stack, containerWidth, selection, series, cursorDate, so
     const isBefore = scene.date === selection.before;
     const isAfter = scene.date === selection.after;
     const key: Key = isBefore ? 'score.noteBefore' : isAfter ? 'score.noteAfter' : 'score.noteAria';
-    return t(key, { date: formatDate(scene.date, lang), quality: qualityText(scene) });
+    const db = heights.get(scene.date);
+    const value = db == null || !Number.isFinite(db) ? t('score.noValue') : t('score.value', { channel: channel.toUpperCase(), db: db.toFixed(1) });
+    return `${t(key, { date: formatDate(scene.date, lang), quality: qualityText(scene) })}. ${value}`;
   };
 
   /** Suena la nota a la altura a la que está dibujada; apagada si no se puede elegir. */
   const sing = (scene: Scene, blocked = false) => {
-    if (!sound) return;
-    playNote(stepFrequency(staffStep(heights.get(scene.date), range)), { muted: blocked || !scene.analyzable });
+    const frequency = noteFrequency(heights.get(scene.date));
+    if (!sound || frequency === null) return;
+    playNote(frequency, { muted: blocked || !scene.analyzable });
   };
 
   const activate = (scene: Scene) => {
+    if (readOnly) { sing(scene); return; }
     const reason = blockReason(scene, selection, scenes);
     sing(scene, reason !== null);
     if (reason) onBlocked(reason, scene);
@@ -160,7 +165,7 @@ export function Staff({ stack, containerWidth, selection, series, cursorDate, so
         <line key={line} className="pent-linea" x1={4} x2={width - 4} y1={TOP + SPACE * line} y2={TOP + SPACE * line} />
       ))}
       <text className="pent-clave" x={12} y={CENTER + 7}>
-        HH
+        {channel.toUpperCase()}
       </text>
       {bars.map((x) => (
         <line key={x} className="pent-barra" x1={x} x2={x} y1={TOP} y2={BOTTOM} />
@@ -196,6 +201,7 @@ export function Staff({ stack, containerWidth, selection, series, cursorDate, so
         const classes = [
           'nota',
           scene.analyzable ? '' : 'hueca',
+          heights.get(scene.date) == null ? 'sin-dato' : '',
           isBefore || isAfter ? 'elegida' : '',
           lit ? 'encendida' : '',
           reason ? 'atenuada' : '',

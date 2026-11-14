@@ -28,6 +28,7 @@ export default defineConfig({
     proxy: {
       '/api': backend,
       '/derived': backend,
+      '/demo-data': backend,
     },
   },
   test: {

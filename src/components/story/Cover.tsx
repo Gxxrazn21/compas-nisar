@@ -12,7 +12,7 @@ interface Props {
 }
 
 export function Cover({ stories, onOpen }: Props) {
-  const { t, loc } = useI18n();
+  const { t, loc, lang } = useI18n();
   return (
     <section className="panel panel-izq portada" data-cubre="left" aria-labelledby="titular">
       <h1 id="titular" className="titular">
@@ -20,6 +20,8 @@ export function Cover({ stories, onOpen }: Props) {
       </h1>
       <p className="tempo">{t('cover.tempo')}</p>
       <p className="lead">{t('cover.intro')}</p>
+      <a className="primario demo-entry" href={`/?demo=mojana#lang=${lang}`}>{lang === 'es' ? 'La Mojana: recorrido con evidencia' : 'La Mojana: an evidence walkthrough'}</a>
+      <p className="ayuda">{lang === 'es' ? 'Recorrido guardado con una ventana calibrada y procedencia verificable.' : 'A saved walkthrough with a calibrated window and verifiable provenance.'}</p>
       {stories.status === 'loading' && <p className="estado" role="status">{t('cover.loadingStories')}</p>}
       {stories.status === 'error' && <p className="estado aviso" role="alert">{t('cover.storiesError')}</p>}
       {stories.status === 'ready' && (

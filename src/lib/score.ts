@@ -87,6 +87,18 @@ export interface PitchRange {
   max: number;
 }
 
+/** Rango visual y musical fijo: dB relativos de browse, nunca potencia calibrada. */
+export const COMMON_DB_RANGE: PitchRange = { min: -16, max: 1 };
+
+export function noteFrequency(db: number | null | undefined): number | null {
+  return db == null || !Number.isFinite(db) ? null : stepFrequency(staffStep(db, COMMON_DB_RANGE));
+}
+
+export function observationGap(dates: string[], index: number): number | null {
+  return index > 0 && dates[index] && dates[index - 1]
+    ? daysBetween(dates[index - 1]!, dates[index]!) : null;
+}
+
 export function pitchRange(values: Array<number | null>): PitchRange | null {
   const real = values.filter((value): value is number => value !== null && Number.isFinite(value));
   if (!real.length) return null;
@@ -104,8 +116,8 @@ export function noteY(
   centerY: number,
   space: number,
 ): number {
-  if (db === null || db === undefined || !range || range.max - range.min < 0.01) return centerY;
-  const t = (db - range.min) / (range.max - range.min);
+  if (db === null || db === undefined || !Number.isFinite(db) || !range || range.max - range.min < 0.01) return centerY;
+  const t = Math.max(0, Math.min(1, (db - range.min) / (range.max - range.min)));
   return centerY + (0.5 - t) * space * 5;
 }
 

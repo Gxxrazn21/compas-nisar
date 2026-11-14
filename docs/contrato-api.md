@@ -29,7 +29,7 @@ Documento de trabajo para quienes construyen el backend y el frontend. Todo lo q
 - `api.nasa.gov/planetary/earth/imagery` y `api.nasa.gov/EONET` devuelven 503: no usar.
 - GIBS (teselas sin clave, las usa el frontend directo): `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_SNPP_CorrectedReflectance_TrueColor/default/{AAAA-MM-DD}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg` (máx. z 9).
 
-## Método de cambio (normativo, versión 3)
+## Método de cambio (normativo, versión 4)
 
 Entradas: dos imágenes `_LATLON` de la misma pila **y del mismo modo de adquisición** (mismo tamaño en píxeles). Implementación de referencia: `scripts/proto/proto_normalizacion.py`.
 
@@ -46,14 +46,14 @@ Entradas: dos imágenes `_LATLON` de la misma pila **y del mismo modo de adquisi
 |---|---|---|
 | `agua_nueva` | ΔHH ≤ −3 y HH después oscuro | Posible agua abierta nueva |
 | `agua_retirada` | ΔHH ≥ +3 y HH antes oscuro | Posible retiro de agua |
-| `veg_inundada` | dual, ΔHH ≥ +3, ΔHV < +1,5 y HH antes no oscuro | Posible vegetación inundada |
+| `veg_inundada` | dual, ΔHH ≥ +3, −1,5 ≤ ΔHV ≤ +1,5 y HH antes no oscuro | Posible vegetación inundada |
 | `veg_perdida` | dual y ΔHV ≤ −3 | Posible pérdida de vegetación |
 | `veg_aumento` | dual y ΔHV ≥ +3 | Posible aumento de vegetación |
 | `aumento` | resto con ΔHH ≥ +3 | Aumento de retorno |
 | `disminucion` | resto con ΔHH ≤ −3 | Disminución de retorno |
 
 7. Área por píxel en km²: `(res_lon·111,320·cos(lat)) · (res_lat·110,574)`, por fila.
-8. **Confianza de la comparación**: `alta` si la correlación HH entre fechas ≥ 0,85 y la fracción de píxeles concordantes del ajuste ≥ 0,80; `media` si la correlación ≥ 0,70; `baja` en otro caso (cambió gran parte de la escena o los estiramientos difieren demasiado: la normalización relativa deja de ser fiable).
+8. **Calidad del ajuste global**: `alta` si la correlación HH entre fechas ≥ 0,85 y la fracción de píxeles concordantes del ajuste ≥ 0,80; `media` si la correlación ≥ 0,70; `baja` en otro caso. No es probabilidad de acierto de las clases. `stats.quality` declara `normalization: global_fit`, `level`, `scope: full_scene` e `interpretation: not_corroborated`; `stats.coverage` declara `valid_pixels`, `total_pixels`, `fraction` en la ventana entregada. `stats.confidence` se conserva por compatibilidad, pero no se presenta como certeza del fenómeno. Correlación indefinida se devuelve como `null`.
 
 Lo que mide el método es el cambio **relativo al conjunto de la escena**: una variación que afecte por igual a todo el cuadro (por ejemplo, humedad general tras lluvias) queda absorbida por la normalización. Toda etiqueta es una hipótesis («posible»), nunca un evento confirmado.
 
@@ -101,11 +101,11 @@ Calcula (o lee de caché) el cambio. `before < after`; ambas fechas deben ser an
           "classes":[{"key":"agua_nueva","label":"Posible agua abierta nueva","km2":312.4,"pct":0.76,"color":"#38bdf8"}],
           "hh":{"gain":0.99,"bias":0.061,"inliers":0.94,"range":[0.061,1.0],"p5":-1.4,"p95":1.3,"hist":{"edges":[-10,-9.5,…,10],"counts":[…]}},
           "hv":{…}},
- "method":{"version":3,"formula":"Δ ≈ 10·log10((q₂ + c)/(α·q₁ + β + c)), con q = ((ND − 1)/254)²","c":0.03,"threshold_db":3,"filter":"media 5×5",
+ "method":{"version":4,"formula":"Δ ≈ 10·log10((q₂ + c)/(α·q₁ + β + c)), con q = ((ND − 1)/254)²","c":0.03,"threshold_db":3,"filter":"media 5×5",
            "note":"Derivado de imágenes browse oficiales GCOV con normalización relativa entre fechas; dB aproximados, no γ⁰ calibrado."},
  "limitations":["…"]}
 ```
-`georef` ∈ `kml | stack-kml | footprint`. `change_hv` y `stats.hv` son `null` en polarización simple. `coordinates` va en el orden que exige una fuente `image` de MapLibre (NO, NE, SE, SO). `classes[].pct` es sobre el área válida. Todas las capas son PNG RGBA del mismo tamaño:
+`georef` ∈ `kml | stack-kml | footprint`. `change_hv` y `stats.hv` son `null` en polarización simple. `coordinates` va en el orden que exige una fuente `image` de MapLibre (NO, NE, SE, SO). `classes[].pct` es sobre el área válida. Todas las capas son WebP RGBA del mismo tamaño:
 - `before`, `after`: RGB oficial, alfa 0 donde no hay dato.
 - `change_hh`, `change_hv`: divergente; disminución en azules (`#7dd3fc` → `#0284c7`), aumento en naranjas (`#fdba74` → `#ea580c`), saturación en ±8 dB; alfa = `clamp((|Δ|−1)/2, 0, 1)·0,92` para que lo estable sea transparente.
 - `classes`: color de clase con alfa 0,9; estable transparente.
@@ -129,7 +129,7 @@ Serie temporal en un punto (media de `q` en una ventana de `(2·radius+1)²` pí
  "bounds":[w,s,e,n],"coordinates":[[w,n],[e,n],[e,s],[w,s]],
  "frames":[{"date":"2026-06-26","url":"/derived/series/HASH/2026-06-26.webp"}]}
 ```
-`hh_db` es `null` si el punto no tiene dato en esa fecha. Los cuadros son WebP con alfa, máximo 1024 px de lado mayor, recortados a `aoi` si se indica.
+`hh_db` y `hv_db` son `null` cuando no hay dato. La versión 2 añade `frames[].hv_url` cuando existe HV. Ambos cuadros se generan desde la misma potencia normalizada que alimenta las notas, en gris con escala fija de −16 a +1 dB aproximados y alfa 0 sin dato, WebP sin pérdida y máximo 1024 px. `method` incluye `version: 2`, `normalization_version: 4`, `reference_date`, `reference_granule`, `scale_db`, `units: approximate_relative_db`, `calibrated: false`, `window_radius_pixels` y `display: normalized_grayscale`. Cada canal se normaliza por separado: la escala musical común no permite comparar potencia absoluta HH/HV. La reproducción avanza por observación cada 700 ms; se muestra el intervalo real en días. Las imágenes fallidas o sin respuesta en 20 segundos se excluyen, indicando fechas y reintento.
 
 ### `GET /api/image?url=&w=`
 Proxy con caché y redimensionado de una imagen browse. Solo acepta `https://nisar.asf.earthdatacloud.nasa.gov/…` terminado en `.png`; cualquier otra cosa → `422`. `w` entre 64 y 2048.
@@ -194,8 +194,8 @@ Cambio con γ⁰ calibrado en una ventana cuadrada centrada en el punto (`size_k
 
 - `"source": "gcov"` (en `/api/change` es `"browse"`), `"resolution_m"` (p. ej. 30) y `"georef": "product"`.
 - `coordinates` son las cuatro esquinas (NO, NE, SE, SO) de la ventana UTM convertidas a lon/lat: un cuadrilátero levemente girado, que la fuente `image` de MapLibre admite tal cual. `bounds` es su caja envolvente.
-- `method`: `{"version":"gcov-1","formula":"Δ dB = 10·log10(γ⁰₂/γ⁰₁)","threshold_db":3,"filter":"promedio N×N en potencia y media 3×3 antes del cociente","dark_db":-18,"note":"γ⁰ calibrado leído del producto GCOV de NISAR."}`.
-- `stats.hh` y `stats.hv`: `{"median_before_db","median_after_db","p5","p95","hist"}` (sin `gain`, `bias`, `inliers` ni `range`: no hay normalización relativa). `stats.confidence.level` es `alta` salvo que menos de la mitad de la ventana tenga dato.
+- `method`: `{"version":"gcov-3","formula":"Δ dB = 10·log10(γ⁰₂/γ⁰₁)","threshold_db":3,"filter":"promedio N×N en potencia y media 3×3 antes del cociente","dark_db":-18,"note":"γ⁰ calibrado leído del producto GCOV de NISAR."}`. La clave de caché incluye también la versión del clasificador compartido.
+- `stats.hh` y `stats.hv`: `{"median_before_db","median_after_db","p5","p95","hist"}` (sin `gain`, `bias`, `inliers` ni `range`: no hay normalización relativa). `stats.quality` declara `normalization: not_applicable`, `scope: window`, `interpretation: not_corroborated`. `stats.coverage` informa los píxeles válidos, totales y su fracción; la confianza antigua se mantiene por compatibilidad, sin usarla como certeza en la interfaz.
 - Método: promedio N×N en potencia lineal (N ≥ 3, y el necesario para que el lado no pase de 1500 px), `Δ = 10·log10(P₂/P₁)`, mismas siete clases con umbral de 3 dB y «oscuro» = γ⁰ HH ≤ −18 dB, mediana 3×3.
 - Capas: `before` y `after` se pintan con un estiramiento **físico fijo** (R = B = HH de −25 a 0 dB, G = HV de −32 a −7 dB), así que sí son comparables entre fechas; `change_*`, `classes` y `composite` como en `/api/change`.
 - `/api/probe?change=ID` funciona igual; aquí `before_db` y `after_db` son γ⁰ en dB reales.

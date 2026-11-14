@@ -3,7 +3,7 @@ import { Volume2, VolumeX } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useI18n } from '../../i18n';
 import type { Key } from '../../i18n/es';
-import { xOfDate, makeAxis, pitchRange, scoreWidth, staffStep, stepFrequency } from '../../lib/score';
+import { xOfDate, makeAxis, noteFrequency, scoreWidth } from '../../lib/score';
 import type { Blocked, Selection } from '../../lib/selection';
 import { playNote, unlockSound } from '../../lib/sound';
 import type { Dance } from '../../state/useDance';
@@ -24,9 +24,10 @@ interface Props {
   onSound: () => void;
   onPick: (sceneId: string) => void;
   onCompare: () => void;
+  readOnly?: boolean;
 }
 
-export function Score({ stack, selection, applied, dance, comparing, emptyText, sound, onSound, onPick, onCompare }: Props) {
+export function Score({ stack, selection, applied, dance, comparing, emptyText, sound, onSound, onPick, onCompare, readOnly = false }: Props) {
   const { t } = useI18n();
   const scroller = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(900);
@@ -64,7 +65,8 @@ export function Score({ stack, selection, applied, dance, comparing, emptyText, 
   const status =
     message ??
     (dance.active
-      ? t('dance.point')
+      ? t('dance.point', { channel: dance.channel.toUpperCase() })
+      : readOnly ? t('score.fixedPair')
       : selection.awaiting === 'after'
       ? t('score.pickAfter')
       : complete && !unchanged
@@ -92,10 +94,10 @@ export function Score({ stack, selection, applied, dance, comparing, emptyText, 
     if (!sound || !danceSeries) return;
     const date = danceSeries.frames[danceIndex]?.date;
     if (!date) return;
-    const range = pitchRange(danceSeries.series.map((point) => point.hh_db));
-    const db = danceSeries.series.find((point) => point.date === date)?.hh_db;
-    playNote(stepFrequency(staffStep(db, range)));
-  }, [sound, danceSeries, danceIndex]);
+    const point = danceSeries.series.find((point) => point.date === date);
+    const frequency = noteFrequency(dance.channel === 'hv' ? point?.hv_db : point?.hh_db);
+    if (frequency !== null) playNote(frequency);
+  }, [sound, danceSeries, danceIndex, dance.channel]);
 
   const soundLabel = t(sound ? 'score.soundOn' : 'score.soundOff');
 
@@ -109,6 +111,13 @@ export function Score({ stack, selection, applied, dance, comparing, emptyText, 
           {status}
         </p>
         <div className="partitura-acciones">
+          <label className="partitura-canal">
+            <span>{t('score.channel')}</span>
+            <select value={dance.channel} onChange={event => dance.setChannel(event.target.value as 'hh' | 'hv')}>
+              <option value="hh">HH</option>
+              <option value="hv" disabled={!stack?.polarizations.includes('HV')}>HV</option>
+            </select>
+          </label>
           <button
             type="button"
             className="icono sonido"
@@ -124,7 +133,7 @@ export function Score({ stack, selection, applied, dance, comparing, emptyText, 
           </button>
           {dance.phase === 'idle' || dance.phase === 'error' ? (
             <>
-              <button
+              {!readOnly && <button
                 type="button"
                 className="secundario"
                 disabled={!complete || unchanged || comparing}
@@ -132,7 +141,7 @@ export function Score({ stack, selection, applied, dance, comparing, emptyText, 
                 title={compareHint ? t(compareHint) : undefined}
               >
                 {t('score.compare')}
-              </button>
+              </button>}
               <button
                 type="button"
                 className="primario"
@@ -156,6 +165,13 @@ export function Score({ stack, selection, applied, dance, comparing, emptyText, 
           {dance.errorDetail ? t('dance.errorDetail', { detail: dance.errorDetail }) : t('dance.error')}
         </p>
       )}
+      {dance.failedDates.length > 0 && (
+        <p className="partitura-aviso" role="status">
+          {t(dance.active ? 'dance.partial' : 'dance.failed', { n: dance.failedDates.length, total: dance.totalFrames })}
+          {' '}{dance.failedDates.join(', ')}{' '}
+          <button type="button" className="enlace" onClick={dance.retry}>{t('dance.retry')}</button>
+        </p>
+      )}
       <div ref={scroller} className="partitura-lienzo" tabIndex={-1}>
         {stack ? (
           <Staff
@@ -163,6 +179,8 @@ export function Score({ stack, selection, applied, dance, comparing, emptyText, 
             containerWidth={width}
             selection={selection}
             series={dance.series}
+            channel={dance.channel}
+            readOnly={readOnly}
             cursorDate={cursorDate}
             sound={sound}
             onPick={(scene) => onPick(scene.id)}
@@ -172,9 +190,14 @@ export function Score({ stack, selection, applied, dance, comparing, emptyText, 
           <p className="ayuda partitura-vacia">{emptyText ?? t('score.loading')}</p>
         )}
       </div>
-      {dance.series && !dance.active && dance.phase === 'idle' && (
-        <p className="ayuda partitura-pie">{t('score.pitch')}</p>
-      )}
+      <details className="partitura-detalles">
+        <summary>{t('score.scaleShort')} · {dance.point ? t(dance.pointKind === 'selected' ? 'score.pointSelected' : 'score.pointCenter', {
+          lon: dance.point[0].toFixed(4), lat: dance.point[1].toFixed(4),
+        }) : t('score.noPoint')}</summary>
+        <p>{t('score.scale')}</p>
+        <p>{t('score.timing')}</p>
+        {dance.series?.method && <p>{t('score.reference', { date: dance.series.method.reference_date, radius: dance.series.method.window_radius_pixels })}</p>}
+      </details>
     </section>
   );
 }

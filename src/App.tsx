@@ -222,7 +222,7 @@ export function App() {
         opacity={compas.opacity}
         series={dance.series}
         danceIndex={dance.active ? dance.index : null}
-        probePoint={view === 'story' || view === 'explore' ? (compas.probe?.point ?? null) : null}
+        probePoint={view === 'story' || view === 'explore' ? (dance.active ? dance.point : compas.probe?.point ?? null) : null}
         probing={probing}
         onProbe={compas.probeAt}
         picking={picking}

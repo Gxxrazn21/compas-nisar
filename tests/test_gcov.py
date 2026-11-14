@@ -127,6 +127,20 @@ class VentanaTests(unittest.TestCase):
 
 
 class MatematicaTests(unittest.TestCase):
+    def test_hh_sube_hv_cae_no_es_vegetacion_inundada(self):
+        hh = np.full((9, 9), 0.1, np.float32)
+        hv = np.full((9, 9), 0.01, np.float32)
+        result = gcov.analyze(hh, hh * 10 ** 0.4, hv, hv * 10 ** -0.6)
+        self.assertTrue((result.classes == 4).all())
+
+    def test_cobertura_no_se_presenta_como_calidad_de_ajuste(self):
+        hh = np.full((10, 10), 0.1, np.float32)
+        hh[0] = np.nan
+        stats = gcov.compute_stats(gcov.analyze(hh, hh.copy()), 30)
+        self.assertEqual(stats.get('quality'), {'normalization': 'not_applicable',
+                         'scope': 'window', 'interpretation': 'not_corroborated'})
+        self.assertEqual(stats.get('coverage'), {'valid_pixels': 90, 'total_pixels': 100, 'fraction': 0.9})
+
     def test_promedio_en_potencia_ignora_invalidos(self):
         v = np.array([[1, 3, np.nan, 0],
                       [5, -2, np.inf, np.nan],
@@ -430,7 +444,7 @@ class LupaCompletaTests(unittest.TestCase):
         self.assertEqual(r['source'], 'gcov')
         self.assertEqual(r['georef'], 'product')
         self.assertEqual(r['resolution_m'], 30.0)
-        self.assertEqual(r['method']['version'], 'gcov-2')
+        self.assertEqual(r['method']['version'], 'gcov-3')
         self.assertEqual(r['size'], [40, 40])                       # 120 px / 3
         self.assertEqual(len(r['coordinates']), 4)
         carpeta = config.DERIVED_DIR / r['id']

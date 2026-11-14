@@ -2,7 +2,9 @@
 
 Aplicación interactiva para el reto "Dancing with the SARs" del NASA Space Apps Challenge 2026. Muestra, con datos reales del radar NISAR (NASA e ISRO), qué cambió en la superficie de la Tierra entre dos pasadas del satélite, en cualquier lugar donde haya adquisiciones.
 
-NISAR vuelve sobre cada sitio cada 12 días. Ese es el compás de la danza, y por eso la línea de tiempo de la aplicación es una partitura: cada pasada es una nota, y las dos que se comparan quedan unidas por una ligadura.
+El ciclo nominal de NISAR es de 12 días; las adquisiciones disponibles pueden tener huecos. Ese es el compás de la danza, y por eso la línea de tiempo es una partitura: cada observación es una nota y se muestra el intervalo real entre fechas.
+
+**Nuevo recorrido guardado:** `/?demo=mojana`, con ventana calibrada, escucha HH/HV, ficha de evidencia e informe HTML imprimible. Ver [preparación, prueba sin servicios externos y recuperación del respaldo](docs/demo.md) y [estado de las mejoras](docs/estado-mejoras-2026-11-14.md).
 
 ![Portada de Compás](docs/capturas/01-portada.png)
 
@@ -14,7 +16,7 @@ NISAR vuelve sobre cada sitio cada 12 días. Ese es el compás de la danza, y po
 - **Explorar.** Un clic en cualquier punto del globo, o el nombre de una ciudad o una dirección, consulta el catálogo de NASA, lista las series de pasadas que cubren ese punto y permite comparar dos fechas.
 - **Lectura del cambio.** Mapa de aumento y disminución del retorno del radar, clases de cambio con su área en km², sonda por punto, histograma, procedencia de cada dato y límites del análisis.
 - **La danza.** Animación de todas las pasadas de una serie, con la partitura siguiendo el ritmo. Cada nota suena a la altura a la que está dibujada: más retorno del radar, más aguda. El altavoz de la partitura (o la tecla M) lo apaga.
-- **Lupa calibrada.** Con un token de Earthdata, lee una ventana del producto científico completo (retorno calibrado, celdas de 30 m) directamente desde la nube de NASA, sin descargar el archivo de 6 GB.
+- **Lupa calibrada.** Con un token de Earthdata, lee una ventana del producto científico completo desde la nube de NASA. Obtiene el espaciado de los metadatos y promedia en potencia; el caso preparado de La Mojana tiene celdas de 30 m.
 - **En vivo.** Eventos naturales recientes de NASA EONET y las últimas adquisiciones de respuesta urgente de NISAR, con acceso directo a explorar cada lugar.
 - **Fronteras y nombres.** Fronteras de países, límites de departamentos o estados y nombres con su punto, dibujados sobre los datos. Se quitan y se ponen desde la barra superior (teclas B y N).
 - **Ayuda y atajos.** El botón de ayuda (tecla ?) explica el uso en tres pasos y lista los atajos de teclado. Una pista sobre el mapa indica el paso siguiente en cada vista y se puede ocultar.
@@ -80,28 +82,28 @@ Compás hace lo siguiente:
 4. Recorta ambas fechas al intervalo en que las dos tienen información.
 5. Calcula el cambio en decibelios aproximados y lo clasifica con un umbral de 3 dB.
 
-El resultado es el cambio relativo al conjunto de la escena, no un valor calibrado. Por eso la aplicación dice "dB aproximados", rotula cada clase como "posible" y muestra un aviso de confianza cuando cambió gran parte de la escena.
+El resultado es el cambio relativo al conjunto de la escena, no un valor calibrado. La aplicación dice "dB aproximados" y rotula cada clase como "posible". Informa por separado calidad del ajuste, cobertura de datos y respaldo de la interpretación: un buen ajuste no confirma una inundación.
 
-La lupa calibrada no tiene esas limitaciones: lee γ⁰ del producto GCOV y calcula `10·log10(γ⁰₂/γ⁰₁)`.
+La lupa calibrada lee γ⁰ del producto GCOV y calcula `10·log10(γ⁰₂/γ⁰₁)` sin ajuste global. Sigue sujeta a geometría, ruido, cobertura y ambigüedad física. La regla de posible vegetación inundada exige HH ≥ +3 dB y HV entre −1,5 y +1,5 dB, además de HH antes no oscuro; una caída fuerte de HV ya no satisface esta regla.
 
 ### Validación
 
-Comparamos el método de las imágenes de vista previa con el producto calibrado en una ventana de 15 km de La Mojana (26 de junio a 24 de octubre de 2026, 7.744 píxeles):
+La ejecución del 14 de noviembre de 2026 compara tres combinaciones de zona y fechas, HH/HV y umbrales de 2, 3 y 4 dB. Para la ventana principal de 15 km de La Mojana (26 de junio a 24 de octubre de 2026, 7.744 píxeles comunes), HH a 3 dB:
 
-| Escala de comparación | Correlación | Mediana del error | Signo correcto |
-|---|---|---|---|
-| Alrededor de 1 km (la del método) | 0,86 | 0,7 dB | 100 % |
-| 170 m | 0,49 | 0,8 dB | 94 % |
+| Referencia | Correlación | Mediana de error absoluto | Precisión | Exhaustividad |
+|---|---|---|---|---|
+| Agregada a ~170 m | 0,517 | 0,78 dB | 50,0 % | 12,2 % |
+| Media adicional 5×5 (~1 km) | 0,861 | 0,69 dB | 12,5 % | 45,0 % |
 
-A escala de un kilómetro el método reproduce el patrón y el signo del cambio. A 170 m captura cerca de la mitad de la variabilidad y detecta pocos de los cambios fuertes. Es una sola ventana: sirve como evidencia orientativa, no como cifra general. Los números completos están en `docs/validacion-browse.json` y se reproducen con `scripts/validar_browse_vs_gcov.py`.
+En la segunda fila coinciden 9 de 72 detecciones browse y 20 de referencia: el 100 % de signo correcto se refiere solo a esos 9 aciertos. En otra ventana, HH da correlación 0,471 a la escala suavizada y ninguna coincidencia al umbral. La pareja de fechas consecutivas tiene pocos cambios fuertes y no permite estimar precisión cuando no hay detecciones. Correlación no equivale a exactitud de detección; los píxeles suavizados no son muestras independientes y GCOV no es verdad de terreno. Las clases físicas siguen sin validación independiente. Consulta [todos los resultados y límites](docs/validacion-ampliada.md) y el [JSON reproducible](docs/validacion-multiventana-2026-11-14.json). Se conservan los resultados históricos.
 
 El detalle del método y de cada servicio está en `docs/contrato-api.md`.
 
 ### Cómo comprobar un resultado por tu cuenta
 
 - **Procedencia.** Cada comparación lista el nombre de los dos productos. Búscalos en https://search.asf.alaska.edu y verás las mismas imágenes publicadas por NASA.
-- **Control de estabilidad.** Compara dos pasadas seguidas (12 días). Debe salir casi sin cambio; si aparece mucho, desconfía del resultado.
-- **Dos órbitas.** Donde haya una serie ascendente y otra descendente, el mismo periodo debe mostrar el mismo patrón en ambas.
+- **Control temporal.** Compara pasadas seguidas y revisa si hay evidencia externa de estabilidad. Doce días también pueden contener cambios reales.
+- **Dos órbitas.** Revisa el mismo periodo desde ambas geometrías si hay datos; las diferencias de observación pueden cambiar la respuesta. La coincidencia es evidencia adicional, no una condición garantizada.
 - **Otro radar.** Activa la capa de agua de Sentinel-1 y compárala con el cambio de NISAR.
 - **Otro sensor.** Revisa las mismas fechas en imágenes ópticas en https://worldview.earthdata.nasa.gov.
 - **Dato calibrado.** Abre la lupa sobre la zona, o ejecuta `scripts/validar_browse_vs_gcov.py`.
@@ -219,4 +221,4 @@ Datos de NISAR por cortesía de NASA, ISRO y el Alaska Satellite Facility DAAC. 
 
 ## English summary
 
-Compás is an interactive web app for the "Dancing with the SARs" challenge. It uses real NISAR radar data to show what changed on the ground between two satellite passes anywhere acquisitions exist. Pick a guided story or click any point on the globe, choose two dates on a timeline drawn as a musical score (one note per 12-day pass), and read the change map, class areas, per-point probe, provenance and limits. With an Earthdata token, a calibrated lens reads a window of the full GCOV science product (γ⁰, 30 m cells) straight from NASA's cloud. The general method works on the public preview images with a robust cross-date normalization; it was checked against the calibrated product (correlation 0.86 at the 1 km scale, 0.49 at 170 m, one 15 km window). The interface is available in Spanish and English.
+Compás is an interactive web app for the "Dancing with the SARs" challenge. It uses real NISAR observations to explore radar return changes wherever acquisitions exist. Its musical score represents dated observations, with selectable HH/HV and explicit gaps. A saved La Mojana walkthrough includes a calibrated GCOV window, a manual evidence review and a portable HTML brief. The overview uses normalized preview imagery: agreement with calibrated GCOV varies by window, date, channel and scale. In the main 15 km HH case, correlation at the smoothed scale is 0.861 but precision at 3 dB is only 12.5%, with 9 joint detections out of 72 preview detections. Physical classes are hypotheses, not validated flood or damage inventories. See the full multiwindow results above. The interface is available in Spanish and English.

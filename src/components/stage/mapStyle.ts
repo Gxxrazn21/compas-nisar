@@ -21,7 +21,8 @@ export function yesterday(): string {
   return new Date(Date.now() - 86_400_000).toISOString().slice(0, 10);
 }
 
-export function baseStyle(projection: 'globe' | 'mercator', opticalDate: string = yesterday()): StyleSpecification {
+export function baseStyle(projection: 'globe' | 'mercator', opticalDate: string = yesterday(), offline = false): StyleSpecification {
+  if (offline) return { version: 8, projection: { type: projection }, sources: {}, layers: [{ id: 'fondo', type: 'background', paint: { 'background-color': NOCHE } }] };
   return {
     version: 8,
     projection: { type: projection },
