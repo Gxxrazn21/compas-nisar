@@ -135,6 +135,34 @@
   min-height: 44px;
 }
 
+/* Buscador de lugares: un solo campo y su botón */
+.coordenadas.buscador {
+  grid-template-columns: 1fr auto;
+}
+
+.lugares {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: -6px;
+}
+
+.lugar-actual {
+  font-size: var(--t15);
+  line-height: 1.4;
+}
+
+.lugares h3 {
+  font-size: var(--t13);
+  font-weight: 600;
+  color: var(--bruma);
+}
+
+.lugares .enlace-texto {
+  text-align: left;
+  line-height: 1.35;
+}
+
 .aviso-campo {
   color: var(--sube);
   margin-top: -8px;
@@ -742,6 +770,10 @@
 
   .hoja .coordenadas .secundario {
     grid-column: 1 / -1;
+  }
+
+  .hoja .coordenadas.buscador {
+    grid-template-columns: 1fr;
   }
 
   .hoja .exploracion,

@@ -219,6 +219,53 @@ export const es = {
   'method.sourcesText':
     'Imágenes: NISAR GCOV (NASA e ISRO), distribuidas por ASF DAAC. Mapa base: Esri World Imagery. La Tierra hoy: NASA EPIC. Versión del método: 3.',
 
+  'resources.title': 'Recursos abiertos del reto',
+  'resources.intro':
+    'Los recursos que propone el reto «Dancing with the SARs» y el papel de cada uno en Compás. La aplicación procesa datos de NISAR; los radares de Canadá y Argentina figuran como fuentes para contrastar y aún no se procesan aquí.',
+  'resources.group.nasa': 'NASA',
+  'resources.group.csa': 'Agencia Espacial Canadiense (CSA)',
+  'resources.group.conae': 'Comisión Nacional de Actividades Espaciales de Argentina (CONAE)',
+  'resources.earthdataSearch.name': 'Earthdata Search',
+  'resources.earthdataSearch.use':
+    'Buscador del catálogo de NASA. Compás consulta ese mismo catálogo (CMR) para saber qué pasadas de NISAR cubren cada punto.',
+  'resources.asfSearch.name': 'ASF Data Search (Vertex)',
+  'resources.asfSearch.use':
+    'Archivo de radar de NASA en Alaska. Cada producto que cita Compás enlaza a su ficha aquí, para comprobar la procedencia.',
+  'resources.nisarDocs.name': 'Documentación de NISAR',
+  'resources.nisarDocs.use':
+    'Describe los productos GCOV y GUNW que lee Compás y las formas de acceder a ellos.',
+  'resources.remoteSensing.name': 'Fundamentos de teledetección',
+  'resources.remoteSensing.use': 'Introducción de NASA a la observación de la Tierra desde el espacio.',
+  'resources.sarBasics.name': 'Qué es un radar de apertura sintética',
+  'resources.sarBasics.use':
+    'Explica bandas, polarización e interferometría: la base para leer los mapas de cambio y las hipótesis de Compás.',
+  'resources.arset.name': 'Capacitaciones ARSET',
+  'resources.arset.use':
+    'Cursos gratuitos de NASA sobre teledetección aplicada, entre ellos agua superficial con radar y desplazamiento del terreno con NISAR.',
+  'resources.storymaps.name': 'StoryMaps de NISAR',
+  'resources.storymaps.use':
+    'Cinco relatos cartográficos: inundaciones, incendios, manchas de petróleo, movimiento glaciar y hundimiento del terreno.',
+  'resources.societal.name': 'Beneficios sociales de NISAR',
+  'resources.societal.use':
+    'Fichas de dos páginas por aplicación: inundaciones, seguridad alimentaria, glaciares, volcanes y más. Lectura de fondo para las hipótesis de cada clase de cambio.',
+  'resources.uavsar.name': 'Postales de UAVSAR',
+  'resources.uavsar.use':
+    'Imágenes del radar aéreo de banda L que sirvió de antecedente a NISAR. Dos coinciden con historias de Compás: Kilauea y Vatnajökull.',
+  'resources.rcm.name': 'Misión de la Constelación RADARSAT (RCM)',
+  'resources.rcm.use':
+    'Tres satélites de banda C con parte de sus productos en acceso abierto. Sirven para contrastar con la banda L de NISAR.',
+  'resources.csaTutorial.name': 'Tutorial de radar de apertura sintética',
+  'resources.csaTutorial.use': 'Guía para principiantes: abrir y graficar imágenes de RADARSAT en QGIS y Python.',
+  'resources.radarsat1.name': 'Archivo de RADARSAT-1',
+  'resources.radarsat1.use':
+    'Imágenes de banda C de 1995 a 2013, con licencia abierta. Permiten mirar un mismo lugar décadas antes de NISAR.',
+  'resources.saocomCatalog.name': 'Catálogo SAOCOM',
+  'resources.saocomCatalog.use':
+    'Radar argentino de banda L, la misma de NISAR. Buscar y ver miniaturas es libre; descargar exige registro y licencia.',
+  'resources.saocomAccess.name': 'Acceso al archivo SAOCOM',
+  'resources.saocomAccess.use':
+    'Desde febrero de 2023, cualquier persona registrada puede acceder a los productos de archivo sobre territorio argentino.',
+
   'nav.label':
     'Secciones',
   'nav.stories':
@@ -232,9 +279,18 @@ export const es = {
   'explore.title':
     'Explora cualquier lugar',
   'explore.intro':
-    'Haz clic en el globo o escribe unas coordenadas. Te mostramos las pilas de pasadas de NISAR que cubren ese punto.',
+    'Haz clic en el globo, busca una ciudad o una dirección, o escribe unas coordenadas. Te mostramos las pilas de pasadas de NISAR que cubren ese punto.',
   'explore.titleShort':
     'Explorar',
+  'explore.place.label': 'Ciudad o dirección',
+  'explore.place.placeholder': 'Montería, Colombia',
+  'explore.place.go': 'Buscar lugar',
+  'explore.place.searching': 'Buscando el lugar…',
+  'explore.place.empty': 'No encontramos ese lugar. Prueba con otro nombre o agrega el país.',
+  'explore.place.error': 'No se pudo consultar el buscador de lugares. Inténtalo de nuevo o usa coordenadas.',
+  'explore.place.showing': 'Lugar: {name}',
+  'explore.place.others': 'Otros resultados',
+  'explore.place.credit': 'Búsqueda de lugares: © colaboradores de OpenStreetMap.',
   'explore.lon':
     'Longitud',
   'explore.lat':

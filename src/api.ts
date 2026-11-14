@@ -7,6 +7,7 @@ import type {
   Health,
   Interferogram,
   NaturalEvent,
+  Place,
   ProbeResult,
   SeriesResult,
   Stack,
@@ -126,6 +127,12 @@ export const api = {
         size_km: query.size_km,
       }),
       signal,
+    ),
+
+  /** Buscador de lugares por nombre o dirección. */
+  places: (query: string, lang: string, signal?: AbortSignal) =>
+    cached<{ places: Place[]; source: string }>(buildUrl('/api/places', { q: query, lang }), signal).then(
+      (body) => body.places,
     ),
 
   events: (days = 20, signal?: AbortSignal) =>

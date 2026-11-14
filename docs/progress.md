@@ -1,15 +1,17 @@
 # Progreso
 
-Estado al 12 de noviembre de 2026.
+Estado al 14 de noviembre de 2026.
 
 Los documentos de `docs/superpowers/` (diseño y plan del 11 de noviembre) describen la primera versión, llamada Terra, que mostraba huellas del catálogo y una demostración sintética. Quedaron superados: la aplicación se llama ahora Compás y trabaja solo con datos reales. Las fuentes vigentes son `docs/contrato-api.md` (API, hechos verificados y método) y `docs/diseno.md` (dirección de diseño).
 
 ## Hecho
 
-- Backend FastAPI completo: catálogo CMR, imágenes de vista previa con caché, método de cambio versión 3, series y cuadros de animación, sonda, respuesta urgente, interferogramas, eventos EONET, imagen EPIC y lupa calibrada sobre el producto GCOV. 106 pruebas sin red.
+- Backend FastAPI completo: catálogo CMR, imágenes de vista previa con caché, método de cambio versión 3, series y cuadros de animación, sonda, respuesta urgente, interferogramas, eventos EONET, imagen EPIC y lupa calibrada sobre el producto GCOV. 117 pruebas sin red.
 - Método validado contra el producto calibrado (`docs/validacion-browse.json`).
-- Frontend completo: portada, historias, explorar cualquier punto, lupa calibrada, historia de interferogramas, En vivo con eventos agrupados y respuesta urgente, panel de lectura en pestañas con hipótesis físicas por clase y exportación, capas de contexto (Sentinel-1, cobertura del suelo, población), partitura, danza, mapa óptico del día, diálogo Método con «Qué viene con NISAR», español e inglés, enlace permanente y hoja inferior en celular. 104 pruebas.
+- Frontend completo: portada, historias, explorar cualquier punto, lupa calibrada, historia de interferogramas, En vivo con eventos agrupados y respuesta urgente, panel de lectura en pestañas con hipótesis físicas por clase y exportación, capas de contexto (Sentinel-1, cobertura del suelo, población), partitura, danza, mapa óptico del día, diálogo Método con «Qué viene con NISAR», español e inglés, enlace permanente y hoja inferior en celular. 114 pruebas.
 - Cuatro historias con datos reales: La Mojana, valle de San Joaquín, Vatnajökull y Kilauea.
+- Los catorce recursos abiertos del reto, con el papel de cada uno, en el diálogo Método (`src/lib/resources.ts`) y en el README. Los de CSA y CONAE figuran solo como referencia: no se procesan sus datos.
+- Buscador de lugares en Explorar: una ciudad o una dirección lleva al punto y lista sus pilas (`backend/places.py`, `/api/places`, OpenStreetMap Nominatim).
 - Lanzador (`scripts/start.ps1`) y precálculo de historias (`scripts/prewarm.py`).
 - Repositorio público con licencia MIT: https://github.com/Gxxrazn21/compas-nisar
 

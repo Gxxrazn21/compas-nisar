@@ -248,6 +248,15 @@ export interface StacksResult {
   stacks: Stack[];
 }
 
+/** Lugar devuelto por el buscador de Explorar (OpenStreetMap Nominatim). */
+export interface Place {
+  name: string;
+  label: string;
+  lon: number;
+  lat: number;
+  kind: string | null;
+}
+
 export interface NaturalEvent {
   id: string;
   title: string;

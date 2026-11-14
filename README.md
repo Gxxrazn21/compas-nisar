@@ -11,7 +11,7 @@ NISAR vuelve sobre cada sitio cada 12 días. Ese es el compás de la danza, y po
 - **Historias.** Cuatro recorridos guiados con datos reales: las ciénagas de La Mojana (Colombia) entre junio y octubre de 2026, las parcelas agrícolas del valle de San Joaquín (Estados Unidos) entre el verano y la cosecha, el deshielo de verano del casquete Vatnajökull (Islandia) y los interferogramas sobre la isla de Hawái.
 - **Por qué cambió.** Cada clase de cambio trae su hipótesis física, otras causas posibles y la polarización que la revela.
 - **Contexto.** Capas opcionales de NASA: agua superficial vista por Sentinel-1 (otro radar, de banda C), cobertura del suelo y densidad de población.
-- **Explorar.** Un clic en cualquier punto del globo consulta el catálogo de NASA, lista las series de pasadas que cubren ese punto y permite comparar dos fechas.
+- **Explorar.** Un clic en cualquier punto del globo, o el nombre de una ciudad o una dirección, consulta el catálogo de NASA, lista las series de pasadas que cubren ese punto y permite comparar dos fechas.
 - **Lectura del cambio.** Mapa de aumento y disminución del retorno del radar, clases de cambio con su área en km², sonda por punto, histograma, procedencia de cada dato y límites del análisis.
 - **La danza.** Animación de todas las pasadas de una serie, con la partitura siguiendo el ritmo.
 - **Lupa calibrada.** Con un token de Earthdata, lee una ventana del producto científico completo (retorno calibrado, celdas de 30 m) directamente desde la nube de NASA, sin descargar el archivo de 6 GB.
@@ -40,8 +40,30 @@ NISAR vuelve sobre cada sitio cada 12 días. Ese es el compás de la danza, y po
 | NASA GIBS, MODIS IGBP | Cobertura del suelo | Público |
 | NASA GIBS, GPW 2020 | Densidad de población | Público |
 | Esri World Imagery | Mapa base satelital | Público |
+| OpenStreetMap Nominatim | Buscador de ciudades y direcciones en Explorar | Público |
 
-No se usan datos sintéticos. Todo lo que aparece en pantalla viene de estos servicios.
+No se usan datos sintéticos. Todo lo que aparece en pantalla viene de estos servicios. El buscador de lugares solo traduce un nombre a coordenadas; los datos de radar siguen siendo los de NISAR.
+
+### Recursos del reto
+
+El reto propone catorce recursos abiertos. Esta tabla dice qué papel tiene cada uno en Compás; la misma lista está en el diálogo Método de la aplicación.
+
+| Recurso | Papel en Compás |
+|---|---|
+| [Earthdata Search](https://search.earthdata.nasa.gov/search) | Mismo catálogo (CMR) que consulta el backend para listar pasadas |
+| [ASF Data Search](https://search.asf.alaska.edu/) | Origen de los productos NISAR; cada comparación enlaza a la ficha de sus dos productos |
+| [Documentación de NISAR](https://nisar-docs.asf.alaska.edu/) | Especificación de GCOV y GUNW; citada en las historias |
+| [Fundamentos de teledetección](https://www.earthdata.nasa.gov/learn/earth-observation-data-basics/remote-sensing) | Lectura de referencia |
+| [Qué es un radar de apertura sintética](https://www.earthdata.nasa.gov/learn/earth-observation-data-basics/sar) | Base de las hipótesis físicas: bandas, polarización, interferometría |
+| [Capacitaciones ARSET](https://appliedsciences.nasa.gov/get-involved/training) | Cursos para profundizar, incluidos dos con NISAR |
+| [StoryMaps de NISAR](https://nisar.jpl.nasa.gov/applications/arcgis-storymaps/) | Contexto de las historias: inundaciones, hielo, hundimiento |
+| [Beneficios sociales de NISAR](https://nisar.jpl.nasa.gov/applications/societal-benefit/) | Lectura de fondo por aplicación |
+| [Postales de UAVSAR](https://uavsar.jpl.nasa.gov/education/postcards.html) | Antecedente aéreo en banda L; dos postales coinciden con historias (Kilauea y Vatnajökull) |
+| [RCM](https://donnees-data.asc-csa.gc.ca/en/dataset/rcm) (CSA) | Referencia: radar de banda C para contrastar. No se procesa en la aplicación |
+| [Tutorial de SAR](https://github.com/asc-csa/Synthetic_Aperture_Radar_Tutorial) (CSA) | Referencia para abrir imágenes RADARSAT en QGIS y Python |
+| [Archivo de RADARSAT-1](https://donnees-data.asc-csa.gc.ca/en/dataset/radarsat1) (CSA) | Referencia: banda C de 1995 a 2013. No se procesa en la aplicación |
+| [Catálogo SAOCOM](https://catalogos.conae.gov.ar/catalogo/catalogoSatSaocomInfo.html) (CONAE) | Referencia: banda L, como NISAR. No se procesa en la aplicación |
+| [Acceso al archivo SAOCOM](https://www.argentina.gob.ar/noticias/la-informacion-saocom-cada-vez-mas-accesible) (CONAE) | Condiciones de acceso: registro y licencia, solo territorio argentino |
 
 ## Método
 
@@ -153,7 +175,7 @@ Código bajo licencia MIT (ver `LICENSE`). Los datos pertenecen a sus fuentes y 
 
 ## Créditos
 
-Datos de NISAR por cortesía de NASA, ISRO y el Alaska Satellite Facility DAAC. Eventos de NASA EONET. Imagen diaria de NASA EPIC. Teselas de NASA GIBS y de Esri (Esri, Maxar, Earthstar Geographics y la comunidad de usuarios de GIS). Proyecto independiente: no es un producto oficial de NASA ni de ISRO.
+Datos de NISAR por cortesía de NASA, ISRO y el Alaska Satellite Facility DAAC. Eventos de NASA EONET. Imagen diaria de NASA EPIC. Teselas de NASA GIBS y de Esri (Esri, Maxar, Earthstar Geographics y la comunidad de usuarios de GIS). Búsqueda de lugares con Nominatim, © colaboradores de OpenStreetMap. Proyecto independiente: no es un producto oficial de NASA ni de ISRO.
 
 ## English summary
 

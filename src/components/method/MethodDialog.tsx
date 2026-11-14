@@ -2,6 +2,7 @@
 import { useEffect, useRef } from 'react';
 import { useI18n } from '../../i18n';
 import type { Key } from '../../i18n/es';
+import { RESOURCE_GROUPS, resourcesOf } from '../../lib/resources';
 
 interface Props {
   open: boolean;
@@ -96,6 +97,26 @@ export function MethodDialog({ open, anchor = null, onClose }: Props) {
         <section>
           <h3>{t('method.sources')}</h3>
           <p>{t('method.sourcesText')}</p>
+        </section>
+        <section className="recursos" aria-labelledby="recursos-h">
+          <h3 id="recursos-h">{t('resources.title')}</h3>
+          <p>{t('resources.intro')}</p>
+          {RESOURCE_GROUPS.map((group) => (
+            <div key={group}>
+              <h4>{t(`resources.group.${group}` as Key)}</h4>
+              <ul>
+                {resourcesOf(group).map((resource) => (
+                  <li key={resource.id}>
+                    <a href={resource.url} target="_blank" rel="noreferrer">
+                      {t(`resources.${resource.id}.name` as Key)}
+                    </a>
+                    {'. '}
+                    {t(`resources.${resource.id}.use` as Key)}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </section>
       </div>
     </dialog>

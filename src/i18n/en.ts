@@ -219,6 +219,52 @@ export const en: Record<Key, string> = {
   'method.sourcesText':
     'Images: NISAR GCOV (NASA and ISRO), distributed by ASF DAAC. Base map: Esri World Imagery. Earth today: NASA EPIC. Method version: 3.',
 
+  'resources.title': 'Open resources from the challenge',
+  'resources.intro':
+    'The resources suggested by the "Dancing with the SARs" challenge and the role each one plays in Compás. The app processes NISAR data; the Canadian and Argentine radars are listed as sources for cross-checking and are not processed here yet.',
+  'resources.group.nasa': 'NASA',
+  'resources.group.csa': 'Canadian Space Agency (CSA)',
+  'resources.group.conae': "Argentina's National Commission for Space Activities (CONAE)",
+  'resources.earthdataSearch.name': 'Earthdata Search',
+  'resources.earthdataSearch.use':
+    "Search tool for NASA's catalog. Compás queries that same catalog (CMR) to find which NISAR passes cover each point.",
+  'resources.asfSearch.name': 'ASF Data Search (Vertex)',
+  'resources.asfSearch.use':
+    "NASA's radar archive in Alaska. Every product Compás cites links to its record here, so provenance can be checked.",
+  'resources.nisarDocs.name': 'NISAR documentation',
+  'resources.nisarDocs.use': 'Describes the GCOV and GUNW products Compás reads and the ways to access them.',
+  'resources.remoteSensing.name': 'Remote sensing basics',
+  'resources.remoteSensing.use': "NASA's introduction to observing Earth from space.",
+  'resources.sarBasics.name': 'What is synthetic aperture radar',
+  'resources.sarBasics.use':
+    'Explains bands, polarization and interferometry: the background for reading the change maps and hypotheses in Compás.',
+  'resources.arset.name': 'ARSET trainings',
+  'resources.arset.use':
+    'Free NASA courses on applied remote sensing, including surface water with radar and ground displacement with NISAR.',
+  'resources.storymaps.name': 'NISAR StoryMaps',
+  'resources.storymaps.use':
+    'Five map-based stories: floods, wildfires, oil slicks, glacial motion and land subsidence.',
+  'resources.societal.name': 'NISAR societal benefits',
+  'resources.societal.use':
+    'Two-page briefs per application: floods, food security, glaciers, volcanoes and more. Background reading for the hypotheses behind each change class.',
+  'resources.uavsar.name': 'UAVSAR postcards',
+  'resources.uavsar.use':
+    'Images from the airborne L-band radar that preceded NISAR. Two match stories in Compás: Kilauea and Vatnajökull.',
+  'resources.rcm.name': 'RADARSAT Constellation Mission (RCM)',
+  'resources.rcm.use':
+    "Three C-band satellites with part of their products openly available. Useful for cross-checking against NISAR's L band.",
+  'resources.csaTutorial.name': 'Synthetic aperture radar tutorial',
+  'resources.csaTutorial.use': "Beginner's guide: loading and plotting RADARSAT images in QGIS and Python.",
+  'resources.radarsat1.name': 'RADARSAT-1 archive',
+  'resources.radarsat1.use':
+    'C-band images from 1995 to 2013 under an open licence. They show the same place decades before NISAR.',
+  'resources.saocomCatalog.name': 'SAOCOM catalog',
+  'resources.saocomCatalog.use':
+    'Argentine L-band radar, the same band as NISAR. Searching and viewing thumbnails is free; downloading requires registration and a licence.',
+  'resources.saocomAccess.name': 'Access to the SAOCOM archive',
+  'resources.saocomAccess.use':
+    'Since February 2023, any registered person can access archive products over Argentine territory.',
+
   'nav.label':
     'Sections',
   'nav.stories':
@@ -232,9 +278,18 @@ export const en: Record<Key, string> = {
   'explore.title':
     'Explore any place',
   'explore.intro':
-    'Click the globe or type some coordinates. We list the stacks of NISAR passes that cover that point.',
+    'Click the globe, search for a city or an address, or type some coordinates. We list the stacks of NISAR passes that cover that point.',
   'explore.titleShort':
     'Explore',
+  'explore.place.label': 'City or address',
+  'explore.place.placeholder': 'Montería, Colombia',
+  'explore.place.go': 'Find place',
+  'explore.place.searching': 'Looking for the place…',
+  'explore.place.empty': 'We could not find that place. Try another name or add the country.',
+  'explore.place.error': 'The place search could not be reached. Try again or use coordinates.',
+  'explore.place.showing': 'Place: {name}',
+  'explore.place.others': 'Other results',
+  'explore.place.credit': 'Place search: © OpenStreetMap contributors.',
   'explore.lon':
     'Longitude',
   'explore.lat':

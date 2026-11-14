@@ -15,6 +15,7 @@ from fastapi.staticfiles import StaticFiles
 from . import browse, catalog, change, config, geo, series, zoom
 from .errors import ApiError, InvalidInput, NotFound
 from .extras import router as extras_router
+from .places import router as places_router
 
 VERSION = '0.2.0'
 
@@ -152,6 +153,8 @@ def stories():
 
 # Eventos naturales (EONET) e imagen diaria de la Tierra (EPIC).
 app.include_router(extras_router)
+# Buscador de lugares por nombre o dirección (OpenStreetMap Nominatim).
+app.include_router(places_router)
 
 # Estáticos: /derived siempre; el frontend compilado, si existe, va al final (captura todo lo demás).
 app.mount('/derived', StaticFiles(directory=config.DERIVED_DIR), name='derived')

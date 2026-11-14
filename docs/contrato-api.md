@@ -169,6 +169,14 @@ Se usa la geometría más reciente; los polígonos se reducen a su centroide.
 ### `GET /api/earth-today` y `GET /api/earth-today/image` (módulo `backend/extras.py`)
 `{"date":"2026-11-09","caption":"…","image":"/api/earth-today/image","source":"NASA EPIC / DSCOVR"}`. La imagen es el JPEG de EPIC guardado en `data/cache/epic/`. Sin clave configurada: `503` con mensaje claro.
 
+### `GET /api/places?q=&lang=es|en` (módulo `backend/places.py`)
+Buscador de lugares: convierte el nombre de una ciudad o una dirección en coordenadas con Nominatim (OpenStreetMap). Hasta cinco resultados; el primero es el más relevante.
+```json
+{"places":[{"name":"Montería","label":"Montería, Córdoba, RAP Caribe, Colombia","lon":-75.9783203,"lat":8.6046053,"kind":"administrative"}],
+ "source":"OpenStreetMap Nominatim"}
+```
+`q` lleva de 2 a 120 caracteres (`422` si no). Sin coincidencias: `200` con lista vacía. Fallo del servicio: `502`. Se cumple la política de uso de Nominatim: cabecera `User-Agent`, una petición por segundo como máximo y caché en memoria de un día. La interfaz muestra el crédito «© colaboradores de OpenStreetMap».
+
 ### Archivos estáticos
 `/derived/…` sirve `data/cache/derived/`. `/` sirve `dist/` si existe.
 

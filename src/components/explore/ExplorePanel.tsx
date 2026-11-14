@@ -1,12 +1,21 @@
 // Panel izquierdo de Explorar: elegir un punto, ver las pilas que lo cubren y preparar la comparación.
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
+import { api, isAbort } from '../../api';
 import { useI18n } from '../../i18n';
 import type { Key } from '../../i18n/es';
 import { formatDate, formatNumber } from '../../lib/format';
 import { LENS_IDS, LENS_LABEL, asLens } from '../../lib/lens';
 import type { Compas } from '../../state/useCompas';
-import type { LonLat, Stack } from '../../types';
+import { isAtPlace, otherPlaces, placeQuery } from '../../lib/places';
+import type { LonLat, Place, Stack } from '../../types';
+
+type PlaceSearch =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'empty' }
+  | { status: 'error' }
+  | { status: 'ready'; places: Place[]; current: Place };
 
 /** Lugares reales con datos de NISAR, para probar sin saber dónde buscar. */
 const EXAMPLES: Array<{ key: Key; point: LonLat }> = [
@@ -31,6 +40,38 @@ export function ExplorePanel({ compas }: Props) {
   const [lon, setLon] = useState('');
   const [lat, setLat] = useState('');
   const [problem, setProblem] = useState(false);
+  const [placeText, setPlaceText] = useState('');
+  const [search, setSearch] = useState<PlaceSearch>({ status: 'idle' });
+  const searchRequest = useRef<AbortController | null>(null);
+
+  useEffect(() => () => searchRequest.current?.abort(), []);
+
+  const showPlace = (place: Place, places: Place[]) => {
+    setSearch({ status: 'ready', places, current: place });
+    compas.goToPoint(place.lon, place.lat);
+  };
+
+  const submitPlace = (event: FormEvent) => {
+    event.preventDefault();
+    const query = placeQuery(placeText);
+    if (!query) return;
+    searchRequest.current?.abort();
+    const controller = new AbortController();
+    searchRequest.current = controller;
+    setSearch({ status: 'loading' });
+    api
+      .places(query, lang, controller.signal)
+      .then((places) => {
+        if (places.length === 0) setSearch({ status: 'empty' });
+        else showPlace(places[0], places);
+      })
+      .catch((error: unknown) => {
+        if (!isAbort(error)) setSearch({ status: 'error' });
+      });
+  };
+
+  const currentPlace = search.status === 'ready' && isAtPlace(explorePoint, search.current) ? search.current : null;
+  const others = search.status === 'ready' ? otherPlaces(search.places, currentPlace).slice(0, 3) : [];
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -52,6 +93,56 @@ export function ExplorePanel({ compas }: Props) {
     >
       <h2 className="titulo-historia">{t(stackId ? 'explore.titleShort' : 'explore.title')}</h2>
       {!stackId && !explorePoint && <p className="resumen">{t('explore.intro')}</p>}
+
+      {!stackId && (
+        <form className="coordenadas buscador" onSubmit={submitPlace} role="search">
+          <label>
+            <span>{t('explore.place.label')}</span>
+            <input
+              type="text"
+              autoComplete="off"
+              enterKeyHint="search"
+              maxLength={120}
+              placeholder={t('explore.place.placeholder')}
+              value={placeText}
+              onChange={(event) => setPlaceText(event.target.value)}
+            />
+          </label>
+          <button type="submit" className="secundario" disabled={search.status === 'loading'}>
+            {t('explore.place.go')}
+          </button>
+        </form>
+      )}
+      {!stackId && search.status === 'loading' && (
+        <p className="estado" role="status">
+          {t('explore.place.searching')}
+        </p>
+      )}
+      {!stackId && (search.status === 'empty' || search.status === 'error') && (
+        <p className="ayuda aviso-campo" role="alert">
+          {t(search.status === 'empty' ? 'explore.place.empty' : 'explore.place.error')}
+        </p>
+      )}
+      {!stackId && search.status === 'ready' && (
+        <div className="lugares">
+          {currentPlace && <p className="lugar-actual">{t('explore.place.showing', { name: currentPlace.label })}</p>}
+          {others.length > 0 && (
+            <>
+              <h3>{t('explore.place.others')}</h3>
+              <ul>
+                {others.map((place) => (
+                  <li key={`${place.lon},${place.lat},${place.label}`}>
+                    <button type="button" className="enlace-texto" onClick={() => showPlace(place, search.places)}>
+                      {place.label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+          <p className="ayuda">{t('explore.place.credit')}</p>
+        </div>
+      )}
 
       {!stackId && <form className="coordenadas" onSubmit={submit} noValidate>
         <label>

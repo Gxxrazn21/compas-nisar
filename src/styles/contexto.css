@@ -231,7 +231,8 @@
 }
 
 /* Método: «Qué viene con NISAR» */
-.futuro h4 {
+.futuro h4,
+.recursos h4 {
   margin: 14px 0 4px;
   font-size: var(--t15);
   font-weight: 600;
