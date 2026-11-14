@@ -1,6 +1,6 @@
 # Recorrido guardado de La Mojana
 
-La portada ofrece **Recorrido guardado**. También se abre con `/?demo=mojana`. Contiene cuatro pasos: territorio, ventana calibrada de 15 km, secuencia HH/HV y ficha de evidencia con informe compartible. Es una instantánea fechada, no datos en vivo.
+La portada ofrece **Recorrido guardado**. También se abre con `/?demo=mojana`. Contiene cuatro pasos: territorio, ventana calibrada de 15 km, secuencia a color de las pasadas con notas HH/HV y ficha de evidencia con informe compartible. Usa la misma barra de capas, las mismas capas de contexto (agua, bosques y suelo, población) y el mismo mapa satelital que las historias. Los datos de NISAR son una instantánea fechada, no datos en vivo; el mapa de fondo y las capas de contexto sí se piden por internet, y sin conexión el radar se ve sobre fondo oscuro.
 
 ## Preparación y uso
 

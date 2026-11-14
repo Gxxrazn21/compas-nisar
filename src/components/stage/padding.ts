@@ -4,8 +4,8 @@ import type { PaddingOptions } from 'maplibre-gl';
 export const MOBILE_QUERY = '(max-width: 720px)';
 
 /**
- * Lee del DOM los paneles marcados con `data-cubre` (left, right, bottom, hoja) y devuelve
- * cuánto espacio le quitan al mapa. En celular solo cuenta la hoja inferior.
+ * Lee del DOM los paneles marcados con `data-cubre` (left, right, top, bottom, hoja) y devuelve
+ * cuánto espacio le quitan al mapa. En celular solo cuentan la hoja inferior y lo que se marque `top`.
  */
 export function coverPadding(container: HTMLElement): PaddingOptions {
   const box = container.getBoundingClientRect();
@@ -15,8 +15,14 @@ export function coverPadding(container: HTMLElement): PaddingOptions {
     const rect = element.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) return;
     const side = element.dataset.cubre;
+    if (side === 'top') padding.top = Math.max(padding.top, rect.bottom - box.top + 12);
     if (mobile) {
-      if (side === 'hoja') padding.bottom = Math.max(padding.bottom, box.bottom - rect.top + 8);
+      if (side === 'hoja') {
+        // La hoja anima su altura: se cuenta la altura a la que va (la de su estilo), no la de este instante.
+        const target = Number.parseFloat(element.style.height);
+        const top = Number.isFinite(target) ? rect.bottom - target : rect.top;
+        padding.bottom = Math.max(padding.bottom, box.bottom - top + 8);
+      }
       return;
     }
     if (side === 'left') padding.left = Math.max(padding.left, rect.right - box.left + 16);

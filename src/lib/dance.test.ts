@@ -32,10 +32,10 @@ describe('precarga de cuadros', () => {
       frames: [{ date: '2026-01-01', url: 'a' }, { date: '2026-01-13', url: 'b' }, { date: '2026-02-06', url: 'c' }],
       series: [{ date: '2026-01-01', hh_db: -2 }, { date: '2026-01-13', hh_db: -6 }, { date: '2026-02-06', hh_db: -8 }],
     } as SeriesResult;
-    const result = playableSeries(source, 'hh', [true, false, true]);
+    const result = playableSeries(source, [true, false, true]);
     expect(result.frames).toEqual([{ date: '2026-01-01', url: 'a' }, { date: '2026-02-06', url: 'c' }]);
     expect(result.series.find(point => point.date === result.frames[1]?.date)?.hh_db).toBe(-8);
-    expect(playableSeries(source, 'hh', [false, false, false]).frames).toEqual([]);
+    expect(playableSeries(source, [false, false, false]).frames).toEqual([]);
   });
   it('invalida la serie al cambiar el punto aunque no cambie el área', () => {
     expect(targetKey({ stack: 'x', aoi: null, point: [1, 2] })).not.toBe(targetKey({ stack: 'x', aoi: null, point: [1, 3] }));

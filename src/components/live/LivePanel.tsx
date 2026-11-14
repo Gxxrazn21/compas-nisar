@@ -9,6 +9,7 @@ import { formatDate, formatDateTime } from '../../lib/format';
 import type { Compas } from '../../state/useCompas';
 import { EVENT_DAYS } from '../../state/useLive';
 import type { NaturalEvent } from '../../types';
+import { SatellitePanel } from './SatellitePanel';
 
 const PAGE = 60;
 
@@ -26,7 +27,7 @@ function categoryName(t: (key: Key) => string, key: string, fallback: string): s
   return name in es ? t(name as Key) : fallback;
 }
 
-export function LivePanel({ compas }: { compas: Compas }) {
+export function LivePanel({ compas, onTour }: { compas: Compas; onTour?: () => void }) {
   const { t } = useI18n();
   const { live } = compas;
   return (
@@ -41,9 +42,14 @@ export function LivePanel({ compas }: { compas: Compas }) {
         <button type="button" aria-pressed={live.tab === 'urgent'} onClick={() => compas.setLiveTab('urgent')}>
           {t('live.tab.urgent')}
         </button>
+        <button type="button" aria-pressed={live.tab === 'satellite'} onClick={() => compas.setLiveTab('satellite')}>
+          {t('live.tab.satellite')}
+        </button>
       </div>
 
-      {live.tab === 'events' ? <Events compas={compas} /> : <Urgent compas={compas} />}
+      {live.tab === 'events' && <Events compas={compas} />}
+      {live.tab === 'urgent' && <Urgent compas={compas} />}
+      {live.tab === 'satellite' && <SatellitePanel compas={compas} onTour={onTour} />}
 
       <p className="ayuda atribucion">{t('live.sources')}</p>
     </section>

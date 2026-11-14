@@ -1,6 +1,6 @@
 // Hoja inferior del celular: sigue el dedo al arrastrar el asa y se acomoda en tres alturas.
 // En pantallas anchas no genera caja (display: contents) y los paneles flotan sobre el mapa.
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent, PointerEvent, ReactNode } from 'react';
 
 const HANDLE_PX = 64;
@@ -25,10 +25,30 @@ function nearest(height: number): number {
   return best;
 }
 
-export function Sheet({ label, children }: { label: string; children: ReactNode }) {
+interface Props {
+  label: string;
+  /** Recoge la hoja mientras sea verdadero (el recorrido guiado necesita el mapa a la vista); al volver a falso, regresa a la altura que tenía. */
+  collapsed?: boolean;
+  children: ReactNode;
+}
+
+export function Sheet({ label, collapsed = false, children }: Props) {
   const [snap, setSnap] = useState(1);
   const [height, setHeight] = useState<number | null>(null);
   const drag = useRef<{ startY: number; startHeight: number; moved: boolean } | null>(null);
+  const before = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (collapsed) {
+      setSnap((current) => {
+        before.current = current;
+        return 0;
+      });
+    } else if (before.current !== null) {
+      setSnap(before.current);
+      before.current = null;
+    }
+  }, [collapsed]);
 
   const onDown = (event: PointerEvent<HTMLButtonElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId);

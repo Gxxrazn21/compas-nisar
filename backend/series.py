@@ -13,8 +13,8 @@ from . import browse, cache, change, config, geo
 from .errors import InvalidInput
 
 FRAME_MAX_SIDE = 1024
-SERIES_VERSION = 2
-SCALE_DB = (-16, 1)
+SERIES_VERSION = 3
+SCALE_DB = (-16, 1)          # escala de las notas (dB aproximados); los cuadros no la usan
 SERIES_DIR = config.DERIVED_DIR / 'series'
 
 
@@ -67,18 +67,20 @@ def normalized_q(rgb, referencia, canal):
     return np.clip(alpha * qa + beta, lo, hi), valid
 
 
-def make_frame(q, valid, window, path):
-    """Gris de potencia normalizada, escala dB fija HH/HV; alfa 0 sin dato."""
+def make_frame(rgb, window, path):
+    """Cuadro a color tal como lo publica la NASA (HH y HV en falso color); alfa 0 sin dato.
+
+    El color es lo que deja ver el cambio de una fecha a otra; las notas siguen saliendo de la
+    potencia normalizada (`normalized_q`), no de estos píxeles.
+    """
     c0, r0, c1, r1 = window
-    db = change.to_db(q[r0:r1, c0:c1])
-    gray = np.round(255 * np.clip((db - SCALE_DB[0]) / (SCALE_DB[1] - SCALE_DB[0]), 0, 1)).astype(np.uint8)
-    alpha = np.where(valid[r0:r1, c0:c1], 255, 0).astype(np.uint8)
-    rgba = np.dstack([gray, gray, gray, alpha])
+    corte = rgb[r0:r1, c0:c1]
+    rgba = np.dstack([corte, np.where(corte.max(axis=2) > 0, 255, 0).astype(np.uint8)])
     imagen = Image.fromarray(np.ascontiguousarray(rgba), 'RGBA')
     imagen.thumbnail((FRAME_MAX_SIDE, FRAME_MAX_SIDE), Image.LANCZOS)
     temporal = path.with_name(f'{path.stem}.{uuid.uuid4().hex[:8]}.part')
     try:
-        imagen.save(temporal, 'WEBP', lossless=True, method=4)
+        imagen.save(temporal, 'WEBP', quality=80, method=4)
         os.replace(temporal, path)
     finally:
         temporal.unlink(missing_ok=True)
@@ -129,22 +131,20 @@ def build_series(stack, lon, lat, maximum=12, radius=4, aoi=None):
     def procesar(par):
         escena, ruta = par
         rgb = browse.load_array(ruta, 'RGB')
+        archivo = carpeta / f'{escena["date"]}.webp'
+        if not archivo.exists():
+            make_frame(rgb, ventana, archivo)
         con_hv = 'HV' in escena['polarizations'] and 'HV' in elegidas[-1][0]['polarizations']
         valores = {}
-        frame = {'date': escena['date']}
         for nombre, canal in (('hh_db', 0), ('hv_db', 1)):
             if canal == 1 and not con_hv:
                 valores[nombre] = None
                 continue
             q, valid = normalized_q(rgb if escena is not elegidas[-1][0] else reciente, reciente, canal)
             valores[nombre] = window_db(q, valid, pixel, radius)
-            archivo = carpeta / f'{escena["date"]}_{nombre[:2]}.webp'
-            if not archivo.exists():
-                make_frame(q, valid, ventana, archivo)
-            frame['url' if canal == 0 else 'hv_url'] = f'/derived/series/{clave}/{archivo.name}'
         return {
             'date': escena['date'], 'granule': escena['granule'], 'quality': escena['quality'], **valores,
-        }, frame, con_hv
+        }, {'date': escena['date'], 'url': f'/derived/series/{clave}/{archivo.name}'}, con_hv
 
     with ThreadPoolExecutor(max_workers=4) as pool:
         salidas = list(pool.map(procesar, elegidas))
@@ -162,7 +162,7 @@ def build_series(stack, lon, lat, maximum=12, radius=4, aoi=None):
             'units': 'approximate_relative_db',
             'calibrated': False,
             'window_radius_pixels': radius,
-            'display': 'normalized_grayscale',
+            'display': 'browse_color',
         },
         'series': [s[0] for s in salidas],
         'bounds': [round(x, 6) for x in limites],

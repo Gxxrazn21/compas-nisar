@@ -1,4 +1,5 @@
 // Portada: titular en Bodoni y el programa de historias, como un programa de concierto.
+import { CirclePlay } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { api } from '../../api';
 import { useI18n } from '../../i18n';
@@ -9,9 +10,10 @@ import type { EarthToday, Story } from '../../types';
 interface Props {
   stories: Load<Story[]>;
   onOpen: (id: string) => void;
+  onTour: () => void;
 }
 
-export function Cover({ stories, onOpen }: Props) {
+export function Cover({ stories, onOpen, onTour }: Props) {
   const { t, loc, lang } = useI18n();
   return (
     <section className="panel panel-izq portada" data-cubre="left" aria-labelledby="titular">
@@ -22,6 +24,11 @@ export function Cover({ stories, onOpen }: Props) {
       <p className="lead">{t('cover.intro')}</p>
       <a className="primario demo-entry" href={`/?demo=mojana#lang=${lang}`}>{lang === 'es' ? 'La Mojana: recorrido con evidencia' : 'La Mojana: an evidence walkthrough'}</a>
       <p className="ayuda">{lang === 'es' ? 'Recorrido guardado con una ventana calibrada y procedencia verificable.' : 'A saved walkthrough with a calibrated window and verifiable provenance.'}</p>
+      <button type="button" className="secundario recorrido-entrada" onClick={onTour}>
+        <CirclePlay size={17} aria-hidden="true" />
+        {t('cover.tour')}
+      </button>
+      <p className="ayuda">{t('cover.tourHelp')}</p>
       {stories.status === 'loading' && <p className="estado" role="status">{t('cover.loadingStories')}</p>}
       {stories.status === 'error' && <p className="estado aviso" role="alert">{t('cover.storiesError')}</p>}
       {stories.status === 'ready' && (

@@ -1,0 +1,468 @@
+/* NISAR a escala (en el mapa y en el recorrido) y la tarjeta del recorrido guiado. */
+
+/* Modelo: una unidad del SVG es un metro; los trazos no engordan al ampliarlo */
+.nisar-modelo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke: var(--papel);
+  stroke-width: 1.3px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nisar-modelo * {
+  vector-effect: non-scaling-stroke;
+}
+
+.nisar-modelo .cuerpo {
+  fill: var(--relieve);
+}
+
+.nisar-modelo .celda {
+  fill: #1d4573;
+}
+
+/* El dorado es el de la malla de la antena: el único color del satélite */
+.nisar-modelo [data-part='reflector'] {
+  stroke: var(--oro);
+}
+
+.nisar-modelo .malla {
+  fill: rgba(232, 184, 74, 0.3);
+}
+
+.nisar-modelo .aro {
+  fill: rgba(10, 22, 38, 0.55);
+}
+
+.nisar-modelo .alimentador {
+  fill: var(--oro);
+  stroke: var(--noche);
+  stroke-width: 1px;
+}
+
+.nisar-modelo .brazo {
+  stroke-width: 2.2px;
+}
+
+.nisar-modelo .nudo {
+  fill: var(--papel);
+  stroke: none;
+}
+
+.nisar-modelo .detalle {
+  stroke-width: 0.8px;
+  opacity: 0.6;
+}
+
+.nisar-modelo .cotas {
+  stroke: var(--bruma);
+  stroke-width: 1px;
+}
+
+.nisar-modelo .cotas text {
+  fill: var(--papel);
+  stroke: none;
+  font-family: var(--cond);
+  font-weight: 500;
+  /* En metros del dibujo: unos 14 px cuando la figura mide 260 px de ancho */
+  font-size: 1.02px;
+}
+
+.nisar-modelo .cotas .suelo {
+  stroke-dasharray: 3 3;
+}
+
+/* Marca en el mapa. MapLibre la mueve con `transform`: aquí no se usa en la raíz.
+   La raíz no tiene tamaño; el centro del cuerpo del satélite cae justo en el punto del mapa. */
+.satelite-marca {
+  position: relative;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.satelite-modelo {
+  position: absolute;
+  display: block;
+  /* Halo oscuro: el trazo claro se lee igual sobre el océano que sobre el hielo o el desierto */
+  filter: drop-shadow(0 0 2px var(--noche)) drop-shadow(0 0 5px rgba(10, 22, 38, 0.9));
+}
+
+/* Los detalles finos solo caben cuando el modelo se ve grande */
+.satelite-marca:not(.grande) .detalle {
+  display: none;
+}
+
+.satelite-pulso {
+  position: absolute;
+  left: -15px;
+  top: -15px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--oro);
+  animation: satelite-pulso 2.4s ease-out infinite;
+}
+
+@keyframes satelite-pulso {
+  from {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+.satelite-rotulo {
+  position: absolute;
+  top: calc(var(--pie, 20px) + 4px);
+  left: 0;
+  translate: -50% 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2px 8px 3px;
+  border-radius: 4px;
+  background: var(--panel-92);
+  border: 1px solid var(--linea);
+  white-space: nowrap;
+  line-height: 1.25;
+}
+
+.satelite-nombre {
+  font-size: var(--t13);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--papel);
+}
+
+.satelite-escala {
+  font-family: var(--cond);
+  font-size: var(--t13);
+  color: var(--bruma);
+  font-variant-numeric: tabular-nums;
+}
+
+.satelite-escala:empty {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .satelite-pulso {
+    animation: none;
+    transform: scale(1.5);
+    opacity: 0.45;
+  }
+}
+
+/* Recorrido guiado: la tarjeta va centrada en la parte del mapa que los paneles dejan libre */
+.recorrido-zona {
+  position: absolute;
+  z-index: 40;
+  top: calc(var(--alto-barra) + 8px);
+  left: var(--margen);
+  right: var(--margen);
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.analisis .recorrido-zona {
+  left: calc(var(--ancho-izq) + var(--margen) * 2);
+}
+
+.analisis.con-lectura:not(.lectura-plegada) .recorrido-zona {
+  right: calc(var(--ancho-der) + var(--margen) * 2);
+}
+
+/* En la portada el titular ocupa la izquierda */
+.portada-app .recorrido-zona {
+  left: max(min(620px, 48vw), 440px);
+}
+
+.recorrido {
+  pointer-events: auto;
+  width: min(480px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 16px 14px;
+  background: var(--panel);
+  border: 1px solid var(--linea);
+  border-top: 2px solid var(--oro);
+  border-radius: var(--radio);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  outline: none;
+}
+
+.recorrido.con-figura {
+  width: min(680px, 100%);
+}
+
+.recorrido:focus-visible {
+  border-color: var(--oro);
+}
+
+.recorrido-cabeza {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.recorrido-capitulos {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 3px;
+  background: var(--noche);
+  border: 1px solid var(--linea);
+  border-radius: 7px;
+}
+
+.recorrido-capitulos button {
+  min-height: 30px;
+  padding: 4px 11px;
+  background: none;
+  border: 0;
+  border-radius: 5px;
+  font-size: var(--t13);
+  font-weight: 500;
+  color: var(--bruma);
+}
+
+.recorrido-capitulos button:hover {
+  color: var(--papel);
+}
+
+.recorrido-capitulos button[aria-pressed='true'] {
+  background: var(--relieve);
+  color: var(--oro);
+  font-weight: 600;
+}
+
+.recorrido-cuerpo {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.recorrido-texto {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.recorrido-titulo {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: var(--t22);
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+
+.recorrido-texto p {
+  font-size: var(--t15);
+  line-height: 1.5;
+  max-width: 62ch;
+}
+
+.figura-nisar {
+  flex: none;
+  width: 264px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.figura-dibujo {
+  aspect-ratio: 1;
+  padding: 6px;
+  background: var(--noche);
+  border: 1px solid var(--linea);
+  border-radius: 6px;
+}
+
+/* Con cotas el dibujo es más alto que ancho: se muestra entero */
+.figura-dibujo .nisar-modelo {
+  stroke-width: 1.5px;
+}
+
+.figura-nisar figcaption {
+  line-height: 1.3;
+}
+
+/* Parte resaltada: las demás se apagan */
+.figura-nisar[data-resalta] [data-part] {
+  opacity: 0.3;
+  transition: opacity 0.25s ease-out;
+}
+
+.figura-nisar[data-resalta='reflector'] [data-part='reflector'],
+.figura-nisar[data-resalta='boom'] [data-part='boom'],
+.figura-nisar[data-resalta='radar'] [data-part='radar'],
+.figura-nisar[data-resalta='solar'] [data-part='solar'],
+.figura-nisar[data-resalta='bus'] [data-part='bus'],
+.figura-nisar[data-resalta='antenna'] [data-part='antenna'] {
+  opacity: 1;
+  stroke: var(--oro);
+  stroke-width: 2.2px;
+}
+
+.recorrido-avance {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--linea);
+  overflow: hidden;
+}
+
+.recorrido-avance span {
+  display: block;
+  height: 100%;
+  background: var(--oro);
+  transform-origin: left center;
+  animation: recorrido-avance linear forwards;
+}
+
+@keyframes recorrido-avance {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.recorrido-pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.recorrido-cuenta {
+  font-size: var(--t13);
+  white-space: nowrap;
+  color: var(--bruma);
+  font-variant-numeric: tabular-nums;
+}
+
+.recorrido-controles {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Marco que señala de qué habla el paso */
+.recorrido-foco {
+  position: fixed;
+  z-index: 39;
+  border: 2px solid var(--oro);
+  border-radius: 10px;
+  box-shadow: 0 0 0 4px rgba(232, 184, 74, 0.2);
+  pointer-events: none;
+  transition:
+    left 0.2s linear,
+    top 0.2s linear,
+    width 0.2s linear,
+    height 0.2s linear;
+  animation: recorrido-foco 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes recorrido-foco {
+  from {
+    box-shadow: 0 0 0 3px rgba(232, 184, 74, 0.28);
+  }
+  to {
+    box-shadow: 0 0 0 9px rgba(232, 184, 74, 0.06);
+  }
+}
+
+/* Entradas al recorrido */
+.barra-derecha .recorrido-boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.recorrido-entrada {
+  align-self: flex-start;
+}
+
+.satelite-ficha + .recorrido-entrada {
+  margin-top: 10px;
+}
+
+@media (max-width: 1100px) {
+  .recorrido.con-figura {
+    width: min(480px, 100%);
+  }
+
+  .recorrido-cuerpo {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .figura-nisar {
+    width: min(220px, 60%);
+    align-self: center;
+  }
+}
+
+@media (max-width: 720px) {
+  .recorrido-zona,
+  .analisis .recorrido-zona,
+  .analisis.con-lectura:not(.lectura-plegada) .recorrido-zona,
+  .portada-app .recorrido-zona {
+    top: calc(var(--alto-barra) + 6px);
+    left: 10px;
+    right: 10px;
+  }
+
+  .recorrido {
+    padding: 10px 12px 12px;
+    gap: 9px;
+  }
+
+  .recorrido-titulo {
+    font-size: var(--t17);
+  }
+
+  .recorrido-texto p {
+    font-size: var(--t13);
+  }
+
+  .figura-nisar {
+    width: min(150px, 46%);
+  }
+
+  .figura-nisar figcaption {
+    display: none;
+  }
+
+  .recorrido-controles .icono {
+    width: 44px;
+    height: 44px;
+  }
+
+  .barra-derecha .recorrido-boton span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recorrido-avance span {
+    display: none;
+  }
+}

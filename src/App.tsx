@@ -10,6 +10,7 @@ import { HelpDialog } from './components/shell/HelpDialog';
 import { MapHint } from './components/shell/MapHint';
 import { Sheet } from './components/shell/Sheet';
 import { TopBar } from './components/shell/TopBar';
+import { TourPlayer } from './components/tour/TourPlayer';
 import { MapToolbar } from './components/stage/MapToolbar';
 import { Stage } from './components/stage/Stage';
 import type { LiveLayers, StageApi } from './components/stage/Stage';
@@ -23,9 +24,13 @@ import type { ContextLayers } from './lib/context';
 import { eventsGeoJSON, urgentGeoJSON } from './lib/events';
 import { parseHash } from './lib/hash';
 import { unlockSound } from './lib/sound';
+import { DANCE_EXTRA_MS, stepDuration, textKey } from './lib/tour';
+import type { Chapter, TourStep } from './lib/tour';
 import { useCompas } from './state/useCompas';
 import { usePrefs } from './state/usePrefs';
 import { useShortcuts } from './state/useShortcuts';
+import { useTour } from './state/useTour';
+import { useTourDirector } from './state/useTourDirector';
 
 const NO_CONTEXT: ContextLayers = {};
 
@@ -46,6 +51,18 @@ export function App() {
     setMethodOpen(true);
   };
   const [readingCollapsed, setReadingCollapsed] = useState(false);
+  // Recorrido guiado: cada paso dura lo que toma leer su texto en el idioma elegido.
+  const tour = useTour(
+    useCallback((step: TourStep) => stepDuration(t(textKey(step)), step.dance ? DANCE_EXTRA_MS : 0), [t]),
+  );
+  useTourDirector(tour, compas);
+  const startTour = (chapter?: Chapter) => {
+    setHelpOpen(false);
+    setMethodOpen(false);
+    // Explicar el panel de lectura con el panel plegado no sirve de nada.
+    setReadingCollapsed(false);
+    tour.start(chapter);
+  };
   const stageApi = useRef<StageApi | null>(null);
   const { dance, live, mode, story } = compas;
 
@@ -141,6 +158,13 @@ export function App() {
   }, [prefs.sound]);
 
   useShortcuts((id) => {
+    // Con el recorrido abierto, las flechas y el espacio lo gobiernan a él.
+    if (tour.active && (id === 'prev' || id === 'next' || id === 'playPause')) {
+      if (id === 'prev') tour.prev();
+      else if (id === 'next') tour.next();
+      else tour.toggle();
+      return true;
+    }
     switch (id) {
       case 'stories':
       case 'explore':
@@ -184,10 +208,10 @@ export function App() {
   });
 
   // Una sola pista a la vez: el paso siguiente de la vista actual.
-  const hint: { text: Key; keys?: Key } | null = !prefs.hints
+  const hint: { text: Key; keys?: Key } | null = !prefs.hints || tour.active
     ? null
     : view === 'live'
-      ? { text: live.selection ? 'hint.liveSelected' : live.tab === 'urgent' ? 'hint.liveUrgent' : 'hint.live' }
+      ? { text: live.selection ? 'hint.liveSelected' : live.tab === 'urgent' ? 'hint.liveUrgent' : live.tab === 'satellite' ? 'hint.liveSatellite' : 'hint.live' }
       : view === 'interferogram'
         ? { text: 'hint.interferogram', keys: 'hint.keys.steps' }
         : dance.active
@@ -235,6 +259,7 @@ export function App() {
         context={contextOn ? compas.context : NO_CONTEXT}
         contextDate={compas.contextDate}
         reference={reference}
+        satellite={view === 'live' && live.satellite.state.status === 'ready' ? live.satellite.state.orbit : null}
         apiRef={stageApi}
       />
       <TopBar
@@ -247,6 +272,7 @@ export function App() {
         onBorders={() => toggle('borders')}
         onNames={() => toggle('names')}
         onHelp={() => setHelpOpen(true)}
+        onTour={() => startTour()}
       />
       {hint && (
         <MapHint text={t(hint.text)} keys={hint.keys ? t(hint.keys) : undefined} onDismiss={() => toggle('hints')} />
@@ -254,11 +280,11 @@ export function App() {
 
       {view === 'cover' ? (
         <>
-          <Cover stories={compas.stories} onOpen={compas.openStory} />
+          <Cover stories={compas.stories} onOpen={compas.openStory} onTour={() => startTour()} />
           <EarthTodayDetail />
         </>
       ) : (
-        <Sheet label={t('sheet.toggle')}>
+        <Sheet label={t('sheet.toggle')} collapsed={tour.step?.scene === 'satellite'}>
           {view === 'story' && story && (
             <StoryPanel
               story={story}
@@ -283,7 +309,7 @@ export function App() {
             />
           )}
           {view === 'explore' && <ExplorePanel compas={compas} />}
-          {view === 'live' && <LivePanel compas={compas} />}
+          {view === 'live' && <LivePanel compas={compas} onTour={() => startTour('satellite')} />}
 
           {(view === 'story' || view === 'explore' || view === 'interferogram') &&
             (view !== 'explore' || compas.readingState.status !== 'idle') && (
@@ -336,7 +362,8 @@ export function App() {
           : null}
       </footer>
       <MethodDialog open={methodOpen} anchor={methodAnchor} onClose={() => setMethodOpen(false)} />
-      <HelpDialog open={helpOpen} prefs={prefs} onToggle={toggle} onClose={() => setHelpOpen(false)} />
+      <HelpDialog open={helpOpen} prefs={prefs} onToggle={toggle} onClose={() => setHelpOpen(false)} onTour={() => startTour()} />
+      <TourPlayer tour={tour} />
     </div>
   );
 }

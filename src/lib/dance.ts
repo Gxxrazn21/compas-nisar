@@ -50,12 +50,7 @@ export function preloadImages(urls: string[], onProgress: (n: number) => void, s
   });
 }
 
-export function playableSeries(source: SeriesResult, channel: SeriesChannel, loaded: boolean[]): SeriesResult {
-  return {
-    ...source,
-    frames: source.frames.flatMap((frame, index) => {
-      const url = channel === 'hv' ? frame.hv_url : frame.url;
-      return loaded[index] && url ? [{ ...frame, url }] : [];
-    }),
-  };
+/** Serie con solo los cuadros que cargaron; el canal (HH o HV) cambia las notas, no las imágenes. */
+export function playableSeries(source: SeriesResult, loaded: boolean[]): SeriesResult {
+  return { ...source, frames: source.frames.filter((_, index) => loaded[index]) };
 }

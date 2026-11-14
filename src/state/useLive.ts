@@ -4,6 +4,8 @@ import { ApiError, api, isAbort } from '../api';
 import { filterEvents, groupUrgent, presentCategories } from '../lib/events';
 import type { UrgentGroup } from '../lib/events';
 import type { NaturalEvent } from '../types';
+import { useSatellite } from './useSatellite';
+import type { Satellite } from './useSatellite';
 
 export const EVENT_DAYS = 20;
 /** Con la sección abierta, los datos se vuelven a pedir solos cada diez minutos. */
@@ -11,7 +13,7 @@ export const REFRESH_MS = 10 * 60 * 1000;
 
 type Load<T> = { status: 'loading' } | { status: 'error'; detail: string } | { status: 'ready'; data: T };
 
-export type LiveTab = 'events' | 'urgent';
+export type LiveTab = 'events' | 'urgent' | 'satellite';
 
 export type LiveSelection = { kind: 'event'; id: string } | { kind: 'urgent'; id: string } | null;
 
@@ -40,6 +42,8 @@ export interface Live {
   refreshing: boolean;
   /** Lo que se ve es una copia anterior: el servicio no respondió en la última consulta. */
   stale: boolean;
+  /** Órbita de NISAR: el satélite se dibuja en el mapa mientras la sección está abierta. */
+  satellite: Satellite;
 }
 
 export function useLive(enabled: boolean): Live {
@@ -54,6 +58,7 @@ export function useLive(enabled: boolean): Live {
   const [refreshing, setRefreshing] = useState(false);
   const [stale, setStale] = useState(false);
   const loaded = useRef({ events: false, urgent: false });
+  const satellite = useSatellite(enabled);
 
   useEffect(() => {
     if (!enabled) return;
@@ -155,5 +160,6 @@ export function useLive(enabled: boolean): Live {
     updatedAt,
     refreshing,
     stale,
+    satellite,
   };
 }

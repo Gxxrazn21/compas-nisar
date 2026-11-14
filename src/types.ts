@@ -173,7 +173,6 @@ export interface SeriesPoint {
 export interface SeriesFrame {
   date: string;
   url: string;
-  hv_url?: string;
 }
 
 export interface SeriesResult {
@@ -193,7 +192,7 @@ export interface SeriesResult {
     units: 'approximate_relative_db';
     calibrated: false;
     window_radius_pixels: number;
-    display: 'normalized_grayscale';
+    display: 'browse_color';
   };
   skipped?: Array<{ date: string; reason: string }>;
 }
@@ -254,6 +253,19 @@ export function isInterferogramStory(story: Story | null | undefined): story is 
 
 export function isChangeStory(story: Story | null | undefined): story is ChangeStory {
   return Boolean(story) && story?.kind !== 'interferogram';
+}
+
+/** Elementos orbitales de NISAR (TLE) tal como los publica CelesTrak. */
+export interface SatelliteTle {
+  name: string;
+  norad_id: number;
+  line1: string;
+  line2: string;
+  /** Momento al que corresponden los elementos, en ISO 8601 UTC. */
+  epoch: string;
+  source: string;
+  /** CelesTrak no respondió: es la última copia guardada. */
+  stale?: boolean;
 }
 
 export interface Health {

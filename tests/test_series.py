@@ -11,18 +11,19 @@ from backend import series
 
 
 class SeriesTests(unittest.TestCase):
-    def test_frames_render_normalized_power_and_mask_not_raw_rgb(self):
+    def test_frames_keep_browse_color_and_hide_missing_data(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'frame.webp'
-            q = np.full((12, 12), .07, dtype=np.float32)  # -10 dB
-            valid = np.ones(q.shape, bool)
-            valid[0, 0] = False
-            series.make_frame(q, valid, (0, 0, 12, 12), path)
+            rgb = np.zeros((12, 12, 3), np.uint8)
+            rgb[...] = (200, 60, 200)          # lila: HH alto y HV bajo, como en la vista previa
+            rgb[:6, :6] = 0                    # sin dato
+            series.make_frame(rgb, (0, 0, 12, 12), path)
             rgba = np.asarray(Image.open(path).convert('RGBA'))
-            self.assertEqual(rgba[0, 0, 3], 0)
-            self.assertEqual(rgba[6, 6, 3], 255)
-            self.assertLess(abs(int(rgba[6, 6, 0]) - 90), 2)
-            self.assertEqual(rgba[6, 6, 0], rgba[6, 6, 1])
+            self.assertEqual(rgba[1, 1, 3], 0)
+            self.assertEqual(rgba[9, 9, 3], 255)
+            rojo, verde, azul = (int(x) for x in rgba[9, 9, :3])
+            self.assertGreater(rojo - verde, 80)   # conserva el color: no es un gris
+            self.assertGreater(azul - verde, 80)
 
     def test_series_declares_reference_scale_and_invalidates_method_cache(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -40,7 +41,8 @@ class SeriesTests(unittest.TestCase):
                 first = series.build_series({'id': 'stack', 'scenes': scenes}, .5, .5)
                 self.assertEqual(first['method']['reference_date'], '2026-01-25')
                 self.assertEqual(first['method']['scale_db'], [-16, 1])
-                self.assertIn('hv_url', first['frames'][0])
+                self.assertEqual(first['method']['display'], 'browse_color')
+                self.assertEqual(sorted(first['frames'][0]), ['date', 'url'])
                 with patch.object(series, 'SERIES_VERSION', series.SERIES_VERSION + 1):
                     second = series.build_series({'id': 'stack', 'scenes': scenes}, .5, .5)
                 self.assertNotEqual(first['frames'][0]['url'], second['frames'][0]['url'])

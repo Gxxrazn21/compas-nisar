@@ -23,10 +23,14 @@ export function StoryPanel({ story, steps, step, dance, extra, onStep, onBack, o
   const { t, loc, lang } = useI18n();
   const total = steps.length;
   const activeRef = useRef<HTMLLIElement>(null);
-  // El paso activo siempre queda a la vista, aunque el panel tenga que desplazarse.
   // El paso activo siempre queda visible dentro del panel (que se desplaza solo en pantallas anchas;
   // en el celular se desplaza la hoja entera y no se toca).
+  const previous = useRef(step);
   useEffect(() => {
+    // Al abrir la historia en su primer paso se deja a la vista el título, no se baja al paso.
+    const moved = previous.current !== step;
+    previous.current = step;
+    if (!moved && step === 0) return;
     const item = activeRef.current;
     const panel = item?.closest<HTMLElement>('.panel');
     if (!item || !panel || panel.scrollHeight <= panel.clientHeight + 1) return;

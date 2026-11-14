@@ -1,6 +1,8 @@
-// Control «Contexto» de la barra del mapa: tres capas opcionales de NASA GIBS que se superponen
-// debajo del cambio de NISAR (agua vista por Sentinel-1, cobertura del suelo y población).
-import { ChevronLeft, ChevronRight, Layers } from 'lucide-react';
+// Capas de contexto de NASA GIBS, debajo del cambio de NISAR: agua vista por Sentinel-1, cobertura
+// del suelo (bosques, cultivos, ciudades) y población. Una franja sobre la barra del mapa las
+// enciende con un clic y deja a la vista su leyenda; los ajustes finos van en un panel aparte.
+import { ChevronLeft, ChevronRight, Droplets, SlidersHorizontal, Trees, Users, X } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useI18n } from '../../i18n';
 import type { Key } from '../../i18n/es';
@@ -27,6 +29,8 @@ export interface ContextProps {
   onLayer: (id: ContextId, opacity: number | null) => void;
   onStep: (delta: number) => void;
 }
+
+const ICONS: Record<ContextId, LucideIcon> = { agua: Droplets, suelo: Trees, poblacion: Users };
 
 function Legend({ items }: { items: LegendItem[] }) {
   const { lang } = useI18n();
@@ -145,12 +149,34 @@ function Item({ id, props }: { id: ContextId; props: ContextProps }) {
   );
 }
 
+/** Leyenda breve de una capa encendida: se lee sin abrir nada y sin tapar el mapa. */
+function QuickLegend({ id, props }: { id: ContextId; props: ContextProps }) {
+  const { t, lang } = useI18n();
+  return (
+    <div className="ctx-rapida">
+      <p className="ctx-rapida-titulo">
+        {t(`ctx.${id}.short` as Key)}
+        {id === 'agua' && <span> · {t('ctx.s1.on', { date: formatDate(props.date, lang) })}</span>}
+      </p>
+      {id === 'poblacion' ? (
+        <p className="ctx-rapida-rampa">
+          <span>{t('ctx.poblacion.low')}</span>
+          <span className="ctx-rampa" style={{ background: POPULATION_RAMP }} aria-hidden="true" />
+          <span>{t('ctx.poblacion.high')}</span>
+        </p>
+      ) : (
+        <Legend items={LEGEND[id]} />
+      )}
+    </div>
+  );
+}
+
 export function ContextControl(props: ContextProps) {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const button = useRef<HTMLButtonElement>(null);
-  const count = activeContext(props.layers).length;
+  const active = activeContext(props.layers);
 
   // Escape cierra el panel y devuelve el foco al botón.
   useEffect(() => {
@@ -168,6 +194,18 @@ export function ContextControl(props: ContextProps) {
     <div className="contexto" ref={root}>
       {open && (
         <section className="contexto-panel" id="contexto-panel" aria-label={t('ctx.title')}>
+          <button
+            type="button"
+            className="icono contexto-cerrar"
+            onClick={() => {
+              setOpen(false);
+              button.current?.focus();
+            }}
+            aria-label={t('ctx.close')}
+            title={t('ctx.close')}
+          >
+            <X size={18} aria-hidden="true" />
+          </button>
           <h3>{t('ctx.title')}</h3>
           <p className="ayuda">{t('ctx.intro')}</p>
           <ul className="ctx-lista">
@@ -178,22 +216,47 @@ export function ContextControl(props: ContextProps) {
           <p className="ayuda ctx-atribucion">{t('ctx.attr.full')}</p>
         </section>
       )}
-      <button
-        ref={button}
-        type="button"
-        className={count > 0 ? 'capa-contexto activa' : 'capa-contexto'}
-        aria-expanded={open}
-        aria-controls="contexto-panel"
-        onClick={() => setOpen((value) => !value)}
-      >
-        <Layers size={17} aria-hidden="true" />
-        {t('ctx.button')}
-        {count > 0 && (
-          <span className="ctx-cuenta" aria-label={t('ctx.active', { n: count })}>
-            {count}
-          </span>
-        )}
-      </button>
+      {!open && active.length > 0 && (
+        <div className="contexto-leyenda" role="group" aria-label={t('ctx.legend')}>
+          {active.map((id) => (
+            <QuickLegend key={id} id={id} props={props} />
+          ))}
+        </div>
+      )}
+      <div className="contexto-barra" role="group" aria-label={t('ctx.title')}>
+        <span className="contexto-rotulo" aria-hidden="true">
+          {t('ctx.button')}
+        </span>
+        {CONTEXT_IDS.map((id) => {
+          const Icon = ICONS[id];
+          const on = props.layers[id] !== undefined;
+          return (
+            <button
+              key={id}
+              type="button"
+              className="ctx-ficha"
+              aria-pressed={on}
+              title={t(`ctx.${id}.name` as Key)}
+              onClick={() => props.onLayer(id, on ? null : DEFAULT_OPACITY[id])}
+            >
+              <Icon size={16} aria-hidden="true" />
+              {t(`ctx.${id}.short` as Key)}
+            </button>
+          );
+        })}
+        <button
+          ref={button}
+          type="button"
+          className="icono ctx-ajustes"
+          aria-expanded={open}
+          aria-controls="contexto-panel"
+          aria-label={t('ctx.settings')}
+          title={t('ctx.settings')}
+          onClick={() => setOpen((value) => !value)}
+        >
+          <SlidersHorizontal size={17} aria-hidden="true" />
+        </button>
+      </div>
     </div>
   );
 }

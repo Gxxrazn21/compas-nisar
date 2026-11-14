@@ -10,12 +10,14 @@ interface Props {
   prefs: Prefs;
   onToggle: (key: keyof Prefs) => void;
   onClose: () => void;
+  /** Cierra la ayuda y abre el recorrido guiado. */
+  onTour?: () => void;
 }
 
 const STEPS = ['help.step.1', 'help.step.2', 'help.step.3'] as const;
 const PREFS: Array<keyof Prefs> = ['borders', 'names', 'sound', 'hints'];
 
-export function HelpDialog({ open, prefs, onToggle, onClose }: Props) {
+export function HelpDialog({ open, prefs, onToggle, onClose, onTour }: Props) {
   const { t } = useI18n();
   const ref = useRef<HTMLDialogElement>(null);
 
@@ -48,6 +50,11 @@ export function HelpDialog({ open, prefs, onToggle, onClose }: Props) {
             <li key={id}>{t(id)}</li>
           ))}
         </ol>
+        {onTour && (
+          <button type="button" className="secundario" onClick={onTour}>
+            {t('help.tour')}
+          </button>
+        )}
         <section aria-labelledby="guia-teclas-h">
           <h3 id="guia-teclas-h">{t('help.keys')}</h3>
           <dl className="guia-teclas">

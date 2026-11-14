@@ -8,6 +8,7 @@ import { CONTEXT, CONTEXT_IDS, contextTiles } from '../../lib/context';
 import type { ContextId, ContextLayers } from '../../lib/context';
 import type { FeatureCollection } from '../../lib/events';
 import { REFERENCE_LAYERS } from './reference';
+import { SATELLITE_LAYERS } from './satellite';
 
 export const FOOTPRINT = 'huella';
 export const EVENTS = 'eventos';
@@ -32,6 +33,7 @@ const TOP_LAYERS = [
   EVENTS,
   CLUSTERS,
   `${EVENTS}-sel`,
+  ...SATELLITE_LAYERS,
 ];
 
 const SINGLE = ['!', ['has', 'point_count']] as const;

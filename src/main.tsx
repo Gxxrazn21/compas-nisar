@@ -16,6 +16,7 @@ import './styles/score.css';
 import './styles/sections.css';
 import './styles/contexto.css';
 import './styles/guia.css';
+import './styles/recorrido.css';
 import { App } from './App';
 import { DemoApp } from './components/story/DemoApp';
 import { I18nProvider } from './i18n';

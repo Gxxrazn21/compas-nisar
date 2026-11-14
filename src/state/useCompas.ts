@@ -5,7 +5,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { api, isAbort } from '../api';
 import { aoiFromView, bboxOfPolygon } from '../lib/aoi';
 import { datesAroundEvent, hasPairAround } from '../lib/around';
-import { cameraFor, centerOfBounds, zoomForBounds, zoomForWindow } from '../lib/camera';
+import { cameraFor, centerOfBounds, globeZoom, zoomForBounds, zoomForWindow } from '../lib/camera';
+import { stateAt } from '../lib/orbit';
 import { contextDate as contextDateFor, stepOffset } from '../lib/context';
 import type { ContextId, ContextLayers } from '../lib/context';
 import { buildHash, parseHash } from '../lib/hash';
@@ -127,6 +128,8 @@ export interface Compas {
   live: Live;
   /** Cambia de pestaña en En vivo y devuelve el mapa a una vista donde se vea lo que la pestaña lista. */
   setLiveTab: (tab: LiveTab) => void;
+  /** Centra el mapa en la posición actual de NISAR, con el zoom de globo indicado. */
+  focusSatellite: (zoom?: number) => void;
   exploreFromLive: () => void;
   selectEvent: (id: string) => void;
   selectUrgent: (id: string) => void;
@@ -784,9 +787,22 @@ export function useCompas(reference: ReferenceChoice | null = null): Compas {
       live.select(null);
       // Las huellas urgentes ocupan poco: el globo se centra en la más reciente para que se vean.
       const latest = tab === 'urgent' && live.urgent.status === 'ready' ? live.urgent.data[0] : undefined;
-      view(latest ? latest.center : [-30, 14], GLOBE_ZOOM, prefersReducedMotion(), 1600);
+      // «NISAR ahora» gira el globo hasta donde está el satélite en este instante.
+      const orbit = tab === 'satellite' && live.satellite.state.status === 'ready' ? live.satellite.state.orbit : null;
+      const nisar = orbit ? stateAt(orbit, new Date()) : null;
+      if (nisar) view([nisar.lon, nisar.lat], globeZoom(GLOBE_ZOOM, nisar.lat), prefersReducedMotion(), 1600);
+      else view(latest ? latest.center : [-30, 14], GLOBE_ZOOM, prefersReducedMotion(), 1600);
     },
     [live, view],
+  );
+
+  const focusSatellite = useCallback(
+    (zoom = 3.4) => {
+      if (live.satellite.state.status !== 'ready') return;
+      const nisar = stateAt(live.satellite.state.orbit, new Date());
+      if (nisar) view([nisar.lon, nisar.lat], globeZoom(zoom, nisar.lat), prefersReducedMotion(), 1400);
+    },
+    [live.satellite.state, view],
   );
 
   const exploreFromLive = useCallback(() => {
@@ -868,6 +884,7 @@ export function useCompas(reference: ReferenceChoice | null = null): Compas {
     changeStack,
     live,
     setLiveTab,
+    focusSatellite,
     exploreFromLive,
     selectEvent,
     selectUrgent,

@@ -6,7 +6,8 @@
   border: 1px solid var(--linea);
   border-radius: var(--radio);
   padding: 20px 22px;
-  overflow-y: auto;
+  /* Solo se desplaza en vertical: un contenido más ancho no debe sacar una barra horizontal. */
+  overflow: hidden auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
   scrollbar-color: var(--linea) transparent;

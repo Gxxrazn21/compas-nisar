@@ -102,7 +102,6 @@ def _validate_payload(payload, manifest):
         raise ValueError('Método de serie incompatible.')
     urls = [u for name in ('change', 'zoom') for u in payload[name]['layers'].values() if u]
     urls += [frame['url'] for frame in payload['series']['frames']]
-    urls += [frame['hv_url'] for frame in payload['series']['frames'] if frame.get('hv_url')]
     for url in urls:
         if not url.startswith(PREFIX) or url[len(PREFIX):] not in manifest['files']:
             raise ValueError('Capa ausente o externa.')
@@ -169,8 +168,6 @@ def write_package(payload, destination=None, derived=None):
             probes[result['id']] = copy_asset(result['id'] + '/arrays.npz')
         for frame in data['series']['frames']:
             frame['url'] = local_url(frame['url'])
-            if frame.get('hv_url'):
-                frame['hv_url'] = local_url(frame['hv_url'])
         (staging / 'payload.json').write_text(json.dumps(data, ensure_ascii=False, allow_nan=False), encoding='utf-8')
         files['payload.json'] = _digest(staging / 'payload.json')
         manifest = {

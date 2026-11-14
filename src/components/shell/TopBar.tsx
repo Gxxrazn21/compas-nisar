@@ -1,4 +1,4 @@
-import { CaseSensitive, CircleHelp, SquareDashed } from 'lucide-react';
+import { CaseSensitive, CircleHelp, CirclePlay, SquareDashed } from 'lucide-react';
 import { useI18n } from '../../i18n';
 import type { Key } from '../../i18n/es';
 import type { Mode } from '../../lib/hash';
@@ -15,12 +15,14 @@ interface Props {
   onBorders: () => void;
   onNames: () => void;
   onHelp: () => void;
+  /** Abre el recorrido guiado; sin él, el botón no aparece. */
+  onTour?: () => void;
 }
 
 const LANGS: Lang[] = ['en', 'es'];
 const MODES: Mode[] = ['stories', 'explore', 'live'];
 
-export function TopBar({ mode, borders, names, onMode, onHome, onMethod, onBorders, onNames, onHelp }: Props) {
+export function TopBar({ mode, borders, names, onMode, onHome, onMethod, onBorders, onNames, onHelp, onTour }: Props) {
   const { t, lang, setLang } = useI18n();
   return (
     <header className="barra-superior">
@@ -64,6 +66,12 @@ export function TopBar({ mode, borders, names, onMode, onHome, onMethod, onBorde
             </button>
           ))}
         </div>
+        {onTour && (
+          <button type="button" className="enlace recorrido-boton" onClick={onTour} aria-label={t('tour.open')} title={t('tour.open')}>
+            <CirclePlay size={17} aria-hidden="true" />
+            <span>{t('tour.short')}</span>
+          </button>
+        )}
         <button type="button" className="enlace" onClick={onMethod}>
           {t('top.method')}
         </button>

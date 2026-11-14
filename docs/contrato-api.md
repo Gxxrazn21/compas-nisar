@@ -129,7 +129,7 @@ Serie temporal en un punto (media de `q` en una ventana de `(2·radius+1)²` pí
  "bounds":[w,s,e,n],"coordinates":[[w,n],[e,n],[e,s],[w,s]],
  "frames":[{"date":"2026-06-26","url":"/derived/series/HASH/2026-06-26.webp"}]}
 ```
-`hh_db` y `hv_db` son `null` cuando no hay dato. La versión 2 añade `frames[].hv_url` cuando existe HV. Ambos cuadros se generan desde la misma potencia normalizada que alimenta las notas, en gris con escala fija de −16 a +1 dB aproximados y alfa 0 sin dato, WebP sin pérdida y máximo 1024 px. `method` incluye `version: 2`, `normalization_version: 4`, `reference_date`, `reference_granule`, `scale_db`, `units: approximate_relative_db`, `calibrated: false`, `window_radius_pixels` y `display: normalized_grayscale`. Cada canal se normaliza por separado: la escala musical común no permite comparar potencia absoluta HH/HV. La reproducción avanza por observación cada 700 ms; se muestra el intervalo real en días. Las imágenes fallidas o sin respuesta en 20 segundos se excluyen, indicando fechas y reintento.
+`hh_db` y `hv_db` son `null` cuando no hay dato. Desde la versión 3, cada cuadro es la vista previa a color de la pasada tal como la publica la NASA (HH y HV en falso color: lila donde domina HH, verde donde domina HV), recortada a la ventana, con alfa 0 sin dato, WebP de calidad 80 y máximo 1024 px; el color es lo que deja ver el cambio de una fecha a otra. Las notas no salen de esos píxeles sino de la potencia normalizada: `method` incluye `version: 3`, `normalization_version: 4`, `reference_date`, `reference_granule`, `scale_db` (escala de las notas, de −16 a +1 dB aproximados), `units: approximate_relative_db`, `calibrated: false`, `window_radius_pixels` y `display: browse_color`. Cada canal se normaliza por separado: la escala musical común no permite comparar potencia absoluta HH/HV. El selector HH/HV de la partitura cambia las notas, no las imágenes. La reproducción avanza por observación cada 700 ms; se muestra el intervalo real en días. Las imágenes fallidas o sin respuesta en 20 segundos se excluyen, indicando fechas y reintento.
 
 ### `GET /api/image?url=&w=`
 Proxy con caché y redimensionado de una imagen browse. Solo acepta `https://nisar.asf.earthdatacloud.nasa.gov/…` terminado en `.png`; cualquier otra cosa → `422`. `w` entre 64 y 2048.
@@ -176,6 +176,14 @@ Buscador de lugares: convierte el nombre de una ciudad o una dirección en coord
  "source":"OpenStreetMap Nominatim"}
 ```
 `q` lleva de 2 a 120 caracteres (`422` si no). Sin coincidencias: `200` con lista vacía. Fallo del servicio: `502`. Se cumple la política de uso de Nominatim: cabecera `User-Agent`, una petición por segundo como máximo y caché en memoria de un día. La interfaz muestra el crédito «© colaboradores de OpenStreetMap».
+
+### `GET /api/satellite` (módulo `backend/satellite.py`)
+Elementos orbitales (TLE) de NISAR, catálogo NORAD 65053, tomados de CelesTrak. El navegador calcula con ellos la posición del satélite segundo a segundo (modelo SGP4, biblioteca `satellite.js`) y dibuja la traza de su órbita; el servidor no calcula posiciones.
+```json
+{"name":"NISAR","norad_id":65053,"line1":"1 65053U 25163A   26318.33841497 …","line2":"2 65053  98.4060 143.8397 …",
+ "epoch":"2026-11-14T08:07:19Z","source":"CelesTrak","fetched":1794694501.77}
+```
+El TLE se valida (suma de verificación de cada renglón y número de catálogo) y se guarda en `data/cache/satellite/65053.json`; se vuelve a pedir a CelesTrak cada 3 horas. Si CelesTrak no responde se entrega la última copia con `"stale": true`; sin copia en caché se usa la que viene incluida en el código (14 de noviembre de 2026). La interfaz muestra la antigüedad de los elementos y avisa cuando superan una semana. Es una estimación con un margen de pocos kilómetros, no telemetría de la misión.
 
 ### Archivos estáticos
 `/derived/…` sirve `data/cache/derived/` con `Cache-Control: public, max-age=31536000, immutable` (el identificador es un hash de la entrada). Las capas de `layers` son WebP RGBA: `before`, `after` y `composite` con pérdida (calidad 88), `change_hh` y `change_hv` con pérdida (calidad 90) y alfa sin pérdida, `classes` sin pérdida (colores exactos de la leyenda). En `dist/`, `/assets/*` es inmutable e `index.html` sale con `no-cache`. `/` sirve `dist/` si existe.

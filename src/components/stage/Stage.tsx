@@ -6,7 +6,9 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { useEffect, useRef, useState } from 'react';
 import type { RefObject } from 'react';
 import { useI18n } from '../../i18n';
+import { formatNumber } from '../../lib/format';
 import type { ContextLayers } from '../../lib/context';
+import type { Orbit } from '../../lib/orbit';
 import type { FeatureCollection } from '../../lib/events';
 import { zoomForBounds } from '../../lib/camera';
 import { prefersReducedMotion } from '../../state/useElapsed';
@@ -31,6 +33,7 @@ import {
 } from './overlays';
 import { coverPadding, coverZoom } from './padding';
 import { setReference } from './reference';
+import { trackSatellite } from './satellite';
 import type { Reference } from './reference';
 import { SwipeOverlay } from './SwipeOverlay';
 
@@ -54,7 +57,6 @@ export interface LiveLayers {
 }
 
 interface Props {
-  offline?: boolean;
   projection: 'globe' | 'mercator';
   camera: CameraTarget;
   change: ChangeResult | null;
@@ -79,6 +81,8 @@ interface Props {
   contextDate: string;
   /** Fronteras y nombres sobre el mapa. */
   reference: Reference;
+  /** Órbita de NISAR: con ella el satélite se dibuja y se mueve en vivo sobre el mapa. */
+  satellite?: Orbit | null;
   apiRef: RefObject<StageApi | null>;
 }
 
@@ -105,6 +109,8 @@ export function Stage(props: Props) {
   const pointRef = useRef<Marker | null>(null);
   const live = useRef(props);
   live.current = props;
+  /** Último orden de cámara atendido: evita repetir un vuelo al volver a pintar. */
+  const handled = useRef(-1);
   const firstCamera = useRef(camera);
   const firstOptical = useRef(props.opticalDate);
 
@@ -116,7 +122,7 @@ export function Stage(props: Props) {
     const padding = coverPadding(host);
     const instance = new maplibregl.Map({
       container: host,
-      style: baseStyle(projection, firstOptical.current ?? undefined, props.offline),
+      style: baseStyle(projection, firstOptical.current ?? undefined),
       center: start.kind === 'view' ? start.center : [-30, 14],
       zoom: start.kind === 'view' ? start.zoom : coverZoom(host, padding),
       attributionControl: false,
@@ -186,11 +192,12 @@ export function Stage(props: Props) {
       instance.remove();
       setMap(null);
       setReady(false);
+      // Un mapa nuevo debe volver a recibir la cámara vigente, aunque su orden ya se hubiera atendido.
+      handled.current = -1;
     };
   }, [projection]);
 
   // Cámara: portada con giro lento, o vuelo al lugar de la historia.
-  const handled = useRef(-1);
   useEffect(() => {
     const host = hostRef.current;
     if (!map || !host || handled.current === camera.nonce) return;
@@ -338,6 +345,16 @@ export function Stage(props: Props) {
   useEffect(() => {
     if (map && ready) setReference(map, { borders, names }, lang);
   }, [map, ready, borders, names, lang]);
+
+  // NISAR en vivo: marca y traza se actualizan solas mientras haya órbita.
+  const satellite = props.satellite ?? null;
+  useEffect(() => {
+    if (!map || !ready || !satellite) return;
+    return trackSatellite(map, satellite, {
+      marker: t('sat.marker'),
+      scale: (times) => (times === null ? t('sat.scaleReal') : t('sat.scaleUp', { n: formatNumber(times, lang, 0) })),
+    });
+  }, [map, ready, satellite, t, lang]);
 
   // Marcador de la sonda y del punto de exploración.
   useEffect(() => {

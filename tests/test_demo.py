@@ -93,14 +93,11 @@ class DemoTests(unittest.TestCase):
         self.assertEqual(self.client.get('/api/demo/mojana').status_code, 503)
         self.assertEqual(self.client.get(url).status_code, 503)
 
-    def test_hv_frames_are_copied_and_served_locally(self):
-        frame = self.derived / 'series/example/hv.webp'
-        frame.write_bytes(b'hv-fixture')
-        self.payload['series']['frames'][0]['hv_url'] = '/derived/series/example/hv.webp'
+    def test_series_frames_are_copied_and_served_locally(self):
         package = self.prepare()
-        url = package['series']['frames'][0]['hv_url']
+        url = package['series']['frames'][0]['url']
         self.assertTrue(url.startswith('/demo-data/mojana/'))
-        self.assertEqual(self.client.get(url).content, b'hv-fixture')
+        self.assertEqual(self.client.get(url).status_code, 200)
 
     def test_inconsistent_series_version_cannot_be_published(self):
         self.payload['series']['method']['version'] = -1

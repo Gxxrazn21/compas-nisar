@@ -95,7 +95,7 @@ export function useDance(target: DanceTarget | null, preparedSeries: SeriesResul
     return () => window.clearInterval(timer);
   }, [phase, playing, loop, frameCount]);
 
-  const startChannel = useCallback((selectedChannel: SeriesChannel) => {
+  const start = useCallback(() => {
     if (!target) return;
     abort.current?.abort();
     const controller = new AbortController();
@@ -117,9 +117,9 @@ export function useDance(target: DanceTarget | null, preparedSeries: SeriesResul
         setSeries(result);
         setTotalFrames(result.frames.length);
         setPhase('preload');
-        const loadedFrames = await preloadImages(result.frames.map((frame) => selectedChannel === 'hv' ? (frame.hv_url ?? '') : frame.url), setLoaded, controller.signal);
+        const loadedFrames = await preloadImages(result.frames.map((frame) => frame.url), setLoaded, controller.signal);
         if (controller.signal.aborted) return;
-        const playable = playableSeries(result, selectedChannel, loadedFrames);
+        const playable = playableSeries(result, loadedFrames);
         setFailedDates(result.frames.filter((_, i) => !loadedFrames[i]).map(frame => frame.date));
         setSeries(playable);
         if (!playable.frames.length) {
@@ -136,11 +136,8 @@ export function useDance(target: DanceTarget | null, preparedSeries: SeriesResul
       });
   }, [target, preparedSeries]);
 
-  const start = useCallback(() => startChannel(channel), [startChannel, channel]);
-  const setChannel = useCallback((value: SeriesChannel) => {
-    setChannelState(value);
-    if (phase !== 'idle') startChannel(value);
-  }, [phase, startChannel]);
+  // El canal solo cambia qué retorno suena y se dibuja en la partitura: los cuadros son los mismos.
+  const setChannel = setChannelState;
 
   const cancel = useCallback(() => {
     abort.current?.abort();

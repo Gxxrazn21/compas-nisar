@@ -9,6 +9,7 @@ import type {
   NaturalEvent,
   Place,
   ProbeResult,
+  SatelliteTle,
   SeriesResult,
   Stack,
   StacksResult,
@@ -171,6 +172,9 @@ export const api = {
     ),
 
   earthToday: (signal?: AbortSignal) => getJson<EarthToday>('/api/earth-today', signal),
+
+  /** Elementos orbitales de NISAR: con ellos el navegador calcula dónde está el satélite. */
+  satellite: (signal?: AbortSignal) => getJson<SatelliteTle>('/api/satellite', signal),
 };
 
 export function isAbort(error: unknown): boolean {

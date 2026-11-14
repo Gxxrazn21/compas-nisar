@@ -18,6 +18,7 @@ from .errors import ApiError, InvalidInput, NotFound
 from .extras import router as extras_router
 from .demo import router as demo_router
 from .places import router as places_router
+from .satellite import router as satellite_router
 
 VERSION = '0.2.0'
 
@@ -168,6 +169,8 @@ app.include_router(extras_router)
 # Buscador de lugares por nombre o dirección (OpenStreetMap Nominatim).
 app.include_router(places_router)
 app.include_router(demo_router)
+# Órbita de NISAR (TLE de CelesTrak) para mostrar dónde está el satélite ahora.
+app.include_router(satellite_router)
 
 # Estáticos: /derived siempre; el frontend compilado, si existe, va al final (captura todo lo demás).
 CACHE_INMUTABLE = 'public, max-age=31536000, immutable'

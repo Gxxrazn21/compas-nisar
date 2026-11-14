@@ -29,6 +29,16 @@ export function zoomForWindow(sizeKm: number, lat: number, px = 520): number {
   return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom));
 }
 
+/**
+ * Zoom que deja el globo del mismo tamaño aparente al centrarlo en otra latitud. El zoom de MapLibre
+ * sigue la escala de Mercator, que crece hacia los polos: sin compensar, un satélite a 80° de latitud
+ * llenaría la pantalla de hielo.
+ */
+export function globeZoom(zoom: number, lat: number): number {
+  const cosine = Math.max(Math.cos((Math.abs(lat) * Math.PI) / 180), 0.12);
+  return zoom + Math.log2(cosine);
+}
+
 export interface View {
   center: LonLat;
   zoom: number;

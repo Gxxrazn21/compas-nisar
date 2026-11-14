@@ -10,7 +10,7 @@ export const en: Record<Key, string> = {
   'score.noPoint': 'no point selected',
   'score.scale': 'HH and HV share a scale of −16 to +1 approximate dB relative to the scene. More return produces a higher note. These are measurements converted to sound, not audio captured by the satellite. Each channel is normalized independently, so their absolute powers cannot be compared.',
   'score.timing': 'One observation plays every 0.7 seconds. Dates and intervals show actual elapsed time; missing acquisitions are not interpolated.',
-  'score.reference': 'Images and notes are normalized to the {date} reference; each note averages a window with radius {radius} pixels around the point.',
+  'score.reference': 'Images are the color previews of each pass (HH in purple, HV in green). Notes are normalized to the {date} reference and average a window with radius {radius} pixels around the point.',
   'score.noValue': 'no return value',
   'score.value': '{channel}: {db} approximate dB',
   'dance.first': 'First observation',
@@ -207,7 +207,7 @@ export const en: Record<Key, string> = {
   'dance.prev': 'Previous frame',
   'dance.next': 'Next frame',
   'dance.frame': 'Frame {n} of {total}, {date}',
-  'dance.point': 'Each note rises or falls with the HH return at the center of the area.',
+  'dance.point': 'Each note rises or falls with the {channel} return at the marked point.',
   'dance.cancel': 'Cancel',
 
   'method.title': 'How the change is computed',
@@ -397,13 +397,13 @@ export const en: Record<Key, string> = {
   'live.title':
     'Live',
   'live.intro':
-    'What is happening on Earth right now and what NISAR has just observed.',
+    'What is happening on Earth right now, what NISAR has just observed and where it is flying.',
   'live.tabs':
     'What to show on the map',
   'live.tab.events':
-    'Natural events',
+    'Events',
   'live.tab.urgent':
-    'Urgent response',
+    'Urgent',
   'live.events.loading':
     'Fetching the events of the last few days…',
   'live.events.error':
@@ -447,9 +447,9 @@ export const en: Record<Key, string> = {
   'live.urgent.list':
     'Urgent acquisitions, newest first',
   'live.sources':
-    'Sources: events from NASA EONET; NISAR urgent-response acquisitions from ASF DAAC.',
+    'Sources: events from NASA EONET; NISAR urgent-response acquisitions from ASF DAAC; NISAR orbit from CelesTrak.',
   'live.footer':
-    'Events: NASA EONET. Acquisitions: NISAR, NASA and ISRO, via ASF. Satellite imagery: Esri, Maxar, Earthstar Geographics and the GIS user community.',
+    'Events: NASA EONET. Acquisitions: NISAR, NASA and ISRO, via ASF. Orbit: CelesTrak. Satellite imagery: Esri, Maxar, Earthstar Geographics and the GIS user community.',
   'cat.wildfires':
     'Wildfires',
   'cat.floods':
@@ -629,12 +629,10 @@ export const en: Record<Key, string> = {
     'It is the daily true-color image from the VIIRS satellite (NASA GIBS) on the “after” date. It shows what an optical satellite sees: often, clouds. NISAR’s radar sees the same area through them, which is why it is worth looking at both together.',
   'ctx.button':
     'Context',
-  'ctx.active':
-    '{n} active layers',
   'ctx.title':
     'Context layers',
   'ctx.intro':
-    'NASA layers to see what surrounds the change. They sit beneath the NISAR change.',
+    'NASA layers to see what surrounds the change: where there is water, what covers the land and how many people live there. They sit beneath the NISAR change.',
   'ctx.agua.name':
     'Water seen by Sentinel-1',
   'ctx.agua.what':
@@ -859,4 +857,214 @@ export const en: Record<Key, string> = {
     'Click a violet footprint or a row in the list to see that acquisition.',
   'hint.liveSelected':
     'The gold button in the panel takes you to the NISAR passes over this point.',
+  'ctx.agua.short':
+    'Water',
+  'ctx.suelo.short':
+    'Forests and land',
+  'ctx.poblacion.short':
+    'Population',
+  'ctx.settings':
+    'Adjust the context layers: opacity, date and explanation',
+  'ctx.close':
+    'Close the context settings',
+  'ctx.s1.on':
+    'Sentinel-1, {date}',
+  'ctx.poblacion.low':
+    'fewer than 1',
+  'ctx.poblacion.high':
+    '1,000 or more people per km²',
+  'hint.liveSatellite':
+    'The model is NISAR at this instant; the gold band, what its radar can see; the dashed line, its next lap.',
+  'live.tab.satellite':
+    'NISAR now',
+  'sat.marker':
+    'NISAR drawn to scale, at its position right now',
+  'sat.loading':
+    'Fetching the NISAR orbit…',
+  'sat.error':
+    'Could not get the NISAR orbit. Check your connection and try again.',
+  'sat.over':
+    'Right now NISAR is flying over',
+  'sat.north': 'N',
+  'sat.south': 'S',
+  'sat.east': 'E',
+  'sat.west': 'W',
+  'sat.altitude':
+    'Altitude',
+  'sat.speed':
+    'Speed',
+  'sat.speedValue':
+    '{kms} km/s ({kmh} km/h)',
+  'sat.heading':
+    'Heading',
+  'sat.ascending':
+    'Northbound',
+  'sat.descending':
+    'Southbound',
+  'sat.period':
+    'One orbit every',
+  'sat.periodValue':
+    '{min} minutes',
+  'sat.time':
+    'Universal time',
+  'sat.focus':
+    'Center the map on NISAR',
+  'sat.track':
+    'The dotted gold line is the path of its next orbit; the pale one, the last {minutes} minutes. NISAR passes over the same place again every 12 days: that is the beat of the score.',
+  'sat.source':
+    'Position computed with the SGP4 orbital model from the elements CelesTrak published {age}. It is an estimate within a few kilometres, not mission telemetry.',
+  'sat.ageHours':
+    '{n} h ago',
+  'sat.ageDays':
+    '{n} days ago',
+  'sat.old':
+    'The orbital elements are more than a week old or could not be refreshed: the position may be off.',
+  'sat.scaleUp':
+    'enlarged {n} times',
+  'sat.scaleReal':
+    'at true size',
+  'sat.swath':
+    'The gold band is the ground its radar can see: more than 240 km wide, to the left of its heading and at true scale on the map. It is what the radar can observe, not confirmation that it is recording.',
+  'sat.model':
+    'The satellite is drawn with its real proportions. It measures about 17 m end to end, so on the map it appears enlarged; the label says by how much.',
+  'sat.tour':
+    'See how NISAR works',
+  'tour.open':
+    'Guided tour',
+  'tour.short':
+    'Tour',
+  'tour.label':
+    'Compás guided tour',
+  'tour.chapters':
+    'Tour chapters',
+  'tour.chapter.satellite':
+    'The satellite',
+  'tour.chapter.observe':
+    'How it observes',
+  'tour.chapter.app':
+    'How to use it',
+  'tour.controls':
+    'Tour controls',
+  'tour.stepOf':
+    'Step {n} of {total}',
+  'tour.play':
+    'Resume the tour',
+  'tour.pause':
+    'Pause the tour',
+  'tour.prev':
+    'Previous step',
+  'tour.next':
+    'Next step',
+  'tour.close':
+    'Close the tour',
+  'tour.restart':
+    'Replay',
+  'tour.finish':
+    'Start using Compás',
+  'tour.figure':
+    'NISAR drawn to scale',
+  'tour.figureDimensions':
+    'NISAR drawn to scale with its measurements: 12-meter antenna, 9-meter boom, 5.5-meter body and 5.5-meter solar arrays, next to a person 1.75 meters tall',
+  'tour.figureNote':
+    'Measurements published by NASA/JPL. The layout is schematic.',
+  'tour.dim.reflector':
+    '12 m',
+  'tour.dim.boom':
+    '9 m',
+  'tour.dim.body':
+    '5.5 m',
+  'tour.dim.solar':
+    '5.5 m',
+  'tour.dim.person':
+    '1.75 m',
+  'cover.tour':
+    'Watch the guided tour',
+  'cover.tourHelp':
+    'About five minutes, and it plays by itself: the satellite part by part, how it observes and how to use Compás.',
+  'help.tour':
+    'Watch the guided tour',
+  'tour.now.title':
+    'This is NISAR, right now',
+  'tour.now.text':
+    'NISAR is a radar satellite from NASA and ISRO, India’s space agency. It launched on July 30, 2025 and circles Earth every 100 minutes, 747 km up. The model moves on the map in real time, using the orbit published by CelesTrak.',
+  'tour.scale.title':
+    'Drawn to scale',
+  'tour.scale.text':
+    'The drawing keeps the real measurements: a 12 m antenna, wider than a tennis court, at the end of a 9 m boom. At true size it would not fill a single pixel of the map, so it appears enlarged; the label under the satellite says by how much.',
+  'tour.reflector.title':
+    'The antenna reflector',
+  'tour.reflector.text':
+    'A gold-plated wire mesh stretched across a 12 m ring. It works as a mirror for microwaves: it focuses the radar pulse toward Earth and gathers the echo that returns. It traveled folded and opened in orbit.',
+  'tour.boom.title':
+    'The boom',
+  'tour.boom.text':
+    'It holds the antenna 9 m from the satellite body, at just the distance and angle for the radar to light it from below and for the beam to come down tilted toward Earth.',
+  'tour.radar.title':
+    'Two radars in one',
+  'tour.radar.text':
+    'NASA’s L-band radar uses 24 cm waves that pass through foliage and sense the ground and ice. ISRO’s S-band radar uses 9.4 cm waves, more sensitive to crops and low vegetation. Both transmit toward the antenna from the gold plate.',
+  'tour.solar.title':
+    'The solar arrays',
+  'tour.solar.text':
+    'Two 5.5 m wings, three panels each, deliver about 5 kilowatts. NISAR flies along the line between day and night, so it almost never enters Earth’s shadow and has sunlight for the radar nearly all the time.',
+  'tour.bus.title':
+    'The satellite body',
+  'tour.bus.text':
+    'ISRO built it. It carries the computers, the battery, the propellant and the reaction wheels that keep the radar pointed. With the instrument on top it stands 5.5 m tall, and the whole satellite weighed close to 2,400 kg at launch.',
+  'tour.antenna.title':
+    'The data antenna',
+  'tour.antenna.text':
+    'The radar produces a huge amount of information: up to 26 terabits per day. This Ka-band antenna sends it to ground stations. That is where the open NISAR products that Compás queries come from.',
+  'tour.orbit.title':
+    'One lap every 100 minutes',
+  'tour.orbit.text':
+    'The dashed line is its next lap; the pale one, the last 25 minutes. NISAR passes near both poles while Earth turns beneath it. After 173 laps, every 12 days, it repeats the same path: that is the beat (compás) the application is named after.',
+  'tour.swath.title':
+    'It looks sideways',
+  'tour.swath.text':
+    'The gold band is what its radar can see: more than 240 km wide, to the left of its heading and at true scale. It looks sideways to tell near from far by how long the echo takes. It is the area it can observe, not confirmation that it is recording.',
+  'tour.echo.title':
+    'It listens for the echo',
+  'tour.echo.text':
+    'NISAR does not take photos: it sends microwave pulses and measures how much comes back. Still water returns little and looks dark; forests and cities return a lot. Because it carries its own light, it sees at night and through clouds.',
+  'tour.stories.title':
+    'Stories',
+  'tour.stories.text':
+    'Compás starts here. Each story is a real place where something changed between two radar passes. Let’s open one.',
+  'tour.story.title':
+    'A story, step by step',
+  'tour.story.text':
+    'The left panel tells the story in steps. Each step moves the map and changes what it shows: the place, the before, the after and what changed. Move with “Previous” and “Next”.',
+  'tour.layers.title':
+    'The map layers',
+  'tour.layers.text':
+    'This bar chooses what you see: the before image, the after image, the change in color, or a curtain you drag to compare the two dates, as shown now. In the change layers, blue is less radar return and red is more.',
+  'tour.reading.title':
+    'The reading',
+  'tour.reading.text':
+    'On the right, what changed in plain words: how many km² and of what kind. The class list is also the map legend. Every change is called “possible”: radar gives clues, and provenance and limits are always in view.',
+  'tour.probe.title':
+    'Measure a point',
+  'tour.probe.text':
+    'A click on the map measures that point: how much the return rose or fell between the two dates. The tour has just queried one for you; the result appears in the reading panel.',
+  'tour.score.title':
+    'The score',
+  'tour.score.text':
+    'Below, time is a musical staff. Each note is a NISAR pass over this place and each bar line marks 12 days. Pick one note for “before”, another for “after”, and press “Compare these dates”.',
+  'tour.dance.title':
+    'The dance',
+  'tour.dance.text':
+    '“Watch the dance” plays every pass in order and makes them sound: more return, higher note. It helps you see when a change began and how it went on.',
+  'tour.explore.title':
+    'Explore',
+  'tour.explore.text':
+    'Here you choose. Search for a place or click any point on the map, and Compás lists the NISAR passes that cover it. With two dates picked you get the same reading as in the stories.',
+  'tour.live.title':
+    'Live',
+  'tour.live.text':
+    'The natural events NASA is tracking right now: wildfires, storms, volcanoes. From any of them you can jump to Explore and see what NISAR captured before and after. Urgent acquisitions and the satellite in real time are here too.',
+  'tour.end.title':
+    'Your turn',
+  'tour.end.text':
+    'You now know the satellite and the application. Pick a story, explore your own region or follow NISAR live. The tour stays in the top bar if you want to watch it again.',
 };

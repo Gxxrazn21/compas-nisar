@@ -1,57 +1,148 @@
-/* Control «Contexto» de la barra del mapa y sus capas de NASA GIBS. */
+/* Capas de contexto de NASA GIBS: franja de fichas sobre la barra del mapa, leyenda y ajustes. */
+
+/* Ocupa el hueco libre del mapa, entre el panel izquierdo y el de lectura, justo sobre la barra */
 .contexto {
-  position: relative;
+  position: fixed;
+  z-index: 16;
+  left: calc(var(--ancho-izq) + 2 * var(--margen));
+  right: var(--margen);
+  bottom: calc(var(--pila-inferior, 300px) - 4px);
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
 }
 
-.capa-contexto {
-  display: inline-flex;
+.con-lectura:not(.lectura-plegada) .contexto {
+  right: calc(var(--ancho-der) + 2 * var(--margen));
+}
+
+.contexto > * {
+  pointer-events: auto;
+}
+
+.contexto-barra {
+  display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 14px;
-  font-size: var(--t15);
-  font-weight: 500;
-  color: var(--papel);
+  gap: 4px;
+  max-width: 100%;
+  padding: 4px;
   background: var(--panel-92);
   border: 1px solid var(--linea);
   border-radius: var(--radio);
+}
+
+.contexto-rotulo {
+  padding: 0 8px 0 10px;
+  font-size: var(--t13);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--bruma);
+}
+
+.ctx-ficha {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 5px 12px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: var(--t15);
+  font-weight: 500;
+  color: var(--papel);
   white-space: nowrap;
 }
 
-.capa-contexto:hover {
+.ctx-ficha:hover {
   border-color: var(--bruma);
 }
 
-.capa-contexto[aria-expanded='true'] {
-  background: var(--relieve);
-}
-
-.capa-contexto.activa {
-  border-color: var(--oro);
-}
-
-.ctx-cuenta {
-  display: inline-grid;
-  place-items: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 5px;
-  border-radius: 10px;
+.ctx-ficha[aria-pressed='true'] {
   background: var(--oro);
   color: var(--noche);
-  font-size: var(--t13);
   font-weight: 600;
-  line-height: 1;
 }
 
-/* Flota en la franja libre del mapa, entre el panel izquierdo y el de lectura, justo sobre la barra */
+.ctx-ajustes {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  background: none;
+  color: var(--bruma);
+}
+
+.ctx-ajustes:hover,
+.ctx-ajustes[aria-expanded='true'] {
+  background: var(--relieve);
+  color: var(--papel);
+}
+
+/* Leyenda breve de las capas encendidas */
+.contexto-leyenda {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 100%;
+  padding: 8px 12px;
+  background: var(--panel-92);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+}
+
+.ctx-rapida {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+}
+
+.ctx-rapida-titulo {
+  font-size: var(--t13);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ctx-rapida-titulo span {
+  font-weight: 400;
+  color: var(--bruma);
+}
+
+.ctx-rapida .ctx-leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 14px;
+}
+
+.ctx-rapida .ctx-leyenda li {
+  white-space: nowrap;
+}
+
+.ctx-rapida .ctx-muestra {
+  width: 22px;
+  height: 12px;
+}
+
+.ctx-rapida-rampa {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--t13);
+  white-space: nowrap;
+}
+
+.ctx-rapida-rampa .ctx-rampa {
+  width: 150px;
+}
+
+/* Ajustes y explicación de cada capa */
 .contexto-panel {
-  position: fixed;
-  z-index: 25;
-  left: calc(var(--ancho-izq) + 2 * var(--margen));
-  bottom: var(--pila-inferior, 300px);
-  width: clamp(340px, calc(100vw - var(--ancho-izq) - var(--ancho-der) - 4 * var(--margen)), 430px);
-  max-height: calc(100dvh - var(--alto-barra) - var(--pila-inferior, 300px) - 8px);
+  position: relative;
+  width: min(100%, 440px);
+  max-height: calc(100dvh - var(--alto-barra) - var(--pila-inferior, 300px) - 64px);
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -61,6 +152,22 @@
   border: 1px solid var(--linea);
   border-radius: var(--radio);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.contexto-cerrar {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  background: none;
+  color: var(--bruma);
+}
+
+.contexto-cerrar:hover {
+  background: var(--relieve);
+  color: var(--papel);
 }
 
 .contexto-panel h3 {
@@ -259,14 +366,26 @@
   }
 
   .hoja .contexto {
+    position: static;
     flex: 1 1 100%;
     flex-direction: column-reverse;
+    align-items: stretch;
     gap: 8px;
   }
 
-  .hoja .capa-contexto {
+  .hoja .contexto-barra {
+    flex-wrap: wrap;
+  }
+
+  .hoja .ctx-ficha {
     min-height: 44px;
+    flex: 1 1 auto;
     justify-content: center;
+  }
+
+  .hoja .ctx-ajustes {
+    width: 44px;
+    height: 44px;
   }
 
   .hoja .contexto-panel {

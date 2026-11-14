@@ -12,12 +12,13 @@ El ciclo nominal de NISAR es de 12 días; las adquisiciones disponibles pueden t
 
 - **Historias.** Cuatro recorridos guiados con datos reales: las ciénagas de La Mojana (Colombia) entre junio y octubre de 2026, las parcelas agrícolas del valle de San Joaquín (Estados Unidos) entre el verano y la cosecha, el deshielo de verano del casquete Vatnajökull (Islandia) y los interferogramas sobre la isla de Hawái.
 - **Por qué cambió.** Cada clase de cambio trae su hipótesis física, otras causas posibles y la polarización que la revela.
-- **Contexto.** Capas opcionales de NASA: agua superficial vista por Sentinel-1 (otro radar, de banda C), cobertura del suelo y densidad de población.
+- **Contexto.** Capas opcionales de NASA que se encienden con un clic sobre la barra del mapa: agua superficial vista por Sentinel-1 (otro radar, de banda C), bosques y cobertura del suelo, y densidad de población. La leyenda de cada capa encendida queda a la vista.
 - **Explorar.** Un clic en cualquier punto del globo, o el nombre de una ciudad o una dirección, consulta el catálogo de NASA, lista las series de pasadas que cubren ese punto y permite comparar dos fechas.
 - **Lectura del cambio.** Mapa de aumento y disminución del retorno del radar, clases de cambio con su área en km², sonda por punto, histograma, procedencia de cada dato y límites del análisis.
-- **La danza.** Animación de todas las pasadas de una serie, con la partitura siguiendo el ritmo. Cada nota suena a la altura a la que está dibujada: más retorno del radar, más aguda. El altavoz de la partitura (o la tecla M) lo apaga.
+- **La danza.** Animación a color de todas las pasadas de una serie (lila donde domina HH, verde donde domina HV), con la partitura siguiendo el ritmo. Cada nota suena a la altura a la que está dibujada: más retorno del radar, más aguda. El altavoz de la partitura (o la tecla M) lo apaga.
 - **Lupa calibrada.** Con un token de Earthdata, lee una ventana del producto científico completo desde la nube de NASA. Obtiene el espaciado de los metadatos y promedia en potencia; el caso preparado de La Mojana tiene celdas de 30 m.
-- **En vivo.** Eventos naturales recientes de NASA EONET y las últimas adquisiciones de respuesta urgente de NISAR, con acceso directo a explorar cada lugar.
+- **En vivo.** Eventos naturales recientes de NASA EONET, las últimas adquisiciones de respuesta urgente de NISAR, con acceso directo a explorar cada lugar, y «NISAR ahora»: el satélite dibujado a escala (antena de 12 m, brazo de 9 m, paneles de 5,5 m) en su posición de este instante, la franja de más de 240 km que su radar alcanza a ver a la izquierda del rumbo y el recorrido de su próxima vuelta, calculados con los elementos orbitales de CelesTrak. La franja se comprobó contra la huella real de una pasada sobre La Mojana.
+- **Recorrido guiado.** Unos cinco minutos que avanzan solos, con pausa y capítulos: el satélite pieza por pieza, cómo observa y para qué sirve cada zona de Compás. Mientras explica, la aplicación hace lo que cuenta (sigue a NISAR, abre una historia, cambia de capa, mide un punto, pone la danza). Se abre desde «Recorrido» en la barra superior, la portada, «NISAR ahora» o la ayuda.
 - **Fronteras y nombres.** Fronteras de países, límites de departamentos o estados y nombres con su punto, dibujados sobre los datos. Se quitan y se ponen desde la barra superior (teclas B y N).
 - **Ayuda y atajos.** El botón de ayuda (tecla ?) explica el uso en tres pasos y lista los atajos de teclado. Una pista sobre el mapa indica el paso siguiente en cada vista y se puede ocultar.
 - Interfaz en inglés y español. Abre en inglés; el idioma se cambia en la barra superior (o con `#lang=es` en el enlace) y la elección se recuerda. Cada vista tiene un enlace permanente.
@@ -45,6 +46,7 @@ El ciclo nominal de NISAR es de 12 días; las adquisiciones disponibles pueden t
 | NASA GIBS, GPW 2020 | Densidad de población | Público |
 | Esri World Imagery | Mapa base satelital | Público |
 | OpenStreetMap Nominatim | Buscador de ciudades y direcciones en Explorar | Público |
+| CelesTrak (elementos orbitales de NISAR, NORAD 65053) | Posición del satélite en «NISAR ahora», calculada con el modelo SGP4 | Público |
 | Natural Earth | Fronteras, límites internos y nombres sobre el mapa (archivos en `public/ref/`) | Dominio público |
 
 No se usan datos sintéticos. Todo lo que aparece en pantalla viene de estos servicios. El buscador de lugares solo traduce un nombre a coordenadas; los datos de radar siguen siendo los de NISAR.
@@ -217,7 +219,7 @@ Código bajo licencia MIT (ver `LICENSE`). Los datos pertenecen a sus fuentes y 
 
 ## Créditos
 
-Datos de NISAR por cortesía de NASA, ISRO y el Alaska Satellite Facility DAAC. Eventos de NASA EONET. Imagen diaria de NASA EPIC. Teselas de NASA GIBS y de Esri (Esri, Maxar, Earthstar Geographics y la comunidad de usuarios de GIS). Búsqueda de lugares con Nominatim, © colaboradores de OpenStreetMap. Fronteras y nombres de Natural Earth (dominio público). Proyecto independiente: no es un producto oficial de NASA ni de ISRO.
+Datos de NISAR por cortesía de NASA, ISRO y el Alaska Satellite Facility DAAC. Eventos de NASA EONET. Imagen diaria de NASA EPIC. Teselas de NASA GIBS y de Esri (Esri, Maxar, Earthstar Geographics y la comunidad de usuarios de GIS). Búsqueda de lugares con Nominatim, © colaboradores de OpenStreetMap. Elementos orbitales de NISAR de CelesTrak; posición calculada con satellite.js (SGP4). Fronteras y nombres de Natural Earth (dominio público). Proyecto independiente: no es un producto oficial de NASA ni de ISRO.
 
 ## English summary
 
