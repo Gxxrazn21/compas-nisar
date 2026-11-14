@@ -1,0 +1,2 @@
+# Preservar los bytes del paquete: el manifiesto verifica SHA-256 al abrirlo.
+data/demo/mojana/** -text

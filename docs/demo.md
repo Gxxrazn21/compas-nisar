@@ -4,10 +4,9 @@ La portada ofrece **Recorrido guardado**. También se abre con `/?demo=mojana`. 
 
 ## Preparación y uso
 
-Desde la raíz del proyecto, con dependencias instaladas y `EARTHDATA_TOKEN` configurado localmente:
+El repositorio incluye el paquete verificado de La Mojana. Para probarlo después de instalar las dependencias no se necesita Earthdata:
 
 ```powershell
-python -X utf8 scripts/prepare_demo.py
 python -X utf8 scripts/prepare_demo.py --verify
 npm.cmd run build
 python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
@@ -15,13 +14,13 @@ python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
 
 Abrir `http://127.0.0.1:8000/?demo=mojana`. Para desarrollo, Vite también redirige `/demo-data` al backend. El paquete actual fue preparado el 14 de noviembre de 2026 con productos reales de las fechas declaradas en la historia.
 
-La preparación necesita acceso a CMR/ASF y Earthdata. Después, el servidor local entrega el paquete sin token ni consultas externas. Se deben conservar `dist/`, `public/ref` incorporado al build y `data/demo/mojana/`; apagar el servidor local impide usar la app. Los enlaces externos de contraste requieren internet. No se implementó un service worker ni una app instalable completamente autónoma.
+Para regenerar el paquete, ejecutar `python -X utf8 scripts/prepare_demo.py` con acceso a CMR/ASF y `EARTHDATA_TOKEN` configurado localmente. Después, el servidor local entrega el paquete sin token ni consultas externas. Se deben conservar `dist/`, `public/ref` incorporado al build y `data/demo/mojana/`; apagar el servidor local impide usar la app. Los enlaces externos de contraste requieren internet. No se implementó un service worker ni una app instalable completamente autónoma.
 
 ## Qué se guarda
 
 - Capas browse y calibradas, cuadros HH/HV, valores de la serie y arrays de sonda.
 - Productos identificados, versiones, fecha de preparación y manifiesto SHA-256 con tamaños.
-- Archivos separados de la caché evictable, en `data/demo/mojana/` (ignorado por Git).
+- Archivos separados de la caché evictable, en `data/demo/mojana/`, incluidos en Git para compartir la demostración. Los demás paquetes generados siguen ignorados.
 
 No se incluyen credenciales ni URLs firmadas. Una nueva preparación verifica un directorio temporal antes de reemplazar el paquete anterior. Archivo faltante, hash incorrecto o método incompatible produce error explícito; nunca cae silenciosamente al modo en vivo. La preparación se repite tras cambiar las versiones del método.
 
@@ -45,7 +44,7 @@ El HTML lleva la capa HH incorporada, fechas, límites geográficos, productos, 
 
 ## Volver a la versión anterior
 
-Punto guardado **antes de modificar la aplicación**: etiqueta `respaldo/antes-mejoras-impacto-2026-11-14`, commit `f0ae5d1bce57704f15731ace5c4ed7852ee799b1`. Incluye la auditoría y conserva el código previo `43bc197`. Las mejoras están en `mejoras/impacto-cientifico`; `main` conserva el punto anterior.
+Punto guardado **antes de modificar la aplicación**: etiqueta `respaldo/antes-mejoras-impacto-2026-11-14`, commit `f0ae5d1bce57704f15731ace5c4ed7852ee799b1`. Incluye la auditoría y conserva el código previo `43bc197`. Las mejoras se desarrollaron en `mejoras/impacto-cientifico` y se integran en `main` por solicitud del usuario. La etiqueta conserva el punto anterior independientemente del avance de las ramas.
 
 Para recuperar el estado anterior en otra carpeta, conservando las mejoras:
 
