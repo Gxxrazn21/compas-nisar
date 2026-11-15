@@ -12,6 +12,7 @@ CMR_GRANULES = f'{config.CMR}/granules.umm_json'
 QUALITY_BY_COLLECTION = {
     'NISAR_L2_GCOV_V1': 'validated',
     'NISAR_L2_GCOV_PROVISIONAL_V1': 'provisional',
+    'NISAR_UR_L2': 'provisional',
     'NISAR_L2_GCOV_BETA_V1': 'beta',
 }
 QUALITY_RANK = {'validated': 3, 'provisional': 2, 'beta': 1}
@@ -81,7 +82,8 @@ def normalize_granule(item):
         (u for u in urls if u.endswith('_thumbnail.png')), None)
     atributos = _atributos(umm)
     partes = granulo.split('_')
-    calidad = QUALITY_BY_COLLECTION.get(coleccion)
+    es_ur_no_gcov = coleccion == 'NISAR_UR_L2' and (len(partes) <= 3 or partes[3] != 'GCOV')
+    calidad = None if es_ur_no_gcov else QUALITY_BY_COLLECTION.get(coleccion)
     return {
         'id': item.get('meta', {}).get('concept-id', granulo),
         'granule': granulo,
@@ -124,13 +126,22 @@ def scene_public(registro):
     }
 
 
+def _clave_dedupe(registro):
+    return (
+        registro['analyzable'],
+        QUALITY_RANK[registro['quality']],
+        registro.get('collection') != 'NISAR_UR_L2',
+        len(registro.get('polarizations') or []),
+    )
+
+
 def dedupe_by_date(registros):
-    """Una escena por fecha: prefiere las analizables y luego validada > provisional > beta."""
+    """Una escena por fecha: prefiere las analizables y luego validada > provisional > urgente > beta."""
     mejores = {}
     for registro in registros:
-        clave = (registro['analyzable'], QUALITY_RANK[registro['quality']])
+        clave = _clave_dedupe(registro)
         actual = mejores.get(registro['date'])
-        if actual is None or clave > (actual['analyzable'], QUALITY_RANK[actual['quality']]):
+        if actual is None or clave > _clave_dedupe(actual):
             mejores[registro['date']] = registro
     return [mejores[fecha] for fecha in sorted(mejores)]
 
@@ -224,7 +235,8 @@ def _consultar(params, ttl=600):
 
 
 def _gcov_params():
-    return [('short_name', 'NISAR_L2_GCOV*'), ('options[short_name][pattern]', 'true'),
+    return [('short_name', 'NISAR_L2_GCOV*'), ('short_name', 'NISAR_UR_L2'),
+            ('options[short_name][pattern]', 'true'), ('attribute[]', 'string,PRODUCT_TYPE,GCOV'),
             ('page_size', '2000'), ('sort_key', 'start_date')]
 
 

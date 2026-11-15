@@ -56,11 +56,23 @@ class NormalizacionTests(unittest.TestCase):
         self.assertTrue(r['browse_url'].endswith('_LATLON.png'))
 
     def test_urgente(self):
-        r = catalog.normalize_urgent(catalog.normalize_granule(cargar('cmr_ur.json')['items'][0]))
+        bruto = cargar('cmr_ur.json')['items'][0]
+        reg_gcov = catalog.normalize_granule(bruto)
+        self.assertEqual(reg_gcov['quality'], 'provisional')
+        self.assertTrue(reg_gcov['analyzable'])
+        r = catalog.normalize_urgent(reg_gcov)
         self.assertEqual(r['product'], 'GCOV')
         self.assertEqual(r['stack'], '091_D_077')
         self.assertEqual(len(r['center']), 2)
         self.assertTrue(r['browse_url'].endswith('_LATLON.png'))
+
+        bruto_gslc = copy.deepcopy(bruto)
+        bruto_gslc['umm']['GranuleUR'] = bruto_gslc['umm']['GranuleUR'].replace('_GCOV_', '_GSLC_', 1)
+        reg_gslc = catalog.normalize_granule(bruto_gslc)
+        self.assertIsNone(reg_gslc['quality'])
+        self.assertFalse(reg_gslc['analyzable'])
+        self.assertEqual(catalog.build_stacks([reg_gslc]), [])
+        self.assertEqual(catalog.normalize_urgent(reg_gslc)['product'], 'GSLC')
 
 
 class DeduplicacionTests(unittest.TestCase):
@@ -79,6 +91,11 @@ class DeduplicacionTests(unittest.TestCase):
             self.assertEqual(len(unico), 1)
             self.assertEqual(unico[0]['quality'], 'validated')
         self.assertEqual(catalog.dedupe_by_date([beta, provisional])[0]['id'], 'P')
+        urgente = self._copia(por_calidad['provisional'], date=fecha, id='U', collection='NISAR_UR_L2')
+        self.assertEqual(catalog.dedupe_by_date([urgente, provisional])[0]['id'], 'P')
+        self.assertEqual(catalog.dedupe_by_date([provisional, urgente])[0]['id'], 'P')
+        self.assertEqual(catalog.dedupe_by_date([beta, urgente])[0]['id'], 'U')
+        self.assertEqual(catalog.dedupe_by_date([urgente, validada])[0]['quality'], 'validated')
 
     def test_ordena_por_fecha_y_agrupa_en_pila(self):
         pilas = catalog.build_stacks(registros_gcov())

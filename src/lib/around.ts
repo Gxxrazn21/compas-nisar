@@ -33,3 +33,30 @@ export function hasPairAround(scenes: Scene[], eventIso: string): boolean {
   const around = datesAroundEvent(scenes, eventIso);
   return Boolean(around.before && around.after);
 }
+
+/**
+ * Para una adquisición urgente en `passIso`, elige esa misma pasada como «después» y la última
+ * pasada analizable anterior del mismo modo como «antes». Si aún no hay anterior del mismo modo,
+ * intenta con una posterior del mismo modo o deja solo la pasada en «antes».
+ */
+export function datesForPass(scenes: Scene[], passIso: string): Around {
+  const day = passIso.slice(0, 10);
+  const usable = scenes.filter((scene) => scene.analyzable).sort((a, b) => a.date.localeCompare(b.date));
+  const current = usable.find((scene) => scene.date === day);
+  if (!current) return datesAroundEvent(scenes, passIso);
+  for (let i = usable.length - 1; i >= 0; i -= 1) {
+    const candidate = usable[i] as Scene;
+    if (candidate.date < day && candidate.mode === current.mode) {
+      return { before: candidate.date, after: current.date };
+    }
+  }
+  const next = usable.find((scene) => scene.date > day && scene.mode === current.mode);
+  if (next) return { before: current.date, after: next.date };
+  return { before: current.date, after: null };
+}
+
+/** ¿La pasada urgente en `passIso` tiene par comparable dentro de esta pila? */
+export function hasPairForPass(scenes: Scene[], passIso: string): boolean {
+  const around = datesForPass(scenes, passIso);
+  return Boolean(around.before && around.after);
+}

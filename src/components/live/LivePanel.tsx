@@ -218,7 +218,7 @@ function Urgent({ compas }: { compas: Compas }) {
           <button type="button" className="primario" onClick={compas.exploreFromLive}>
             {t('live.explore')}
           </button>
-          <p className="ayuda">{t('live.exploreHelp')}</p>
+          <p className="ayuda">{t('live.urgent.exploreHelp')}</p>
         </div>
       )}
       <ul className="lista-vivo" aria-label={t('live.urgent.list')}>

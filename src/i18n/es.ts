@@ -368,6 +368,10 @@ export const es = {
     'Ver las otras pilas de este punto',
   'explore.around.pair':
     'Elegimos las pasadas que rodean el evento: la última anterior y la primera posterior. Revisa las fechas y pulsa «Comparar estas fechas».',
+  'explore.around.urgent-pair':
+    'Elegimos esta adquisición urgente como «después» y la última pasada anterior del mismo modo como «antes». Revisa las fechas y pulsa «Comparar estas fechas».',
+  'explore.around.urgent-single':
+    'Esta adquisición urgente ya está en la pila, pero aún no hay otra pasada del mismo modo para compararla.',
   'explore.around.before-only':
     'Todavía no hay una pasada posterior al evento. Dejamos elegida la última anterior; cuando NISAR vuelva a pasar podrás compararla con la nueva.',
   'explore.around.none':
@@ -450,6 +454,8 @@ export const es = {
     'NISAR publica casi en tiempo real lo que observa durante una emergencia. Las huellas violetas del mapa son esas áreas.',
   'live.urgent.stack':
     'Pila {stack}, productos {products}',
+  'live.urgent.exploreHelp':
+    'Te lleva a Explorar en esta pila con esta pasada como «después» y la anterior del mismo modo como «antes».',
   'live.urgent.preview':
     'Ver la vista previa',
   'live.urgent.list':

@@ -4,7 +4,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { api, isAbort } from '../api';
 import { aoiFromView, bboxOfPolygon } from '../lib/aoi';
-import { datesAroundEvent, hasPairAround } from '../lib/around';
+import { datesAroundEvent, datesForPass, hasPairAround, hasPairForPass } from '../lib/around';
 import { cameraFor, centerOfBounds, globeZoom, zoomForBounds, zoomForWindow } from '../lib/camera';
 import { stateAt } from '../lib/orbit';
 import { contextDate as contextDateFor, stepOffset } from '../lib/context';
@@ -69,8 +69,8 @@ export type AoiMode = 'view' | 'full';
 /** Cómo quedó el área del último análisis de Explorar, para decírselo a la persona. */
 export type AoiNote = 'view' | 'full' | 'covers' | 'outside' | null;
 
-/** Qué pasó al buscar pasadas alrededor de un evento. */
-export type AroundNote = 'pair' | 'before-only' | 'none' | null;
+/** Qué pasó al buscar pasadas alrededor de un evento o de una adquisición urgente. */
+export type AroundNote = 'pair' | 'urgent-pair' | 'urgent-single' | 'before-only' | 'none' | null;
 
 export const LUPA_SIZES = [10, 15, 20] as const;
 const GLOBE_ZOOM = 2;
@@ -228,7 +228,7 @@ export function useCompas(reference: ReferenceChoice | null = null): Compas {
   const [aoiMode, setAoiMode] = useState<AoiMode>('view');
   const [aoiNote, setAoiNote] = useState<AoiNote>(null);
   const [aroundNote, setAroundNote] = useState<AroundNote>(null);
-  const pendingAround = useRef<string | null>(null);
+  const pendingAround = useRef<{ date: string; stack?: string; kind: 'event' | 'urgent' } | null>(null);
   const preset = useRef<{ before: string | null; after: string | null } | null>(null);
 
   // Lupa calibrada pedida por la persona (la de un paso de historia se deriva del paso)
@@ -726,20 +726,46 @@ export function useCompas(reference: ReferenceChoice | null = null): Compas {
     [fitFootprint],
   );
 
-  // «Explorar aquí» desde un evento: elige la pila con pasadas a ambos lados de la fecha.
+  // «Explorar aquí» desde un evento o una adquisición urgente: elige la pila y preselecciona sus fechas.
   useEffect(() => {
-    const iso = pendingAround.current;
-    if (mode !== 'explore' || !iso || stacksState.status !== 'ready' || exStackId) return;
+    const pending = pendingAround.current;
+    if (mode !== 'explore' || !pending || stacksState.status !== 'ready' || exStackId) return;
     pendingAround.current = null;
     const list = stacksState.stacks;
-    const withPair = list.find((item) => hasPairAround(item.scenes, iso));
-    const partial = list.find((item) => datesAroundEvent(item.scenes, iso).before);
+    if (pending.kind === 'urgent') {
+      const exact = pending.stack ? list.find((item) => item.id === pending.stack) : undefined;
+      const withPair = list.find((item) => hasPairForPass(item.scenes, pending.date));
+      const partial = list.find((item) => {
+        const a = datesForPass(item.scenes, pending.date);
+        return Boolean(a.before || a.after);
+      });
+      const target =
+        (exact && hasPairForPass(exact.scenes, pending.date) ? exact : null) ?? withPair ?? exact ?? partial ?? null;
+      if (!target) {
+        setAroundNote('none');
+        return;
+      }
+      const around = datesForPass(target.scenes, pending.date);
+      preset.current = around;
+      const day = pending.date.slice(0, 10);
+      if (around.before && around.after) {
+        setAroundNote(around.after === day ? 'urgent-pair' : 'pair');
+      } else if (around.before === day) {
+        setAroundNote('urgent-single');
+      } else {
+        setAroundNote('before-only');
+      }
+      chooseStack(target);
+      return;
+    }
+    const withPair = list.find((item) => hasPairAround(item.scenes, pending.date));
+    const partial = list.find((item) => datesAroundEvent(item.scenes, pending.date).before);
     const target = withPair ?? partial ?? null;
     if (!target) {
       setAroundNote('none');
       return;
     }
-    const around = datesAroundEvent(target.scenes, iso);
+    const around = datesAroundEvent(target.scenes, pending.date);
     preset.current = around;
     setAroundNote(around.before && around.after ? 'pair' : 'before-only');
     chooseStack(target);
@@ -809,16 +835,19 @@ export function useCompas(reference: ReferenceChoice | null = null): Compas {
     const event = live.selectedEvent;
     const urgent = live.selectedUrgent;
     const target = event
-      ? { point: [event.lon, event.lat] as LonLat, date: event.date }
+      ? { point: [event.lon, event.lat] as LonLat, pending: { date: event.date, kind: 'event' as const } }
       : urgent
-        ? { point: urgent.center, date: urgent.datetime }
+        ? {
+            point: urgent.center,
+            pending: { date: urgent.datetime, stack: urgent.stack, kind: 'urgent' as const },
+          }
         : null;
     if (!target) return;
     resetExplore();
     setModeState('explore');
     setStoryId(null);
     setExPoint(target.point);
-    pendingAround.current = target.date;
+    pendingAround.current = target.pending;
     view(target.point, 6, prefersReducedMotion(), 2400);
   }, [live.selectedEvent, live.selectedUrgent, resetExplore, view]);
 

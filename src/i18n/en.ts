@@ -367,6 +367,10 @@ export const en: Record<Key, string> = {
     'See the other stacks at this point',
   'explore.around.pair':
     'We picked the passes around the event: the last one before it and the first one after it. Check the dates and press “Compare these dates”.',
+  'explore.around.urgent-pair':
+    'We picked this urgent acquisition as “after” and the last earlier pass in the same mode as “before”. Check the dates and press “Compare these dates”.',
+  'explore.around.urgent-single':
+    'This urgent acquisition is already in the stack, but there is no other pass in the same mode to compare it with yet.',
   'explore.around.before-only':
     'There is no pass after the event yet. We selected the last one before it; once NISAR flies over again you can compare it with the new one.',
   'explore.around.none':
@@ -449,6 +453,8 @@ export const en: Record<Key, string> = {
     'NISAR publishes what it observes during an emergency almost in real time. The violet footprints on the map are those areas.',
   'live.urgent.stack':
     'Stack {stack}, products {products}',
+  'live.urgent.exploreHelp':
+    'Takes you to Explore on this stack with this pass as “after” and the previous one in the same mode as “before”.',
   'live.urgent.preview':
     'See the preview',
   'live.urgent.list':

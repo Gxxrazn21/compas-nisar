@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { NaturalEvent, Scene, UrgentScene } from '../types';
 import { aoiFromView, bboxOfPolygon, intersectBounds } from './aoi';
-import { datesAroundEvent, hasPairAround } from './around';
+import { datesAroundEvent, datesForPass, hasPairAround, hasPairForPass } from './around';
 import { cameraFor, zoomForBounds, zoomForWindow } from './camera';
 import {
   countByCategory,
@@ -58,6 +58,28 @@ describe('pasadas alrededor de un evento', () => {
   });
   it('sin pasadas devuelve vacío', () => {
     expect(datesAroundEvent([], '2026-09-10')).toEqual({ before: null, after: null });
+  });
+});
+
+describe('pasada urgente', () => {
+  const scenes = [
+    scene('2026-09-01'),
+    scene('2026-09-13', '2005_QPDH'),
+    scene('2026-09-25'),
+    scene('2026-10-07', '2005_QPDH'),
+    scene('2026-11-14'),
+  ];
+  it('elige esa misma pasada como «después» y la última anterior del mismo modo como «antes»', () => {
+    expect(datesForPass(scenes, '2026-11-14T23:15:27Z')).toEqual({ before: '2026-09-25', after: '2026-11-14' });
+    expect(hasPairForPass(scenes, '2026-11-14T23:15:27Z')).toBe(true);
+  });
+  it('si no hay anterior del mismo modo, busca una posterior del mismo modo o queda sola en «antes»', () => {
+    expect(datesForPass(scenes, '2026-09-13T00:00:00Z')).toEqual({ before: '2026-09-13', after: '2026-10-07' });
+    expect(datesForPass([scene('2026-11-14')], '2026-11-14T00:00:00Z')).toEqual({
+      before: '2026-11-14',
+      after: null,
+    });
+    expect(hasPairForPass([scene('2026-11-14')], '2026-11-14T00:00:00Z')).toBe(false);
   });
 });
 
