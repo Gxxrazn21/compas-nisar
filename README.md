@@ -1,228 +1,252 @@
+**English** · [Español](README.es.md)
+
 # SARitmo
 
-Aplicación interactiva para el reto "Dancing with the SARs" del NASA Space Apps Challenge 2026. Muestra, con datos reales del radar NISAR (NASA e ISRO), qué cambió en la superficie de la Tierra entre dos pasadas del satélite, en cualquier lugar donde haya adquisiciones.
+An interactive app for the "Dancing with the SARs" challenge at the NASA Space Apps Challenge 2026. Using real NISAR radar data from NASA and ISRO, it shows what changed on Earth's surface between two satellite passes, anywhere acquisitions are available.
 
-El ciclo nominal de NISAR es de 12 días; las adquisiciones disponibles pueden tener huecos. Ese es el compás de la danza, y por eso la línea de tiempo es una partitura: cada observación es una nota y se muestra el intervalo real entre fechas.
+NISAR's nominal repeat cycle is 12 days; available acquisitions may have gaps. That is the beat of the dance, which is why the timeline is a musical score: each observation is a note, and the actual interval between dates is shown.
 
-**Nuevo recorrido guardado:** `/?demo=mojana`, con ventana calibrada, escucha HH/HV, ficha de evidencia e informe HTML imprimible. Ver [preparación, prueba sin servicios externos y recuperación del respaldo](docs/demo.md) y [estado de las mejoras](docs/estado-mejoras-2026-11-14.md).
+**New saved walkthrough:** `/?demo=mojana`, with a calibrated window, HH/HV listening, an evidence record and a printable HTML report. See [preparation, testing without external services and restoring the backup](docs/demo.md) and [improvement status](docs/estado-mejoras-2026-11-14.md).
 
-![Portada de SARitmo](docs/capturas/01-portada.png)
+![SARitmo cover with the four NISAR stories](docs/screenshots/01-cover.jpg)
 
-## Qué hace
+## What it does
 
-- **Historias.** Cuatro recorridos guiados con datos reales: las ciénagas de La Mojana (Colombia) entre junio y octubre de 2026, las parcelas agrícolas del valle de San Joaquín (Estados Unidos) entre el verano y la cosecha, el deshielo de verano del casquete Vatnajökull (Islandia) y los interferogramas sobre la isla de Hawái.
-- **Por qué cambió.** Cada clase de cambio trae su hipótesis física, otras causas posibles y la polarización que la revela.
-- **Contexto.** Capas opcionales de NASA que se encienden con un clic sobre la barra del mapa: agua superficial vista por Sentinel-1 (otro radar, de banda C), bosques y cobertura del suelo, y densidad de población. La leyenda de cada capa encendida queda a la vista.
-- **Explorar.** Un clic en cualquier punto del globo, o el nombre de una ciudad o una dirección, consulta el catálogo de NASA, lista las series de pasadas que cubren ese punto y permite comparar dos fechas.
-- **Lectura del cambio.** Mapa de aumento y disminución del retorno del radar, clases de cambio con su área en km², sonda por punto, histograma, procedencia de cada dato y límites del análisis.
-- **La danza.** Animación a color de todas las pasadas de una serie (lila donde domina HH, verde donde domina HV), con la partitura siguiendo el ritmo. Cada nota suena a la altura a la que está dibujada: más retorno del radar, más aguda. El altavoz de la partitura (o la tecla M) lo apaga.
-- **Lupa calibrada.** Con un token de Earthdata, lee una ventana del producto científico completo desde la nube de NASA. Obtiene el espaciado de los metadatos y promedia en potencia; el caso preparado de La Mojana tiene celdas de 30 m.
-- **En vivo.** Eventos naturales recientes de NASA EONET, las últimas adquisiciones de respuesta urgente de NISAR, con acceso directo a explorar cada lugar, y «NISAR ahora»: el satélite en 3D, a escala, en su posición de este instante, la franja de más de 240 km que su radar alcanza a ver a la izquierda del rumbo y el recorrido de su próxima vuelta, calculados con los elementos orbitales de CelesTrak. La franja se comprobó contra la huella real de una pasada sobre La Mojana.
-- **Recorrido guiado.** Unos ocho minutos en cuatro capítulos que avanzan solos, con pausa: el satélite pieza por pieza (modelo en 3D que se puede girar), cómo funciona el radar (órbita, mirada de lado, eco, superficies, HH y HV, con esquemas animados), cómo leer los datos (Antes y Después, cortina, Cambio HH y HV, Señales, Compuesto, lectura, medición de un punto y las tres capas de contexto) y cómo se usa la aplicación. Mientras explica, la aplicación hace lo que cuenta. Se abre desde «Recorrido» en la barra superior, la portada, «NISAR ahora» o la ayuda.
-- **Modelo de NISAR.** Construido pieza por pieza sobre las vistas frontal y lateral que publica NASA/JPL (dominio público) y sus medidas: reflector de 12 m con aro de 30 tramos, brazo de 9 m, bus con la estructura del radar de ocho caras (5,5 m de largo), alimentadores de banda L y S, alas solares de 5,5 m y antena de banda Ka. La NASA no ofrece un modelo 3D descargable de NISAR; los soportes y detalles menores son aproximados.
-- **Unidades.** En español, sistema métrico. En inglés, las medidas del satélite y de su órbita van en pies y millas; los datos científicos (km², dB) se dejan como los entrega NISAR.
-- **Fronteras y nombres.** Fronteras de países, límites de departamentos o estados y nombres con su punto, dibujados sobre los datos. Se quitan y se ponen desde la barra superior (teclas B y N).
-- **Ayuda y atajos.** El botón de ayuda (tecla ?) explica el uso en tres pasos y lista los atajos de teclado. Una pista sobre el mapa indica el paso siguiente en cada vista y se puede ocultar.
-- Interfaz en inglés y español. Abre en inglés; el idioma se cambia en la barra superior (o con `#lang=es` en el enlace) y la elección se recuerda. Cada vista tiene un enlace permanente.
+- **Stories.** Four guided journeys using real data: the wetlands of La Mojana (Colombia) between June and October 2026, agricultural fields in the San Joaquin Valley (United States) between summer and harvest, summer melt on Iceland's Vatnajökull ice cap, and interferograms over the island of Hawaii.
+- **Why it changed.** Each change class includes its physical hypothesis, other possible causes and the polarization that reveals it.
+- **Context.** Optional NASA layers enabled with one click on the map toolbar: **Water**, surface water seen by Sentinel-1 (another radar, operating in C band); **Forests and land**, land cover; and **Population**, population density. Each enabled layer keeps its legend visible.
+- **Explore.** Click anywhere on the globe, or search for a city or address, to query NASA's catalog, list the pass series covering that point and compare two dates.
+- **Reading the change.** A map of increases and decreases in radar return, change classes with their area in km², a point probe, a histogram, data provenance and analysis limitations.
+- **The dance.** A color animation of every pass in a series (lilac where HH dominates, green where HV dominates), with the musical score following the rhythm. Each note sounds at its displayed pitch: stronger radar return means a higher note. The speaker on the score (or the M key) mutes it.
+- **Calibrated lens.** With an Earthdata token, it reads a window from the full scientific product in NASA's cloud. It obtains pixel spacing from the metadata and averages in power; the prepared La Mojana case uses 30 m cells.
+- **Live.** Recent natural events from NASA EONET and the latest NISAR urgent response acquisitions, with direct access to explore each location. **NISAR now** shows the satellite in 3D, to scale, at its current position, the swath about 150 mi wide that its radar can see to the left of its heading, and its next orbit, calculated from CelesTrak orbital elements. The satellite's altitude is 464 mi. The swath was checked against the actual footprint of a pass over La Mojana.
+- **Tour.** About 8.5 minutes, 31 steps and four chapters that advance automatically and can be paused: **The satellite**, piece by piece with a rotatable 3D model; **The radar**, covering orbit, side-looking geometry, echoes, surfaces, HH and HV with animated diagrams; **The data**, covering **Before**, **After**, **Curtain**, **HH change**, **HV change**, **Signals**, **Composite**, the reading, point measurements and all three context layers; and **The app**, showing how to use it. The app performs each action as the tour explains it. Open **Tour** from the top bar, the cover, **NISAR now** or help.
+- **NISAR model.** Built piece by piece from NASA/JPL's public-domain front and side views and published measurements: a 39 ft reflector with a 30-segment ring, a 30 ft boom, an 18 ft body with the eight-sided radar structure, L- and S-band feeds, 18 ft solar wings and a Ka-band antenna. A person 5 ft 9 in tall provides scale. NASA does not offer a downloadable NISAR 3D model; supports and minor details are approximate.
+- **Units.** The Spanish UI uses metric units. In English, satellite and orbit dimensions use feet and miles; scientific data (km², dB) retain the units supplied by NISAR.
+- **Boundaries and names.** Country borders, state or department boundaries, and place names with their points are drawn over the data. Toggle them from the top bar (B and N keys).
+- **Help and shortcuts.** The help button (? key) explains the workflow in three steps and lists keyboard shortcuts. A dismissible map hint suggests the next action in each view.
+- English and Spanish UI. It opens in English; switch languages in the top bar (or use `#lang=es` in the link), and the choice is remembered. Every view has a permanent link.
 
-![Historia de La Mojana](docs/capturas/03-mojana-cambio.png)
+The satellite chapter shows the spacecraft's dimensions and highlights its individual parts.
 
-![Lupa calibrada sobre las ciénagas](docs/capturas/12-lupa-mojana.png)
+![Tour step 2: NISAR measurements in feet](docs/screenshots/02-satellite-measurements.jpg)
 
-![Explorar cualquier lugar](docs/capturas/11-explorar-comparacion-lente.png)
+![Tour step 5: the two radars highlighted on the 3D model](docs/screenshots/03-two-radars.jpg)
 
-## Datos
+The radar chapter explains side-looking geometry and the HH/HV channels.
 
-| Fuente | Uso | Acceso |
+![Tour step 10: side-looking radar, altitude and swath](docs/screenshots/04-side-looking-radar.jpg)
+
+![Tour step 13: HH and HV polarization diagram](docs/screenshots/05-hh-hv.jpg)
+
+La Mojana combines the radar change map with a reading panel; **Signals** brings the possible physical interpretations onto the map.
+
+![La Mojana with HH change and the reading panel](docs/screenshots/06-mojana-hh-change.jpg)
+
+![La Mojana with the Signals layer](docs/screenshots/07-mojana-signals.jpg)
+
+Zoom out to compare the radar footprint with **Forests and land** context across the globe.
+
+![Forests and land context controls and legend on the globe](docs/screenshots/08-land-cover-context.jpg)
+
+**Explore** opens the same workflow for any place with NISAR acquisitions. **Live** includes **NISAR now**, also shown in the first tour step.
+
+![Explore view](docs/screenshots/09-explore.jpg)
+
+![NISAR now: the satellite, its orbit and gold radar swath](docs/screenshots/10-nisar-now.jpg)
+
+The tour is also available on mobile.
+
+<img src="docs/screenshots/11-mobile-tour.jpg" alt="Mobile tour showing NISAR's measurements in feet" width="390">
+
+## Data
+
+| Source | Use | Access |
 |---|---|---|
-| NISAR GCOV, imágenes de vista previa (ASF DAAC) | Cambio entre fechas en todo el cuadro, a unos 170 m por píxel | Público |
-| NISAR GCOV, producto HDF5 (ASF DAAC) | Lupa calibrada: γ⁰ a 10 m, promediado a 30 m | Token de Earthdata |
-| NISAR GUNW, imágenes de vista previa | Interferogramas | Público |
-| NISAR Urgent Response | Adquisiciones más recientes | Público |
-| NASA CMR | Catálogo: fechas, huellas, pistas y cuadros | Público |
-| NASA EONET v3 | Eventos naturales | Público |
-| NASA EPIC (DSCOVR) | Imagen diaria de la Tierra | Clave de api.nasa.gov |
-| NASA GIBS, VIIRS | Mapa base óptico del día | Público |
-| NASA GIBS, OPERA DSWx-S1 | Agua superficial vista por Sentinel-1 (banda C): contraste independiente | Público |
-| NASA GIBS, MODIS IGBP | Cobertura del suelo | Público |
-| NASA GIBS, GPW 2020 | Densidad de población | Público |
-| Esri World Imagery | Mapa base satelital | Público |
-| OpenStreetMap Nominatim | Buscador de ciudades y direcciones en Explorar | Público |
-| CelesTrak (elementos orbitales de NISAR, NORAD 65053) | Posición del satélite en «NISAR ahora», calculada con el modelo SGP4 | Público |
-| Natural Earth | Fronteras, límites internos y nombres sobre el mapa (archivos en `public/ref/`) | Dominio público |
+| NISAR GCOV preview images (ASF DAAC) | Change between dates across the whole frame, at about 170 m per pixel | Public |
+| NISAR GCOV HDF5 product (ASF DAAC) | Calibrated lens: γ⁰ at 10 m, averaged to 30 m | Earthdata token |
+| NISAR GUNW preview images | Interferograms | Public |
+| NISAR Urgent Response | Most recent acquisitions | Public |
+| NASA CMR | Catalog: dates, footprints, tracks and frames | Public |
+| NASA EONET v3 | Natural events | Public |
+| NASA EPIC (DSCOVR) | Daily Earth image | api.nasa.gov key |
+| NASA GIBS, VIIRS | Daily optical basemap | Public |
+| NASA GIBS, OPERA DSWx-S1 | Surface water seen by Sentinel-1 (C band): independent comparison | Public |
+| NASA GIBS, MODIS IGBP | Land cover | Public |
+| NASA GIBS, GPW 2020 | Population density | Public |
+| Esri World Imagery | Satellite basemap | Public |
+| OpenStreetMap Nominatim | City and address search in Explore | Public |
+| CelesTrak (NISAR orbital elements, NORAD 65053) | Satellite position in NISAR now, calculated with the SGP4 model | Public |
+| Natural Earth | Borders, internal boundaries and names on the map (files in `public/ref/`) | Public domain |
 
-No se usan datos sintéticos. Todo lo que aparece en pantalla viene de estos servicios. El buscador de lugares solo traduce un nombre a coordenadas; los datos de radar siguen siendo los de NISAR.
+No synthetic data are used. Everything displayed comes from these services. Place search only converts a name to coordinates; the radar data still come from NISAR.
 
-### Recursos del reto
+### Challenge resources
 
-El reto propone catorce recursos abiertos. Esta tabla dice qué papel tiene cada uno en SARitmo; la misma lista está en el diálogo Método de la aplicación.
+The challenge proposes fourteen open resources. This table describes each one's role in SARitmo; the same list appears in the app's **Method** dialog.
 
-| Recurso | Papel en SARitmo |
+| Resource | Role in SARitmo |
 |---|---|
-| [Earthdata Search](https://search.earthdata.nasa.gov/search) | Mismo catálogo (CMR) que consulta el backend para listar pasadas |
-| [ASF Data Search](https://search.asf.alaska.edu/) | Origen de los productos NISAR; cada comparación enlaza a la ficha de sus dos productos |
-| [Documentación de NISAR](https://nisar-docs.asf.alaska.edu/) | Especificación de GCOV y GUNW; citada en las historias |
-| [Fundamentos de teledetección](https://www.earthdata.nasa.gov/learn/earth-observation-data-basics/remote-sensing) | Lectura de referencia |
-| [Qué es un radar de apertura sintética](https://www.earthdata.nasa.gov/learn/earth-observation-data-basics/sar) | Base de las hipótesis físicas: bandas, polarización, interferometría |
-| [Capacitaciones ARSET](https://appliedsciences.nasa.gov/get-involved/training) | Cursos para profundizar, incluidos dos con NISAR |
-| [StoryMaps de NISAR](https://nisar.jpl.nasa.gov/applications/arcgis-storymaps/) | Contexto de las historias: inundaciones, hielo, hundimiento |
-| [Beneficios sociales de NISAR](https://nisar.jpl.nasa.gov/applications/societal-benefit/) | Lectura de fondo por aplicación |
-| [Postales de UAVSAR](https://uavsar.jpl.nasa.gov/education/postcards.html) | Antecedente aéreo en banda L; dos postales coinciden con historias (Kilauea y Vatnajökull) |
-| [RCM](https://donnees-data.asc-csa.gc.ca/en/dataset/rcm) (CSA) | Referencia: radar de banda C para contrastar. No se procesa en la aplicación |
-| [Tutorial de SAR](https://github.com/asc-csa/Synthetic_Aperture_Radar_Tutorial) (CSA) | Referencia para abrir imágenes RADARSAT en QGIS y Python |
-| [Archivo de RADARSAT-1](https://donnees-data.asc-csa.gc.ca/en/dataset/radarsat1) (CSA) | Referencia: banda C de 1995 a 2013. No se procesa en la aplicación |
-| [Catálogo SAOCOM](https://catalogos.conae.gov.ar/catalogo/catalogoSatSaocomInfo.html) (CONAE) | Referencia: banda L, como NISAR. No se procesa en la aplicación |
-| [Acceso al archivo SAOCOM](https://www.argentina.gob.ar/noticias/la-informacion-saocom-cada-vez-mas-accesible) (CONAE) | Condiciones de acceso: registro y licencia, solo territorio argentino |
+| [Earthdata Search](https://search.earthdata.nasa.gov/search) | The same catalog (CMR) the backend queries to list passes |
+| [ASF Data Search](https://search.asf.alaska.edu/) | Source of NISAR products; each comparison links to both product records |
+| [NISAR documentation](https://nisar-docs.asf.alaska.edu/) | GCOV and GUNW specifications; cited in the stories |
+| [Remote sensing basics](https://www.earthdata.nasa.gov/learn/earth-observation-data-basics/remote-sensing) | Reference reading |
+| [What is synthetic aperture radar?](https://www.earthdata.nasa.gov/learn/earth-observation-data-basics/sar) | Basis for the physical hypotheses: bands, polarization and interferometry |
+| [ARSET training](https://appliedsciences.nasa.gov/get-involved/training) | Courses for further study, including two involving NISAR |
+| [NISAR StoryMaps](https://nisar.jpl.nasa.gov/applications/arcgis-storymaps/) | Story context: flooding, ice and subsidence |
+| [NISAR societal benefits](https://nisar.jpl.nasa.gov/applications/societal-benefit/) | Background reading by application |
+| [UAVSAR postcards](https://uavsar.jpl.nasa.gov/education/postcards.html) | Airborne L-band predecessor; two postcards match stories (Kilauea and Vatnajökull) |
+| [RCM](https://donnees-data.asc-csa.gc.ca/en/dataset/rcm) (CSA) | Reference: C-band radar for comparison. Not processed in the app |
+| [SAR tutorial](https://github.com/asc-csa/Synthetic_Aperture_Radar_Tutorial) (CSA) | Reference for opening RADARSAT images in QGIS and Python |
+| [RADARSAT-1 archive](https://donnees-data.asc-csa.gc.ca/en/dataset/radarsat1) (CSA) | Reference: C-band data from 1995 to 2013. Not processed in the app |
+| [SAOCOM catalog](https://catalogos.conae.gov.ar/catalogo/catalogoSatSaocomInfo.html) (CONAE) | Reference: L band, like NISAR. Not processed in the app |
+| [SAOCOM archive access](https://www.argentina.gob.ar/noticias/la-informacion-saocom-cada-vez-mas-accesible) (CONAE) | Access conditions: registration and a license, Argentine territory only |
 
-## Método
+## Method
 
-El análisis general parte de las imágenes de vista previa que NASA publica con cada producto GCOV. Esas imágenes no guardan el retorno calibrado: cada una se recorta entre sus propios percentiles 5 y 95 y lleva una corrección gamma de 0,5. Lo confirmamos en el código fuente de `nisarqa` y en los metadatos de control de calidad de cada producto. Dos fechas, por tanto, no se pueden restar directamente.
+The overview analysis starts with the preview images NASA publishes alongside each GCOV product. These images do not preserve calibrated radar return: each is clipped to its own 5th and 95th percentiles and gamma-corrected with an exponent of 0.5. We confirmed this in the `nisarqa` source code and each product's quality-control metadata. Two dates therefore cannot be subtracted directly.
 
-SARitmo hace lo siguiente:
+SARitmo performs these steps:
 
-1. Invierte la gamma para obtener una magnitud proporcional a la potencia.
-2. Suaviza el moteado con una media de 5×5 píxeles.
-3. Ajusta una fecha a la escala de la otra con una regresión robusta de eje mayor reducido sobre los píxeles no saturados.
-4. Recorta ambas fechas al intervalo en que las dos tienen información.
-5. Calcula el cambio en decibelios aproximados y lo clasifica con un umbral de 3 dB.
+1. Reverses gamma to recover a quantity proportional to power.
+2. Smooths speckle with a 5×5-pixel mean.
+3. Fits one date to the other's scale using robust reduced major axis regression over unsaturated pixels.
+4. Clips both dates to the interval where both contain information.
+5. Computes change in approximate decibels and classifies it using a 3 dB threshold.
 
-El resultado es el cambio relativo al conjunto de la escena, no un valor calibrado. La aplicación dice "dB aproximados" y rotula cada clase como "posible". Informa por separado calidad del ajuste, cobertura de datos y respaldo de la interpretación: un buen ajuste no confirma una inundación.
+The result is change relative to the scene as a whole, not a calibrated value. The app says "approximate dB" and labels every class "possible". It reports fit quality, data coverage and interpretation support separately: a good fit does not confirm a flood.
 
-La lupa calibrada lee γ⁰ del producto GCOV y calcula `10·log10(γ⁰₂/γ⁰₁)` sin ajuste global. Sigue sujeta a geometría, ruido, cobertura y ambigüedad física. La regla de posible vegetación inundada exige HH ≥ +3 dB y HV entre −1,5 y +1,5 dB, además de HH antes no oscuro; una caída fuerte de HV ya no satisface esta regla.
+The calibrated lens reads γ⁰ from the GCOV product and computes `10·log10(γ⁰₂/γ⁰₁)` without a global fit. It remains subject to geometry, noise, coverage and physical ambiguity. The possible flooded vegetation rule requires HH ≥ +3 dB and HV between −1.5 and +1.5 dB, as well as a non-dark HH return before the change; a strong HV drop no longer satisfies this rule.
 
-### Validación
+### Validation
 
-La ejecución del 14 de noviembre de 2026 compara tres combinaciones de zona y fechas, HH/HV y umbrales de 2, 3 y 4 dB. Para la ventana principal de 15 km de La Mojana (26 de junio a 24 de octubre de 2026, 7.744 píxeles comunes), HH a 3 dB:
+The November 14, 2026 run compares three combinations of area and dates, HH/HV, and thresholds of 2, 3 and 4 dB. For the main 15 km window in La Mojana (June 26 to October 24, 2026, 7,744 common pixels), HH at 3 dB gives:
 
-| Referencia | Correlación | Mediana de error absoluto | Precisión | Exhaustividad |
+| Reference | Correlation | Median absolute error | Precision | Recall |
 |---|---|---|---|---|
-| Agregada a ~170 m | 0,517 | 0,78 dB | 50,0 % | 12,2 % |
-| Media adicional 5×5 (~1 km) | 0,861 | 0,69 dB | 12,5 % | 45,0 % |
+| Aggregated to ~170 m | 0.517 | 0.78 dB | 50.0% | 12.2% |
+| Additional 5×5 mean (~1 km) | 0.861 | 0.69 dB | 12.5% | 45.0% |
 
-En la segunda fila coinciden 9 de 72 detecciones browse y 20 de referencia: el 100 % de signo correcto se refiere solo a esos 9 aciertos. En otra ventana, HH da correlación 0,471 a la escala suavizada y ninguna coincidencia al umbral. La pareja de fechas consecutivas tiene pocos cambios fuertes y no permite estimar precisión cuando no hay detecciones. Correlación no equivale a exactitud de detección; los píxeles suavizados no son muestras independientes y GCOV no es verdad de terreno. Las clases físicas siguen sin validación independiente. Consulta [todos los resultados y límites](docs/validacion-ampliada.md) y el [JSON reproducible](docs/validacion-multiventana-2026-11-14.json). Se conservan los resultados históricos.
+In the second row, 9 of 72 browse detections and 20 reference detections overlap: the 100% correct sign refers only to those 9 matches. In another window, HH has a correlation of 0.471 at the smoothed scale and no matches at the threshold. The consecutive-date pair has few strong changes and cannot support a precision estimate when there are no detections. Correlation is not detection accuracy; smoothed pixels are not independent samples, and GCOV is not ground truth. The physical classes still lack independent validation. See [all results and limitations](docs/validacion-ampliada.md) and the [reproducible JSON](docs/validacion-multiventana-2026-11-14.json). Historical results are retained.
 
-El detalle del método y de cada servicio está en `docs/contrato-api.md`.
+Details of the method and each service are in `docs/contrato-api.md`.
 
-### Cómo comprobar un resultado por tu cuenta
+### How to check a result yourself
 
-- **Procedencia.** Cada comparación lista el nombre de los dos productos. Búscalos en https://search.asf.alaska.edu y verás las mismas imágenes publicadas por NASA.
-- **Control temporal.** Compara pasadas seguidas y revisa si hay evidencia externa de estabilidad. Doce días también pueden contener cambios reales.
-- **Dos órbitas.** Revisa el mismo periodo desde ambas geometrías si hay datos; las diferencias de observación pueden cambiar la respuesta. La coincidencia es evidencia adicional, no una condición garantizada.
-- **Otro radar.** Activa la capa de agua de Sentinel-1 y compárala con el cambio de NISAR.
-- **Otro sensor.** Revisa las mismas fechas en imágenes ópticas en https://worldview.earthdata.nasa.gov.
-- **Dato calibrado.** Abre la lupa sobre la zona, o ejecuta `scripts/validar_browse_vs_gcov.py`.
-- **Terreno.** Ninguna de estas comprobaciones reemplaza la información de campo: niveles de ríos, reportes locales, censos agrícolas.
+- **Provenance.** Each comparison lists the names of both products. Search for them at https://search.asf.alaska.edu to see the same images published by NASA.
+- **Temporal control.** Compare consecutive passes and check for external evidence of stability. Real changes can also occur within twelve days.
+- **Two orbits.** Review the same period from both viewing geometries when data are available; observation differences can change the response. Agreement is additional evidence, not a guaranteed condition.
+- **Another radar.** Enable the Sentinel-1 Water layer and compare it with the NISAR change.
+- **Another sensor.** Review the same dates in optical imagery at https://worldview.earthdata.nasa.gov.
+- **Calibrated data.** Open the lens over the area, or run `scripts/validar_browse_vs_gcov.py`.
+- **Field evidence.** None of these checks replaces information collected on the ground: river levels, local reports or agricultural surveys.
 
-### Lo que la herramienta no afirma
+### What the tool does not claim
 
-- No confirma inundaciones, incendios, deforestación ni deformación del terreno. Señala dónde cambió el retorno del radar y con qué es compatible.
-- No es un sistema de alertas.
-- Un interferograma sin corregir no mide deformación: la atmósfera y la ionosfera también dejan franjas.
-- Solo compara fechas del mismo modo de adquisición. Mezclar modos produce franjas falsas.
+- It does not confirm floods, fires, deforestation or ground deformation. It indicates where radar return changed and what that change is consistent with.
+- It is not an alert system.
+- An uncorrected interferogram does not measure deformation: the atmosphere and ionosphere also produce fringes.
+- It only compares dates with the same acquisition mode. Mixing modes produces false stripes.
 
-## Cómo ejecutarlo
+## How to run
 
-Requisitos: Python 3.11 o posterior, Node.js 20 o posterior, y conexión a internet.
+Requirements: Python 3.11 or later, Node.js 20 or later, and an internet connection.
 
 ```powershell
 git clone https://github.com/Gxxrazn21/compas-nisar
 cd compas-nisar
 
-# 1. Claves (opcionales): copia la plantilla y complétala
+# 1. Keys (optional): copy the template and fill it in
 Copy-Item .env.example .env
 
-# 2. Instala, compila y abre http://127.0.0.1:8000
+# 2. Install, build and open http://127.0.0.1:8000
 powershell -ExecutionPolicy Bypass -File scripts\start.ps1 -Prewarm
 ```
 
-`-Prewarm` descarga y calcula las cuatro historias antes de abrir, para que respondan al instante durante una presentación.
+`-Prewarm` downloads and computes all four stories before opening, so they respond immediately during a presentation.
 
-Las dos claves de `.env` son opcionales:
+Both keys in `.env` are optional:
 
-- `NASA_API_KEY` (gratis en https://api.nasa.gov) activa la imagen diaria de la Tierra en la portada.
-- `EARTHDATA_TOKEN` (gratis en https://urs.earthdata.nasa.gov/profile, pestaña Generate Token) activa la lupa calibrada. Caduca a los 60 días.
+- `NASA_API_KEY` (free at https://api.nasa.gov) enables the daily Earth image on the cover.
+- `EARTHDATA_TOKEN` (free at https://urs.earthdata.nasa.gov/profile, Generate Token tab) enables the calibrated lens. It expires after 60 days.
 
-Sin ellas funciona todo lo demás. Ninguna clave llega al navegador: el servidor hace las peticiones.
+Everything else works without them. No key reaches the browser: the server makes the requests.
 
-### Modo desarrollo
+### Development mode
 
 ```powershell
 python -m pip install -r requirements.txt
 npm install
 python -m uvicorn backend.main:app --port 8000   # API
-npm run dev                                      # interfaz en http://127.0.0.1:5173
+npm run dev                                      # UI at http://127.0.0.1:5173
 ```
 
-### Pruebas
+### Tests
 
 ```powershell
-python -X utf8 -m unittest discover -s tests   # backend, sin red
-npm test                                       # interfaz
-python -X utf8 scripts\smoke_backend.py        # backend contra los servicios reales
+python -X utf8 -m unittest discover -s tests   # backend, offline
+npm test                                       # UI
+python -X utf8 scripts\smoke_backend.py        # backend against live services
 ```
 
-### Atajos de teclado
+### Keyboard shortcuts
 
-| Tecla | Acción |
+| Key | Action |
 |---|---|
-| 1, 2, 3 | Historias, Explorar, En vivo |
-| ← → | Paso anterior o siguiente de la historia |
-| D | Empezar la danza o salir de ella |
-| Espacio | Pausar o reanudar la danza |
-| M | Sonido de las notas |
-| B, N | Fronteras, nombres |
-| + − 0 | Acercar, alejar, volver al área |
-| ? | Ayuda |
+| 1, 2, 3 | Stories, Explore, Live |
+| ← → | Previous or next story step |
+| D | Start or leave the dance |
+| Space | Pause or resume the dance |
+| M | Note sound |
+| B, N | Boundaries, names |
+| + − 0 | Zoom in, zoom out, return to the area |
+| ? | Help |
 
-Los atajos no actúan mientras se escribe en un campo.
+Shortcuts are inactive while typing in an input field.
 
-### Datos de referencia del mapa
+### Map reference data
 
-`public/ref/` guarda las fronteras, los límites internos y los nombres, ya simplificados. Para regenerarlos desde Natural Earth (necesita `shapely`):
+`public/ref/` stores simplified borders, internal boundaries and names. To regenerate them from Natural Earth (requires `shapely`):
 
 ```powershell
 python -X utf8 scripts\build_reference.py
 ```
 
-## Video explicativo
+## Explainer video
 
-La carpeta `video/` genera un video de 92 segundos (1920 × 1080) que muestra la aplicación en uso, en inglés y en español. No usa capturas a mano: graba la aplicación real con Chrome y la monta sobre una composición animada.
+The `video/` directory generates a 92-second video (1920 × 1080) showing the app in use, in English and Spanish. It does not use manual screenshots: it records the real app with Chrome and places the footage in an animated composition.
 
 ```powershell
-# Con la aplicación corriendo en http://127.0.0.1:8000
-node video\capture.mjs en          # graba las tomas de la aplicación (repite con "es")
-python -X utf8 video\music.py      # pista de fondo, generada por síntesis
+# With the app running at http://127.0.0.1:8000
+node video\capture.mjs en          # record app shots (repeat with "es")
+python -X utf8 video\music.py      # background track generated by synthesis
 node video\render.mjs en --audio video\out\music.wav   # video\out\compas-en.mp4
 ```
 
-Necesita Google Chrome y ffmpeg. Los textos y los tiempos de cada escena están en `video/composition/script.js`. Las tomas y los MP4 no se versionan.
+Requires Google Chrome and ffmpeg. Scene text and timing are in `video/composition/script.js`. Shots and MP4 files are not tracked in Git.
 
-## Estructura
+## Structure
 
 ```
-backend/    API FastAPI: catálogo, imágenes, método de cambio, series, lupa calibrada, eventos
-src/        Interfaz React + TypeScript + MapLibre GL
-data/       Historias (stories.json) y caché local (no se versiona)
-docs/       Contrato de la API, dirección de diseño, validación y capturas
-scripts/    Lanzador, precálculo, pruebas de humo, validación y prototipos
-video/      Video explicativo: grabación de la app, composición animada y render
-tests/      Pruebas del backend
+backend/    FastAPI API: catalog, images, change method, series, calibrated lens, events
+src/        React + TypeScript + MapLibre GL UI
+data/       Stories (stories.json) and local cache (not tracked in Git)
+docs/       API contract, design direction, validation and screenshots
+scripts/    Launcher, precomputation, smoke tests, validation and prototypes
+video/      Explainer video: app recording, animated composition and rendering
+tests/      Backend tests
 ```
 
-La caché de `data/cache/` se limita sola a unos 3,5 GB; se puede borrar en cualquier momento.
+The `data/cache/` cache automatically limits itself to about 3.5 GB; it can be deleted at any time.
 
-## Uso de inteligencia artificial
+## Use of AI
 
-El código y los textos de este proyecto se escribieron con asistentes de programación (Codex y Claude Code), dirigidos y revisados por el autor. Los asistentes no generaron ningún dato: las imágenes, cifras y fechas provienen de los servicios de NASA y ASF citados arriba, y cada resultado se puede reproducir con los scripts del repositorio.
+This project's code and text were written with coding assistants (Codex and Claude Code), directed and reviewed by the author. The assistants did not generate any data: images, figures and dates come from the NASA and ASF services cited above, and every result can be reproduced with the repository's scripts.
 
-## Licencia
+## License
 
-Código bajo licencia MIT (ver `LICENSE`). Los datos pertenecen a sus fuentes y se usan según sus políticas de acceso abierto.
+Code is licensed under MIT (see `LICENSE`). Data belong to their respective sources and are used according to their open-access policies.
 
-## Créditos
+## Credits
 
-Datos de NISAR por cortesía de NASA, ISRO y el Alaska Satellite Facility DAAC. Eventos de NASA EONET. Imagen diaria de NASA EPIC. Teselas de NASA GIBS y de Esri (Esri, Maxar, Earthstar Geographics y la comunidad de usuarios de GIS). Búsqueda de lugares con Nominatim, © colaboradores de OpenStreetMap. Elementos orbitales de NISAR de CelesTrak; posición calculada con satellite.js (SGP4). Modelo en 3D de NISAR hecho con three.js a partir de las láminas de NASA/JPL. Fronteras y nombres de Natural Earth (dominio público). Proyecto independiente: no es un producto oficial de NASA ni de ISRO.
-
-## English summary
-
-SARitmo is an interactive web app for the "Dancing with the SARs" challenge. It uses real NISAR observations to explore radar return changes wherever acquisitions exist. Its musical score represents dated observations, with selectable HH/HV and explicit gaps. A saved La Mojana walkthrough includes a calibrated GCOV window, a manual evidence review and a portable HTML brief. The overview uses normalized preview imagery: agreement with calibrated GCOV varies by window, date, channel and scale. In the main 15 km HH case, correlation at the smoothed scale is 0.861 but precision at 3 dB is only 12.5%, with 9 joint detections out of 72 preview detections. Physical classes are hypotheses, not validated flood or damage inventories. See the full multiwindow results above. The interface is available in Spanish and English.
+NISAR data courtesy of NASA, ISRO and the Alaska Satellite Facility DAAC. Events from NASA EONET. Daily image from NASA EPIC. Tiles from NASA GIBS and Esri (Esri, Maxar, Earthstar Geographics and the GIS user community). Place search by Nominatim, © OpenStreetMap contributors. NISAR orbital elements from CelesTrak; position calculated with satellite.js (SGP4). NISAR 3D model built with three.js from NASA/JPL reference sheets. Borders and names from Natural Earth (public domain). An independent project: not an official NASA or ISRO product.
