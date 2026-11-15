@@ -6,7 +6,7 @@ import type { ChangeResult, Lang, Scene, Stack } from '../types';
 import { evidenceReview, evidenceSummary, worldviewLink } from './evidence';
 import type { EvidenceReview } from './evidence';
 
-const ASF_SEARCH = 'https://search.asf.alaska.edu/#/?granule=';
+import { asfProductUrl } from './asf';
 
 export interface ReportOptions {
   lang: Lang;
@@ -31,7 +31,7 @@ function sceneInfo(role: 'before' | 'after', scene: Scene) {
     modo: scene.mode,
     ciclo: scene.cycle,
     coleccion: scene.collection,
-    buscador_asf: `${ASF_SEARCH}${encodeURIComponent(scene.granule)}`,
+    buscador_asf: asfProductUrl(scene.granule),
   };
 }
 

@@ -1,10 +1,9 @@
 // Procedencia y límites: siempre a un clic, nunca escondidos.
 import { useI18n } from '../../i18n';
 import type { Key } from '../../i18n/es';
+import { asfProductUrl } from '../../lib/asf';
 import { formatDate } from '../../lib/format';
 import type { ChangeResult, Scene, Stack } from '../../types';
-
-const ASF_SEARCH = 'https://search.asf.alaska.edu/#/?granule=';
 
 function SceneRow({ label, scene }: { label: string; scene: Scene }) {
   const { t, lang } = useI18n();
@@ -21,7 +20,7 @@ function SceneRow({ label, scene }: { label: string; scene: Scene }) {
           {t('prov.mode', { mode: scene.mode })}, {t('prov.cycle', { cycle: scene.cycle })}
         </span>
         <a
-          href={`${ASF_SEARCH}${encodeURIComponent(scene.granule)}`}
+          href={asfProductUrl(scene.granule)}
           target="_blank"
           rel="noreferrer"
           aria-label={t('prov.asfLabel', { date: formatDate(scene.date, lang) })}

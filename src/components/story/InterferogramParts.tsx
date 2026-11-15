@@ -4,7 +4,7 @@ import type { Key } from '../../i18n/es';
 import { formatDate, formatDateShort } from '../../lib/format';
 import type { InterferogramsState } from '../../state/useInterferograms';
 
-const ASF_SEARCH = 'https://search.asf.alaska.edu/#/?granule=';
+import { asfProductUrl } from '../../lib/asf';
 
 interface PickerProps {
   state: InterferogramsState;
@@ -86,7 +86,7 @@ export function InterferogramReading({ state, pair }: { state: InterferogramsSta
               .
             </p>
             <p>
-              <a href={`${ASF_SEARCH}${encodeURIComponent(item.granule)}`} target="_blank" rel="noreferrer">
+              <a href={asfProductUrl(item.granule)} target="_blank" rel="noreferrer">
                 {t('prov.asf')}
               </a>
             </p>
