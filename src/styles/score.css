@@ -250,6 +250,7 @@
   font-variant-numeric: tabular-nums;
 }
 .danza-cuadro small { display: block; color: var(--bruma); }
+.danza-cuadro .danza-color { white-space: normal; max-width: 330px; }
 
 @media (max-width: 720px) {
   .hoja .partitura {
@@ -285,4 +286,7 @@
 .partitura-detalles { font-size: var(--t13); color: var(--bruma); }
 .partitura-detalles[open] { position: absolute; bottom: 100%; left: 16px; max-width: 520px; padding: 16px; background: var(--panel); border: 1px solid var(--linea); border-radius: 8px; }
 .partitura-detalles p { margin-top: 8px; }
+.partitura-colores { align-self: flex-end; }
+.partitura:has(.partitura-colores[open]) { z-index: 40; }
+.partitura-colores[open] { left: auto; right: 16px; max-height: 50vh; overflow-y: auto; }
 @media(max-width:720px){.partitura-canal select{min-height:44px}.partitura-detalles[open]{position:static;max-width:100%;margin-top:8px}}

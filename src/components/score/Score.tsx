@@ -10,6 +10,7 @@ import type { Dance } from '../../state/useDance';
 import type { Scene, Stack } from '../../types';
 import { DanceBar } from './DanceBar';
 import { Staff, explain } from './Staff';
+import { browseLegend } from '../../lib/browseLegend';
 
 interface Props {
   stack: Stack | null;
@@ -43,6 +44,12 @@ export function Score({ stack, selection, applied, dance, comparing, emptyText, 
   }, [stack]);
 
   const complete = Boolean(selection.before && selection.after);
+  const frame = dance.series?.frames[dance.index];
+  const legend = browseLegend(dance.series?.series.find(point => point.date === frame?.date)?.granule
+    ?? stack?.scenes.find(scene => scene.date === selection.after)?.mode);
+  const singlePol = legend === 'hh' || legend === 'vv';
+  const primaryChannel = legend === 'vv' || legend === 'vv-vh' ? 'VV' : 'HH';
+  const channelLabel = dance.channel === 'hh' ? primaryChannel : 'HV';
   const unchanged = Boolean(
     applied && selection.before === applied.before && selection.after === applied.after,
   );
@@ -65,7 +72,7 @@ export function Score({ stack, selection, applied, dance, comparing, emptyText, 
   const status =
     message ??
     (dance.active
-      ? t('dance.point', { channel: dance.channel.toUpperCase() })
+      ? t('dance.point', { channel: channelLabel })
       : readOnly ? t('score.fixedPair')
       : selection.awaiting === 'after'
       ? t('score.pickAfter')
@@ -114,7 +121,7 @@ export function Score({ stack, selection, applied, dance, comparing, emptyText, 
           <label className="partitura-canal">
             <span>{t('score.channel')}</span>
             <select value={dance.channel} onChange={event => dance.setChannel(event.target.value as 'hh' | 'hv')}>
-              <option value="hh">HH</option>
+              <option value="hh">{primaryChannel}</option>
               <option value="hv" disabled={!stack?.polarizations.includes('HV')}>HV</option>
             </select>
           </label>
@@ -180,6 +187,7 @@ export function Score({ stack, selection, applied, dance, comparing, emptyText, 
             selection={selection}
             series={dance.series}
             channel={dance.channel}
+            channelLabel={channelLabel}
             readOnly={readOnly}
             cursorDate={cursorDate}
             sound={sound}
@@ -198,6 +206,12 @@ export function Score({ stack, selection, applied, dance, comparing, emptyText, 
         <p>{t('score.timing')}</p>
         {dance.series?.method && <p>{t('score.reference', { date: dance.series.method.reference_date, radius: dance.series.method.window_radius_pixels })}</p>}
       </details>
+      {dance.active && <details className="partitura-detalles partitura-colores">
+        <summary>{t('dance.colorHelp')}</summary>
+        <p>{t(`dance.color.${legend}`)}</p>
+        <p>{t(singlePol ? 'dance.grayExplanation' : 'dance.colorExplanation')}</p>
+        <p>{t('dance.colorLimits')}</p>
+      </details>}
     </section>
   );
 }

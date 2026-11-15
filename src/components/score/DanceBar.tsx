@@ -3,6 +3,7 @@ import { Pause, Play, Repeat, SkipBack, SkipForward, X } from 'lucide-react';
 import { useI18n } from '../../i18n';
 import { formatDate } from '../../lib/format';
 import { observationGap } from '../../lib/score';
+import { browseLegend } from '../../lib/browseLegend';
 import type { Dance } from '../../state/useDance';
 
 export function DanceBar({ dance }: { dance: Dance }) {
@@ -32,12 +33,14 @@ export function DanceBar({ dance }: { dance: Dance }) {
 
   const total = dance.series?.frames.length ?? 0;
   const frame = dance.series?.frames[dance.index];
+  const legend = browseLegend(dance.series?.series.find(point => point.date === frame?.date)?.granule);
   const gap = observationGap(dance.series?.frames.map(item => item.date) ?? [], dance.index);
   return (
     <div className="danza-controles" role="group" aria-label={t('dance.controls')}>
       <span className="danza-cuadro" aria-live="off">
         {frame ? t('dance.frame', { n: dance.index + 1, total, date: formatDate(frame.date, lang) }) : ''}
         <small>{gap === null ? t('dance.first') : t('dance.gap', { days: gap })}</small>
+        <small className="danza-color">{t(`dance.color.${legend}`)}</small>
       </span>
       <button type="button" className="icono" onClick={() => dance.step(-1)} aria-label={t('dance.prev')} title={t('dance.prev')}>
         <SkipBack size={18} aria-hidden="true" />

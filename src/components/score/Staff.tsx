@@ -40,6 +40,7 @@ interface Props {
   /** Las notas suenan al elegirlas o recorrerlas con el teclado. */
   sound: boolean;
   channel?: 'hh' | 'hv';
+  channelLabel?: string;
   readOnly?: boolean;
   onPick: (scene: Scene) => void;
   onBlocked: (reason: Blocked, scene: Scene) => void;
@@ -50,7 +51,7 @@ function monthLabel(date: string, index: number, lang: 'es' | 'en'): string {
   return index === 0 || date.slice(5, 7) === '01' ? `${month} ${date.slice(0, 4)}` : month;
 }
 
-export function Staff({ stack, containerWidth, selection, series, cursorDate, sound, onPick, onBlocked, channel = 'hh', readOnly = false }: Props) {
+export function Staff({ stack, containerWidth, selection, series, cursorDate, sound, onPick, onBlocked, channel = 'hh', channelLabel = channel.toUpperCase(), readOnly = false }: Props) {
   const { t, lang } = useI18n();
   const scenes = stack.scenes;
   const first = scenes[0]?.date;
@@ -101,7 +102,7 @@ export function Staff({ stack, containerWidth, selection, series, cursorDate, so
     const isAfter = scene.date === selection.after;
     const key: Key = isBefore ? 'score.noteBefore' : isAfter ? 'score.noteAfter' : 'score.noteAria';
     const db = heights.get(scene.date);
-    const value = db == null || !Number.isFinite(db) ? t('score.noValue') : t('score.value', { channel: channel.toUpperCase(), db: db.toFixed(1) });
+    const value = db == null || !Number.isFinite(db) ? t('score.noValue') : t('score.value', { channel: channelLabel, db: db.toFixed(1) });
     return `${t(key, { date: formatDate(scene.date, lang), quality: qualityText(scene) })}. ${value}`;
   };
 
@@ -177,7 +178,7 @@ export function Staff({ stack, containerWidth, selection, series, cursorDate, so
         <line key={line} className="pent-linea" x1={4} x2={width - 4} y1={TOP + SPACE * line} y2={TOP + SPACE * line} />
       ))}
       <text className="pent-clave" x={12} y={CENTER + 7}>
-        {channel.toUpperCase()}
+        {channelLabel}
       </text>
       {bars.map((x) => (
         <line key={x} className="pent-barra" x1={x} x2={x} y1={TOP} y2={BOTTOM} />
