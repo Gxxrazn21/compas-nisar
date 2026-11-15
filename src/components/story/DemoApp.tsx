@@ -30,7 +30,7 @@ const TEXT = {
   es: {
     title: 'La Mojana: una señal que merece comprobarse', loading: 'Abriendo el recorrido guardado…',
     error: 'El recorrido no está disponible o está incompleto. Puedes reintentar o volver a explorar.',
-    retry: 'Reintentar', back: 'Volver a Compás', label: 'Recorrido guardado', prepared: 'preparado el',
+    retry: 'Reintentar', back: 'Volver a SARitmo', label: 'Recorrido guardado', prepared: 'preparado el',
     note: 'Los datos de NISAR salen de archivos locales verificados, no de una consulta en vivo. El mapa de fondo, las capas de contexto y el contraste externo sí usan conexión.',
     question: '¿Qué zonas merecen una verificación de campo por cambios compatibles con expansión del agua?',
     steps: ['Observar el territorio', 'Comparar el retorno calibrado', 'Escuchar las observaciones', 'Verificar y compartir'],
@@ -44,7 +44,7 @@ const TEXT = {
   },
   en: {
     title: 'La Mojana: a signal worth checking', loading: 'Opening the saved walkthrough…',
-    error: 'The walkthrough is unavailable or incomplete. Retry or return to explore.', retry: 'Retry', back: 'Back to Compás',
+    error: 'The walkthrough is unavailable or incomplete. Retry or return to explore.', retry: 'Retry', back: 'Back to SARitmo',
     label: 'Saved walkthrough', prepared: 'prepared on',
     note: 'NISAR data comes from verified local files, not a live query. The basemap, context layers and external comparison do use a connection.',
     question: 'Which areas warrant field checks for changes consistent with expanding water?',
@@ -79,7 +79,7 @@ export function DemoApp() {
     }).catch(() => { if (!controller.signal.aborted) setError(true); });
     return () => controller.abort();
   }, [attempt]);
-  if (!data) return <main className="demo-loading"><h1>compás</h1><p role={error ? 'alert' : 'status'}>{error ? c.error : c.loading}</p>
+  if (!data) return <main className="demo-loading"><h1>SARitmo</h1><p role={error ? 'alert' : 'status'}>{error ? c.error : c.loading}</p>
     {error && <button className="primario" onClick={() => setAttempt(n => n + 1)}>{c.retry}</button>} <a href={`/#lang=${lang}`}>{c.back}</a></main>;
   return <Walkthrough data={data} lang={lang} />;
 }

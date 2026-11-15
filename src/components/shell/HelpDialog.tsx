@@ -1,4 +1,4 @@
-// Diálogo «Cómo usar Compás»: tres pasos, los atajos de teclado y las preferencias.
+// Diálogo «Cómo usar SARitmo»: tres pasos, los atajos de teclado y las preferencias.
 import { useEffect, useRef } from 'react';
 import { useI18n } from '../../i18n';
 import type { Key } from '../../i18n/es';

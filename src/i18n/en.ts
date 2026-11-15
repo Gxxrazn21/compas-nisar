@@ -18,11 +18,11 @@ export const en: Record<Key, string> = {
   'dance.partial': 'Partial playback: {n} of {total} images did not load.',
   'dance.failed': '{n} of {total} images did not load.',
   'dance.retry': 'Retry images',
-  'brand': 'compás',
-  'doc.title': 'Compás, the NISAR radar through time',
+  'brand': 'SARitmo',
+  'doc.title': 'SARitmo, the NISAR radar through time',
   'top.method': 'Method',
   'top.langLabel': 'Language',
-  'top.home': 'Compás, go to the cover',
+  'top.home': 'SARitmo, go to the cover',
   'top.back': 'All stories',
 
   'cover.title': 'Every 12 days, a radar listens to how the Earth changes',
@@ -32,7 +32,7 @@ export const en: Record<Key, string> = {
   'cover.programLabel': 'Available stories',
   'cover.loadingStories': 'Looking for the stories on the server…',
   'cover.storiesError':
-    'The stories could not be loaded. Check that the Compás server is running and try again.',
+    'The stories could not be loaded. Check that the SARitmo server is running and try again.',
   'cover.earth': 'Earth today, {date}',
   'cover.earthAlt': 'Image of the whole Earth taken by the DSCOVR satellite',
 
@@ -55,7 +55,7 @@ export const en: Record<Key, string> = {
   'load.slow': 'This is taking longer than usual; the NASA service may be slow.',
   'err.title': 'The change could not be computed',
   'err.network':
-    'There is no connection to the Compás server. Check that it is running and try again.',
+    'There is no connection to the SARitmo server. Check that it is running and try again.',
   'err.notFound':
     'There is no NISAR data for that pair of dates at this place. Try two other passes on the score.',
   'err.invalid': 'Those dates cannot be compared: {detail}',
@@ -73,13 +73,20 @@ export const en: Record<Key, string> = {
   'layer.change_hv': 'HV change',
   'layer.classes': 'Signals',
   'layer.composite': 'Composite',
-  'layer.hint.before': 'The earlier pass, as published by NASA.',
-  'layer.hint.after': 'The later pass, as published by NASA.',
-  'layer.hint.swipe': 'Drag the curtain to compare before and after.',
-  'layer.hint.change_hh': 'Blue: the return dropped. Red: the return rose. HH channel.',
-  'layer.hint.change_hv': 'Blue: the return dropped. Red: the return rose. HV channel.',
-  'layer.hint.classes': 'The classes in the list, painted on the map.',
-  'layer.hint.composite': 'Red: more signal after. Cyan: more signal before.',
+  'layer.hint.before':
+    'The earlier pass, as NASA publishes it. Brightness: echo strength. Purple: HH dominates. Green: HV dominates.',
+  'layer.hint.after':
+    'The later pass, as NASA publishes it. Brightness: echo strength. Purple: HH dominates. Green: HV dominates.',
+  'layer.hint.swipe':
+    'Drag the curtain to compare: before on the left, after on the right.',
+  'layer.hint.change_hh':
+    'Difference between the two dates in the HH channel (ground, water, buildings). Blue: the echo dropped. Red: it rose.',
+  'layer.hint.change_hv':
+    'Difference between the two dates in the HV channel (vegetation). Blue: the echo dropped. Red: it rose.',
+  'layer.hint.classes':
+    'The possible signals that come from combining HH and HV, in the colors of the panel list.',
+  'layer.hint.composite':
+    'Before in cyan and after in red. Gray: no change. Red: more echo now. Cyan: more echo before.',
   'map.opacity': 'Layer opacity',
   'map.zoomIn': 'Zoom in',
   'map.zoomOut': 'Zoom out',
@@ -213,7 +220,7 @@ export const en: Record<Key, string> = {
   'method.title': 'How the change is computed',
   'method.close': 'Close',
   'method.intro':
-    'Compás does not measure the ground: it compares two radar photographs of the same place and points out where the signal changed. This is the full recipe.',
+    'SARitmo does not measure the ground: it compares two radar photographs of the same place and points out where the signal changed. This is the full recipe.',
   'method.s1.title': 'Where the images come from',
   'method.s1.text':
     'NISAR is a radar from NASA and the Indian space agency (ISRO). It passes over the same place every 12 days and sees it at night and through clouds. We use the preview images NASA publishes for each pass, with two channels: HH and HV, two ways of sending and receiving the signal.',
@@ -245,23 +252,23 @@ export const en: Record<Key, string> = {
 
   'resources.title': 'Open resources from the challenge',
   'resources.intro':
-    'The resources suggested by the "Dancing with the SARs" challenge and the role each one plays in Compás. The app processes NISAR data; the Canadian and Argentine radars are listed as sources for cross-checking and are not processed here yet.',
+    'The resources suggested by the "Dancing with the SARs" challenge and the role each one plays in SARitmo. The app processes NISAR data; the Canadian and Argentine radars are listed as sources for cross-checking and are not processed here yet.',
   'resources.group.nasa': 'NASA',
   'resources.group.csa': 'Canadian Space Agency (CSA)',
   'resources.group.conae': "Argentina's National Commission for Space Activities (CONAE)",
   'resources.earthdataSearch.name': 'Earthdata Search',
   'resources.earthdataSearch.use':
-    "Search tool for NASA's catalog. Compás queries that same catalog (CMR) to find which NISAR passes cover each point.",
+    "Search tool for NASA's catalog. SARitmo queries that same catalog (CMR) to find which NISAR passes cover each point.",
   'resources.asfSearch.name': 'ASF Data Search (Vertex)',
   'resources.asfSearch.use':
-    "NASA's radar archive in Alaska. Every product Compás cites links to its record here, so provenance can be checked.",
+    "NASA's radar archive in Alaska. Every product SARitmo cites links to its record here, so provenance can be checked.",
   'resources.nisarDocs.name': 'NISAR documentation',
-  'resources.nisarDocs.use': 'Describes the GCOV and GUNW products Compás reads and the ways to access them.',
+  'resources.nisarDocs.use': 'Describes the GCOV and GUNW products SARitmo reads and the ways to access them.',
   'resources.remoteSensing.name': 'Remote sensing basics',
   'resources.remoteSensing.use': "NASA's introduction to observing Earth from space.",
   'resources.sarBasics.name': 'What is synthetic aperture radar',
   'resources.sarBasics.use':
-    'Explains bands, polarization and interferometry: the background for reading the change maps and hypotheses in Compás.',
+    'Explains bands, polarization and interferometry: the background for reading the change maps and hypotheses in SARitmo.',
   'resources.arset.name': 'ARSET trainings',
   'resources.arset.use':
     'Free NASA courses on applied remote sensing, including surface water with radar and ground displacement with NISAR.',
@@ -273,7 +280,7 @@ export const en: Record<Key, string> = {
     'Two-page briefs per application: floods, food security, glaciers, volcanoes and more. Background reading for the hypotheses behind each change class.',
   'resources.uavsar.name': 'UAVSAR postcards',
   'resources.uavsar.use':
-    'Images from the airborne L-band radar that preceded NISAR. Two match stories in Compás: Kilauea and Vatnajökull.',
+    'Images from the airborne L-band radar that preceded NISAR. Two match stories in SARitmo: Kilauea and Vatnajökull.',
   'resources.rcm.name': 'RADARSAT Constellation Mission (RCM)',
   'resources.rcm.use':
     "Three C-band satellites with part of their products openly available. Useful for cross-checking against NISAR's L band.",
@@ -339,7 +346,7 @@ export const en: Record<Key, string> = {
   'explore.searching':
     'Looking for NISAR stacks over this point…',
   'explore.stacksError':
-    'Could not fetch the NISAR stacks. Check that the Compás server is running and pick the point again.',
+    'Could not fetch the NISAR stacks. Check that the SARitmo server is running and pick the point again.',
   'explore.empty.title':
     'NISAR has no data here yet',
   'explore.empty.text':
@@ -599,7 +606,7 @@ export const en: Record<Key, string> = {
   'ig.product.title':
     'An official product, unprocessed',
   'ig.product.text':
-    'The image is the official preview of NISAR’s provisional GUNW product, as NASA publishes it. Compás does not recompute or interpret it.',
+    'The image is the official preview of NISAR’s provisional GUNW product, as NASA publishes it. SARitmo does not recompute or interpret it.',
   'ig.georef':
     'The georeferencing is approximate: it is estimated from the scene footprint, not from the product’s own geolocation.',
   'ig.limit.1':
@@ -716,7 +723,7 @@ export const en: Record<Key, string> = {
   'future.title':
     'What comes next with NISAR',
   'future.intro':
-    'What Compás shows today is one part of what NISAR can offer. This is what we already know about the satellite and what opens up from there.',
+    'What SARitmo shows today is one part of what NISAR can offer. This is what we already know about the satellite and what opens up from there.',
   'future.facts.title':
     'What is already a fact',
   'future.facts.1':
@@ -726,7 +733,7 @@ export const en: Record<Key, string> = {
   'future.facts.3':
     'L-band passes through foliage.',
   'future.facts.4':
-    'Besides what Compás uses, the public catalog already publishes soil-moisture products, displacement products (useful for glaciers) and interferograms, plus an urgent-response line in near real time.',
+    'Besides what SARitmo uses, the public catalog already publishes soil-moisture products, displacement products (useful for glaciers) and interferograms, plus an urgent-response line in near real time.',
   'future.apps.title':
     'Applications this opens up',
   'future.apps.1':
@@ -742,11 +749,11 @@ export const en: Record<Key, string> = {
   'future.apps.6':
     'Support for disaster response.',
   'future.gap.title':
-    'What Compás still needs to get there',
+    'What SARitmo still needs to get there',
   'future.gap.1':
     'Complete, calibrated series: today the overview uses preview images with approximate dB, and the calibrated magnifier covers only small windows.',
   'future.gap.2':
-    'Validation with field data: Compás does not yet check its signals against measurements taken on the ground.',
+    'Validation with field data: SARitmo does not yet check its signals against measurements taken on the ground.',
   'live.clusterHint':
     'Numbered circles group nearby events; select one to zoom in and split it apart.',
   'ref.group':
@@ -766,9 +773,9 @@ export const en: Record<Key, string> = {
   'score.soundOff':
     'Note sound: off',
   'help.open':
-    'How to use Compás and keyboard shortcuts',
+    'How to use SARitmo and keyboard shortcuts',
   'help.title':
-    'How to use Compás',
+    'How to use SARitmo',
   'help.step.1':
     'Pick a story on the cover, or open Explore and click any place on the map.',
   'help.step.2':
@@ -894,7 +901,7 @@ export const en: Record<Key, string> = {
   'sat.speed':
     'Speed',
   'sat.speedValue':
-    '{kms} km/s ({kmh} km/h)',
+    '{kms} mi/s ({kmh} mph)',
   'sat.heading':
     'Heading',
   'sat.ascending':
@@ -910,9 +917,9 @@ export const en: Record<Key, string> = {
   'sat.focus':
     'Center the map on NISAR',
   'sat.track':
-    'The dotted gold line is the path of its next orbit; the pale one, the last {minutes} minutes. NISAR passes over the same place again every 12 days: that is the beat of the score.',
+    'The dotted gold line is the path of its next orbit; the pale one, the last {minutes} minutes. NISAR passes over the same place again every 12 days: that is the rhythm behind SARitmo and the beat of its score.',
   'sat.source':
-    'Position computed with the SGP4 orbital model from the elements CelesTrak published {age}. It is an estimate within a few kilometres, not mission telemetry.',
+    'Position computed with the SGP4 orbital model from the elements CelesTrak published {age}. It is an estimate within a few miles, not mission telemetry.',
   'sat.ageHours':
     '{n} h ago',
   'sat.ageDays':
@@ -924,9 +931,9 @@ export const en: Record<Key, string> = {
   'sat.scaleReal':
     'at true size',
   'sat.swath':
-    'The gold band is the ground its radar can see: more than 240 km wide, to the left of its heading and at true scale on the map. It is what the radar can observe, not confirmation that it is recording.',
+    'The gold band is the ground its radar can see: about 150 miles wide, to the left of its heading and at true scale on the map. It is what the radar can observe, not confirmation that it is recording.',
   'sat.model':
-    'The satellite is drawn with its real proportions. It measures about 17 m end to end, so on the map it appears enlarged; the label says by how much.',
+    'The satellite on the map is the 3D model of NISAR, to scale. It is 39 feet across, so it appears enlarged; the label says by how much.',
   'sat.tour':
     'See how NISAR works',
   'tour.open':
@@ -934,15 +941,13 @@ export const en: Record<Key, string> = {
   'tour.short':
     'Tour',
   'tour.label':
-    'Compás guided tour',
+    'SARitmo guided tour',
   'tour.chapters':
     'Tour chapters',
   'tour.chapter.satellite':
     'The satellite',
-  'tour.chapter.observe':
-    'How it observes',
   'tour.chapter.app':
-    'How to use it',
+    'The app',
   'tour.controls':
     'Tour controls',
   'tour.stepOf':
@@ -960,97 +965,89 @@ export const en: Record<Key, string> = {
   'tour.restart':
     'Replay',
   'tour.finish':
-    'Start using Compás',
+    'Start using SARitmo',
   'tour.figure':
-    'NISAR drawn to scale',
+    '3D model of NISAR; drag to turn it',
   'tour.figureDimensions':
-    'NISAR drawn to scale with its measurements: 12-meter antenna, 9-meter boom, 5.5-meter body and 5.5-meter solar arrays, next to a person 1.75 meters tall',
+    '3D model of NISAR with its measurements: 39-foot reflector, 30-foot boom, 18-foot-long body and 18-foot solar wings, next to a person 5 feet 9 inches tall',
   'tour.figureNote':
-    'Measurements published by NASA/JPL. The layout is schematic.',
+    'Built from the views and measurements published by NASA/JPL. Drag to turn it.',
   'tour.dim.reflector':
-    '12 m',
+    '39 ft',
   'tour.dim.boom':
-    '9 m',
+    '30 ft',
   'tour.dim.body':
-    '5.5 m',
+    '18 ft',
   'tour.dim.solar':
-    '5.5 m',
+    '18 ft',
   'tour.dim.person':
-    '1.75 m',
+    '5 ft 9 in',
   'cover.tour':
     'Watch the guided tour',
   'cover.tourHelp':
-    'About five minutes, and it plays by itself: the satellite part by part, how it observes and how to use Compás.',
+    'About eight minutes in four chapters, and it plays by itself: the satellite part by part, how the radar works, how to read the data and how to use SARitmo.',
   'help.tour':
     'Watch the guided tour',
   'tour.now.title':
     'This is NISAR, right now',
   'tour.now.text':
-    'NISAR is a radar satellite from NASA and ISRO, India’s space agency. It launched on July 30, 2025 and circles Earth every 100 minutes, 747 km up. The model moves on the map in real time, using the orbit published by CelesTrak.',
+    'NISAR is a radar satellite from NASA and ISRO, India’s space agency. It launched on July 30, 2025 and circles Earth every 100 minutes, 464 miles up. On the map it moves in real time, using the orbit published by CelesTrak.',
   'tour.scale.title':
-    'Drawn to scale',
+    'Its real measurements',
   'tour.scale.text':
-    'The drawing keeps the real measurements: a 12 m antenna, wider than a tennis court, at the end of a 9 m boom. At true size it would not fill a single pixel of the map, so it appears enlarged; the label under the satellite says by how much.',
+    'The model follows the views of the spacecraft that NASA publishes. The reflector is 39 feet across, wider than a tennis court, and the body is 18 feet long. At that size it would not fill a single pixel of the map, so there it appears enlarged, and its label says by how much.',
   'tour.reflector.title':
-    'The antenna reflector',
+    'The reflector',
   'tour.reflector.text':
-    'A gold-plated wire mesh stretched across a 12 m ring. It works as a mirror for microwaves: it focuses the radar pulse toward Earth and gathers the echo that returns. It traveled folded and opened in orbit.',
+    'A gold-plated wire mesh stretched inside a ring of 123 struts, 39 feet across. It is a mirror for microwaves: it focuses the radar’s pulse toward Earth and gathers the echo that returns. It weighs only 142 pounds; it traveled folded and opened in orbit.',
   'tour.boom.title':
     'The boom',
   'tour.boom.text':
-    'It holds the antenna 9 m from the satellite body, at just the distance and angle for the radar to light it from below and for the beam to come down tilted toward Earth.',
+    'Thirty feet long, in two hinged sections. It holds the reflector by its rim, at just the distance and tilt for the radar to light it from below and for the beam to come down sideways toward Earth. It also traveled folded against the body.',
   'tour.radar.title':
     'Two radars in one',
   'tour.radar.text':
-    'NASA’s L-band radar uses 24 cm waves that pass through foliage and sense the ground and ice. ISRO’s S-band radar uses 9.4 cm waves, more sensitive to crops and low vegetation. Both transmit toward the antenna from the gold plate.',
+    'The eight-sided structure carries two radars that point up at the reflector. NASA’s L-band radar (the dark tiles) uses waves about 9 inches long that pass through foliage and reach the ground. ISRO’s S-band radar (the gold tiles) uses waves under 4 inches long, more sensitive to crops and low vegetation.',
   'tour.solar.title':
-    'The solar arrays',
+    'The solar wings',
   'tour.solar.text':
-    'Two 5.5 m wings, three panels each, deliver about 5 kilowatts. NISAR flies along the line between day and night, so it almost never enters Earth’s shadow and has sunlight for the radar nearly all the time.',
+    'Two 18-foot wings, three panels each, deliver about 5 kilowatts. NISAR flies along the line between day and night, so it almost never enters Earth’s shadow and has sunlight for the radar nearly all the time.',
   'tour.bus.title':
-    'The satellite body',
+    'The bus',
   'tour.bus.text':
-    'ISRO built it. It carries the computers, the battery, the propellant and the reaction wheels that keep the radar pointed. With the instrument on top it stands 5.5 m tall, and the whole satellite weighed close to 2,400 kg at launch.',
+    'This is the gold box built by ISRO. It carries the computers, the battery, the propellant and the reaction wheels that keep the radar pointed; the two tubes on top are star sensors, which it uses to find its orientation. The whole satellite weighed about 5,250 pounds at launch.',
   'tour.antenna.title':
     'The data antenna',
   'tour.antenna.text':
-    'The radar produces a huge amount of information: up to 26 terabits per day. This Ka-band antenna sends it to ground stations. That is where the open NISAR products that Compás queries come from.',
+    'The radar produces a huge amount of information: up to 26 terabits per day. This Ka-band antenna, on the side facing Earth, sends it to ground stations. That is where the open NISAR products that SARitmo queries come from.',
   'tour.orbit.title':
-    'One lap every 100 minutes',
+    'One lap every 100 minutes',
   'tour.orbit.text':
-    'The dashed line is its next lap; the pale one, the last 25 minutes. NISAR passes near both poles while Earth turns beneath it. After 173 laps, every 12 days, it repeats the same path: that is the beat (compás) the application is named after.',
+    'The dashed line on the map is its next lap. NISAR passes near both poles while Earth turns beneath it, so each lap covers a different strip. After 173 laps, every 12 days, it repeats exactly the same path. That rhythm (ritmo, in Spanish) gives SARitmo its name.',
   'tour.swath.title':
     'It looks sideways',
   'tour.swath.text':
-    'The gold band is what its radar can see: more than 240 km wide, to the left of its heading and at true scale. It looks sideways to tell near from far by how long the echo takes. It is the area it can observe, not confirmation that it is recording.',
+    'A radar does not look straight down: it looks sideways, to tell near from far by how long the echo takes. NISAR lights a strip about 150 miles wide to the left of its heading. That is the gold band on the map, at true scale: what it can observe, not confirmation that it is recording.',
   'tour.echo.title':
-    'It listens for the echo',
+    'It sends and listens',
   'tour.echo.text':
-    'NISAR does not take photos: it sends microwave pulses and measures how much comes back. Still water returns little and looks dark; forests and cities return a lot. Because it carries its own light, it sees at night and through clouds.',
-  'tour.stories.title':
-    'Stories',
-  'tour.stories.text':
-    'Compás starts here. Each story is a real place where something changed between two radar passes. Let’s open one.',
+    'NISAR does not take photos. It sends more than a thousand microwave pulses per second and measures two things about each echo: how long it takes to return, which tells where things are, and how strong it is, which tells what the surface is like. Because it carries its own light, it sees at night and through clouds.',
   'tour.story.title':
-    'A story, step by step',
+    'A real case',
   'tour.story.text':
-    'The left panel tells the story in steps. Each step moves the map and changes what it shows: the place, the before, the after and what changed. Move with “Previous” and “Next”.',
-  'tour.layers.title':
-    'The map layers',
-  'tour.layers.text':
-    'This bar chooses what you see: the before image, the after image, the change in color, or a curtain you drag to compare the two dates, as shown now. In the change layers, blue is less radar return and red is more.',
+    'Let’s read a real case. The left panel tells the story in steps: each step moves the map and changes what it shows. Everything that follows works the same in any story and in any place you explore.',
   'tour.reading.title':
     'The reading',
   'tour.reading.text':
-    'On the right, what changed in plain words: how many km² and of what kind. The class list is also the map legend. Every change is called “possible”: radar gives clues, and provenance and limits are always in view.',
+    'The right panel says it in words: how much area changed, with which signals, and how well the two images could be compared. Every signal says “possible” because radar measures the echo, not the cause: these are clues to go and check, not confirmed events. Provenance and limits are in the Data tab.',
   'tour.probe.title':
     'Measure a point',
   'tour.probe.text':
-    'A click on the map measures that point: how much the return rose or fell between the two dates. The tour has just queried one for you; the result appears in the reading panel.',
+    'A click on the map measures that point in decibels (dB), the unit of the echo: more negative values are darker surfaces. You see HH and HV before and after, and the difference. The tour has just measured one for you; the result is in the Point tab.',
   'tour.score.title':
     'The score',
   'tour.score.text':
-    'Below, time is a musical staff. Each note is a NISAR pass over this place and each bar line marks 12 days. Pick one note for “before”, another for “after”, and press “Compare these dates”.',
+    'Below, time is a musical staff. Each note is a NISAR pass over this place and each bar line marks 12 days. Pick one note for “before”, another for “after”, and press “Compare these dates”.',
   'tour.dance.title':
     'The dance',
   'tour.dance.text':
@@ -1058,7 +1055,7 @@ export const en: Record<Key, string> = {
   'tour.explore.title':
     'Explore',
   'tour.explore.text':
-    'Here you choose. Search for a place or click any point on the map, and Compás lists the NISAR passes that cover it. With two dates picked you get the same reading as in the stories.',
+    'Here you choose. Search for a place or click any point on the map, and SARitmo lists the NISAR passes that cover it. With two dates picked you get the same reading as in the stories.',
   'tour.live.title':
     'Live',
   'tour.live.text':
@@ -1066,5 +1063,123 @@ export const en: Record<Key, string> = {
   'tour.end.title':
     'Your turn',
   'tour.end.text':
-    'You now know the satellite and the application. Pick a story, explore your own region or follow NISAR live. The tour stays in the top bar if you want to watch it again.',
+    'You now know the satellite, the radar and how to read its data. Pick a story, explore your own region or follow NISAR live. The tour stays in the top bar if you want to watch it again.',
+  'unit.km':
+    'mi',
+  'tour.chapter.radar':
+    'The radar',
+  'tour.chapter.data':
+    'The data',
+  'tour.d.aria.orbit':
+    'Diagram: NISAR circles from pole to pole while Earth turns beneath it',
+  'tour.d.aria.look':
+    'Diagram: the radar lights a strip to one side of the satellite, not beneath it',
+  'tour.d.aria.echo':
+    'Diagram: the pulse goes down, the echo returns, and near things arrive before far ones',
+  'tour.d.aria.surfaces':
+    'Diagram: how much echo still water, rough ground, forest and buildings return',
+  'tour.d.aria.polarization':
+    'Diagram: in HH the wave returns horizontal as it left; in HV it returns turned to vertical after bouncing in vegetation',
+  'tour.d.aria.repeat':
+    'Diagram: two passes over the same place are subtracted, leaving the change',
+  'tour.d.earthTurns':
+    'Earth turns',
+  'tour.d.lap':
+    'one lap: 100 min',
+  'tour.d.repeat':
+    'every 12 days it repeats its path',
+  'tour.d.fromBehind':
+    'seen from behind',
+  'tour.d.altitude':
+    '464 mi',
+  'tour.d.swath':
+    'about 150 mi',
+  'tour.d.near':
+    'near',
+  'tour.d.far':
+    'far',
+  'tour.d.angles':
+    '33° to 47°',
+  'tour.d.pulse':
+    'pulse',
+  'tour.d.echo':
+    'echo',
+  'tour.d.time':
+    'time',
+  'tour.d.nearFirst':
+    'near things arrive first',
+  'tour.d.water':
+    'still water',
+  'tour.d.soil':
+    'ground',
+  'tour.d.forest':
+    'forest',
+  'tour.d.city':
+    'buildings',
+  'tour.d.inImage':
+    'how each one looks in the image',
+  'tour.d.sends':
+    'sends H',
+  'tour.d.hhBack':
+    'returns the same: ground, water, buildings',
+  'tour.d.hvBack':
+    'returns rotated: vegetation',
+  'tour.d.day0':
+    'day 0',
+  'tour.d.day12':
+    'day 12',
+  'tour.d.change':
+    'change',
+  'tour.d.less':
+    'less echo',
+  'tour.d.more':
+    'more echo',
+  'tour.surfaces.title':
+    'What looks bright and what looks dark',
+  'tour.surfaces.text':
+    'Still water is a mirror: it sends the pulse away and almost nothing returns, so it looks dark. Rough ground returns part of it. Forest returns more, because the wave bounces among branches and trunks. And buildings, or trunks standing in water, return nearly all of it: a double bounce, very bright.',
+  'tour.polarization.title':
+    'HH and HV',
+  'tour.polarization.text':
+    'The radar wave vibrates in one direction. NISAR sends it horizontal (H) and listens to the echo in two ways. HH: it returns horizontal, as it left; this dominates over ground, water and buildings. HV: it returns turned to vertical, which only happens after bouncing many times inside vegetation. In practice, HV measures how much vegetation there is.',
+  'tour.repeat.title':
+    'Two passes, one change',
+  'tour.repeat.text':
+    'Because NISAR returns every 12 days along the same path and at the same angle, two images of one place can be compared point by point. If the echo dropped or rose, something changed on the surface: water that arrived or left, vegetation that grew or was lost. Everything SARitmo shows comes from that comparison.',
+  'tour.images.title':
+    'Before and After',
+  'tour.images.text':
+    'Each image is one radar pass, as NASA publishes it. Brightness is the strength of the echo. Color mixes the two channels: purple where HH dominates (ground, shorelines, buildings) and green where HV dominates (vegetation). Black is still water or a very smooth surface.',
+  'tour.swipe.title':
+    'The curtain',
+  'tour.swipe.text':
+    'The curtain puts the two dates side by side: before on the left, after on the right. Drag it across an area and you will see dark patches appear or vanish. It is the most direct way to check with your own eyes a change the map points to.',
+  'tour.hh.title':
+    'HH change',
+  'tour.hh.text':
+    'Now you no longer see images but the difference between the two dates in the HH channel. Blue: the echo dropped. Red: it rose. The stronger the color, the bigger the change; from 3 dB up, which means half or double the echo, it counts as a change. Strong blue on open land is often new water.',
+  'tour.hv.title':
+    'HV change',
+  'tour.hv.text':
+    'The same difference in the HV channel, the one that responds to vegetation. Blue: there is less plant structure than before, as after a harvest, logging, a fire, or a flood that covered the plants. Red: there is more, like a crop that grew. Comparing HH with HV is what lets you tell water from vegetation.',
+  'tour.classes.title':
+    'Signals',
+  'tour.classes.text':
+    'This layer combines both channels and paints seven possible signals. For example: if HH drops until the surface turns dark, possible new water; if HH rises while HV holds steady, possible flooded vegetation; if HV drops, possible vegetation loss. The colors match the list in the right panel, which works as the legend.',
+  'tour.composite.title':
+    'Composite',
+  'tour.composite.text':
+    'Both dates in a single image: the before in cyan and the after in red. Where nothing changed the colors add up to gray. Red: there is more echo now. Cyan: there was more echo before. It lets you see the change at a glance without losing sight of the terrain.',
+  'tour.ctxWater.title':
+    'Context: water',
+  'tour.ctxWater.text':
+    'Three NASA layers help you understand what surrounds a change. The first is water as seen by another radar, Sentinel-1: blue for open water, green for flooded vegetation. It is an independent check: another satellite, another day, another frequency. If it agrees with NISAR, the clue holds up better.',
+  'tour.ctxLand.title':
+    'Context: forests and land',
+  'tour.ctxLand.text':
+    'Land cover from MODIS: greens for forests, yellows for croplands and savannas, blue for wetlands and red for cities. It matters because the same signal means different things on different terrain: a drop in HV is a harvest in a crop field and logging in a forest.',
+  'tour.ctxPeople.title':
+    'Context: population',
+  'tour.ctxPeople.text':
+    'How many people live in each area, from cream (almost no one) to dark red (densely populated). It shows who a change may affect. All three layers switch on with the “Context” buttons above the map bar, and they sit beneath the NISAR data.',
 };

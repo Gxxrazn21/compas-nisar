@@ -36,6 +36,8 @@ export function SatellitePanel({ compas, onTour }: { compas: Compas; onTour?: ()
   const degrees = (value: number, positive: string, negative: string) =>
     `${formatNumber(Math.abs(value), lang, 2)}° ${value >= 0 ? positive : negative}`;
   const clock = new Date(now).toISOString().slice(11, 19);
+  // En inglés las distancias van en millas, como las da la NASA al público de Estados Unidos.
+  const toUnit = lang === 'en' ? 0.621371 : 1;
 
   return (
     <>
@@ -51,14 +53,16 @@ export function SatellitePanel({ compas, onTour }: { compas: Compas; onTour?: ()
           <dl className="satelite-datos">
             <div>
               <dt>{t('sat.altitude')}</dt>
-              <dd>{formatNumber(position.altitudeKm, lang, 0)} km</dd>
+              <dd>
+                {formatNumber(position.altitudeKm * toUnit, lang, 0)} {t('unit.km')}
+              </dd>
             </div>
             <div>
               <dt>{t('sat.speed')}</dt>
               <dd>
                 {t('sat.speedValue', {
-                  kms: formatNumber(position.speedKmS, lang, 2),
-                  kmh: formatNumber(position.speedKmS * 3600, lang, 0),
+                  kms: formatNumber(position.speedKmS * toUnit, lang, 2),
+                  kmh: formatNumber(position.speedKmS * 3600 * toUnit, lang, 0),
                 })}
               </dd>
             </div>

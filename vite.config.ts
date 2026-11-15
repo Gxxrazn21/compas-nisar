@@ -16,6 +16,8 @@ export default defineConfig({
       output: {
         manualChunks: (id: string) => {
           if (id.includes('node_modules/maplibre-gl')) return 'maplibre';
+          // three.js solo hace falta para el modelo en 3D de NISAR: va aparte y se pide cuando se usa.
+          if (id.includes('node_modules/three')) return 'three';
           if (id.includes('node_modules/react') || id.includes('node_modules/scheduler')) return 'react';
           return undefined;
         },

@@ -260,6 +260,7 @@ export function App() {
         contextDate={compas.contextDate}
         reference={reference}
         satellite={view === 'live' && live.satellite.state.status === 'ready' ? live.satellite.state.orbit : null}
+        follow={view === 'live' && tour.step?.scene === 'satellite' ? (tour.step.zoom ?? null) : null}
         apiRef={stageApi}
       />
       <TopBar

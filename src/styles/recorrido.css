@@ -161,6 +161,18 @@
   }
 }
 
+/* La foto del modelo en 3D reemplaza al plano cuando termina de cargar */
+.satelite-modelo.foto {
+  filter: drop-shadow(0 2px 6px rgba(4, 7, 13, 0.85));
+}
+
+.satelite-modelo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+}
+
 /* Recorrido guiado: la tarjeta va centrada en la parte del mapa que los paneles dejan libre */
 .recorrido-zona {
   position: absolute;
@@ -188,7 +200,7 @@
 
 .recorrido {
   pointer-events: auto;
-  width: min(480px, 100%);
+  width: min(500px, 100%);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -199,10 +211,19 @@
   border-radius: var(--radio);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
   outline: none;
+  /* Entra una sola vez, al abrir el recorrido */
+  transition:
+    opacity 260ms var(--ease-out),
+    transform 260ms var(--ease-out);
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
 }
 
 .recorrido.con-figura {
-  width: min(680px, 100%);
+  width: min(740px, 100%);
 }
 
 .recorrido:focus-visible {
@@ -235,10 +256,9 @@
   font-size: var(--t13);
   font-weight: 500;
   color: var(--bruma);
-}
-
-.recorrido-capitulos button:hover {
-  color: var(--papel);
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
 }
 
 .recorrido-capitulos button[aria-pressed='true'] {
@@ -247,15 +267,30 @@
   font-weight: 600;
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .recorrido-capitulos button:hover {
+    color: var(--papel);
+  }
+}
+
 .recorrido-cuerpo {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 20px;
 }
 
 .recorrido-texto {
   flex: 1 1 0;
   min-width: 0;
+  /* Alto reservado para el texto más largo: los controles no saltan de un paso a otro */
+  min-height: 11.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.con-figura .recorrido-texto {
+  min-height: 0;
 }
 
 .recorrido-titulo {
@@ -272,9 +307,30 @@
   max-width: 62ch;
 }
 
+/* Cada paso entra con un fundido corto y un leve desplazamiento: no cambia de golpe */
+.recorrido-entra {
+  animation: recorrido-entra 300ms var(--ease-out) both;
+}
+
+.recorrido-entra > p {
+  animation: recorrido-entra 320ms var(--ease-out) 50ms both;
+}
+
+@keyframes recorrido-entra {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Figura: el modelo en 3D o un esquema */
 .figura-nisar {
   flex: none;
-  width: 264px;
+  width: 300px;
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -282,26 +338,88 @@
 }
 
 .figura-dibujo {
+  position: relative;
   aspect-ratio: 1;
-  padding: 6px;
-  background: var(--noche);
+  overflow: hidden;
   border: 1px solid var(--linea);
   border-radius: 6px;
+  /* El espacio, unas estrellas y el borde azul de la Tierra por debajo */
+  background:
+    radial-gradient(1.2px 1.2px at 12% 18%, rgba(255, 255, 255, 0.85) 50%, transparent 51%),
+    radial-gradient(1px 1px at 78% 9%, rgba(255, 255, 255, 0.7) 50%, transparent 51%),
+    radial-gradient(1px 1px at 91% 41%, rgba(255, 255, 255, 0.6) 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 34% 52%, rgba(255, 255, 255, 0.5) 50%, transparent 51%),
+    radial-gradient(1px 1px at 6% 66%, rgba(255, 255, 255, 0.65) 50%, transparent 51%),
+    radial-gradient(1px 1px at 58% 30%, rgba(255, 255, 255, 0.55) 50%, transparent 51%),
+    radial-gradient(125% 62% at 50% 132%, #8fbff0 0%, #3f7fc4 30%, #16395f 50%, rgba(10, 22, 38, 0) 60%),
+    #04070d;
 }
 
-/* Con cotas el dibujo es más alto que ancho: se muestra entero */
-.figura-dibujo .nisar-modelo {
+.figura-esquema {
+  background: var(--noche);
+}
+
+.figura-plano {
+  position: absolute;
+  inset: 8px;
+}
+
+.figura-plano .nisar-modelo {
   stroke-width: 1.5px;
+}
+
+.figura-3d {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 420ms var(--ease-out);
+}
+
+.figura-nisar[data-estado='ready'] .figura-3d {
+  opacity: 1;
+}
+
+.nisar-lienzo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  /* El gesto vertical sigue desplazando la página; el horizontal gira el modelo */
+  touch-action: pan-y;
+}
+
+.nisar-lienzo:active {
+  cursor: grabbing;
+}
+
+.nisar-cotas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.nisar-cotas span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--panel-92);
+  border: 1px solid var(--linea);
+  font-family: var(--cond);
+  font-size: var(--t13);
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--papel);
 }
 
 .figura-nisar figcaption {
   line-height: 1.3;
 }
 
-/* Parte resaltada: las demás se apagan */
+/* Plano en 2D (respaldo): la parte resaltada queda encendida y las demás se apagan */
 .figura-nisar[data-resalta] [data-part] {
   opacity: 0.3;
-  transition: opacity 0.25s ease-out;
 }
 
 .figura-nisar[data-resalta='reflector'] [data-part='reflector'],
@@ -315,14 +433,212 @@
   stroke-width: 2.2px;
 }
 
+/* Esquemas del radar. El color es el del dato: lila para HH, verde para HV, azul y rojo para el cambio */
+.esquema {
+  --hh: #c9a7f5;
+  --hv: #7ad68f;
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: var(--papel);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.esquema text {
+  stroke: none;
+  fill: var(--bruma);
+  font-family: var(--sans);
+  font-size: 13px;
+}
+
+.esquema .esq-rotulo {
+  fill: var(--papel);
+  font-weight: 500;
+}
+
+.esquema .esq-titulo {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.esquema .esq-signo {
+  fill: var(--bruma);
+  font-size: 20px;
+}
+
+.esquema .esq-oro {
+  fill: var(--oro);
+}
+
+.esquema .esq-hh {
+  fill: var(--hh);
+}
+
+.esquema .esq-hv {
+  fill: var(--hv);
+}
+
+.esq-tierra {
+  fill: #12365c;
+  stroke: #3f7fc4;
+}
+
+.esq-tenue {
+  stroke: var(--linea);
+  stroke-width: 1.2;
+}
+
+.esq-discontinua {
+  stroke-dasharray: 3 5;
+}
+
+.esq-flecha {
+  stroke: var(--bruma);
+}
+
+.esq-punta {
+  fill: none;
+  stroke: context-stroke;
+  stroke-width: 1.6;
+}
+
+.esq-orbita {
+  stroke: var(--oro);
+  stroke-dasharray: 5 6;
+}
+
+.esq-sat {
+  fill: var(--oro);
+  stroke: var(--noche);
+  stroke-width: 2;
+}
+
+.esq-nave {
+  stroke: var(--papel);
+  fill: var(--relieve);
+}
+
+.esq-nave ellipse {
+  stroke: var(--oro);
+  fill: rgba(232, 184, 74, 0.25);
+}
+
+.esq-suelo {
+  stroke: var(--bruma);
+  stroke-width: 2;
+}
+
+.esq-agua {
+  stroke: var(--baja);
+  stroke-width: 3;
+}
+
+.esq-haz {
+  fill: rgba(232, 184, 74, 0.12);
+  stroke: rgba(232, 184, 74, 0.5);
+  stroke-width: 1;
+}
+
+.esq-franja {
+  stroke: var(--oro);
+  stroke-width: 5;
+}
+
+.esq-pulso {
+  stroke: var(--oro);
+  stroke-width: 2.5;
+}
+
+.esq-eco {
+  stroke: var(--papel);
+  stroke-width: 1.8;
+  stroke-dasharray: 2 5;
+}
+
+.esq-objeto {
+  fill: var(--relieve);
+  stroke: var(--papel);
+}
+
+.esq-traza {
+  stroke: var(--oro);
+  stroke-width: 2;
+}
+
+.esq-rayo {
+  stroke: var(--papel);
+  stroke-width: 1.6;
+}
+
+.esq-oro-trazo {
+  stroke: var(--oro);
+}
+
+.esq-fino {
+  stroke-width: 1;
+  opacity: 0.55;
+}
+
+.esq-grueso {
+  stroke-width: 2.8;
+}
+
+.esq-muestra {
+  stroke: var(--bruma);
+  stroke-width: 1;
+}
+
+.esq-onda {
+  stroke-width: 2.2;
+}
+
+.esq-hh-trazo {
+  stroke: var(--hh);
+}
+
+.esq-hv-trazo {
+  stroke: var(--hv);
+}
+
+.esq-baldosa {
+  fill: #5c6672;
+  stroke: var(--linea);
+}
+
+.esq-baja {
+  fill: var(--baja);
+  stroke: none;
+}
+
+.esq-sube {
+  fill: var(--sube);
+  stroke: none;
+}
+
+/* Avance: un tramo por paso del capítulo; el actual se llena con el tiempo del paso */
 .recorrido-avance {
+  display: flex;
+  gap: 3px;
+}
+
+.recorrido-avance span {
+  flex: 1 1 0;
   height: 3px;
   border-radius: 2px;
   background: var(--linea);
   overflow: hidden;
+  transition: background-color 240ms ease;
 }
 
-.recorrido-avance span {
+.recorrido-avance span.hecho {
+  background: color-mix(in srgb, var(--oro) 60%, var(--linea));
+}
+
+.recorrido-avance i {
   display: block;
   height: 100%;
   background: var(--oro);
@@ -359,29 +675,40 @@
   gap: 6px;
 }
 
-/* Marco que señala de qué habla el paso */
+.recorrido-controles button {
+  transition: transform 120ms var(--ease-out);
+}
+
+.recorrido-controles button:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+/* Marco que señala de qué habla el paso. Se coloca con `transform` desde TourPlayer. */
 .recorrido-foco {
   position: fixed;
+  left: 0;
+  top: 0;
   z-index: 39;
   border: 2px solid var(--oro);
   border-radius: 10px;
-  box-shadow: 0 0 0 4px rgba(232, 184, 74, 0.2);
+  box-shadow: 0 0 0 4px rgba(232, 184, 74, 0.18);
   pointer-events: none;
-  transition:
-    left 0.2s linear,
-    top 0.2s linear,
-    width 0.2s linear,
-    height 0.2s linear;
-  animation: recorrido-foco 1.8s ease-in-out infinite alternate;
+  opacity: 0;
+  transition: opacity 220ms var(--ease-out);
+  will-change: transform;
 }
 
-@keyframes recorrido-foco {
-  from {
-    box-shadow: 0 0 0 3px rgba(232, 184, 74, 0.28);
-  }
-  to {
-    box-shadow: 0 0 0 9px rgba(232, 184, 74, 0.06);
-  }
+.recorrido-foco.visible {
+  opacity: 1;
+}
+
+/* De un objetivo al siguiente el marco viaja; el resto del tiempo va pegado a su objetivo */
+.recorrido-foco.viajando {
+  transition:
+    opacity 220ms var(--ease-out),
+    transform 460ms var(--ease-in-out),
+    width 460ms var(--ease-in-out),
+    height 460ms var(--ease-in-out);
 }
 
 /* Entradas al recorrido */
@@ -401,17 +728,27 @@
 
 @media (max-width: 1100px) {
   .recorrido.con-figura {
-    width: min(480px, 100%);
+    width: min(500px, 100%);
   }
 
   .recorrido-cuerpo {
     flex-direction: column;
     align-items: stretch;
+    gap: 10px;
+  }
+
+  /* En columna el texto ocupa su alto natural: con base cero se montaría sobre los botones */
+  .recorrido-texto {
+    flex: none;
   }
 
   .figura-nisar {
-    width: min(220px, 60%);
+    width: min(230px, 62%);
     align-self: center;
+  }
+
+  .con-figura .recorrido-texto {
+    min-height: 9.5rem;
   }
 }
 
@@ -430,8 +767,17 @@
     gap: 9px;
   }
 
+  .recorrido-capitulos button {
+    padding: 4px 8px;
+  }
+
   .recorrido-titulo {
     font-size: var(--t17);
+  }
+
+  .recorrido-texto,
+  .con-figura .recorrido-texto {
+    min-height: 0;
   }
 
   .recorrido-texto p {
@@ -439,7 +785,12 @@
   }
 
   .figura-nisar {
-    width: min(150px, 46%);
+    width: min(170px, 50%);
+  }
+
+  /* Los esquemas llevan rótulos: en el celular necesitan más ancho para leerse */
+  .figura-nisar:has(.figura-esquema) {
+    width: min(270px, 84%);
   }
 
   .figura-nisar figcaption {
@@ -462,7 +813,26 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .recorrido-avance span {
+  .recorrido-avance i {
     display: none;
+  }
+
+  /* Sin desplazamientos: el texto y el marco solo se funden */
+  .recorrido-entra,
+  .recorrido-entra > p {
+    animation: recorrido-funde 200ms ease both;
+  }
+
+  .recorrido-foco.viajando {
+    transition: opacity 200ms ease;
+  }
+}
+
+@keyframes recorrido-funde {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

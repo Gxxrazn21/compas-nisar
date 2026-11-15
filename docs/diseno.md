@@ -1,10 +1,10 @@
-# Compás: dirección de diseño
+# SARitmo: dirección de diseño
 
 Guía para quien construya o retoque la interfaz. Las decisiones de aquí ya están tomadas; lo que no esté escrito queda a criterio de quien implementa, siempre que respete los principios.
 
 ## La idea
 
-El reto se llama «Dancing with the SARs». NISAR pasa sobre cada lugar cada 12 días: ese es el compás de la danza. La aplicación se llama **Compás** (ritmo y, a la vez, instrumento para orientarse) y su pieza distintiva es la **partitura**: la línea de tiempo es un pentagrama donde cada pasada del radar es una nota y los dos momentos que se comparan quedan unidos por una ligadura.
+El reto se llama «Dancing with the SARs». NISAR pasa sobre cada lugar cada 12 días: ese es el compás de la danza. La aplicación se llama **SARitmo** (SAR, el radar de apertura sintética, más el ritmo de sus pasadas) y su pieza distintiva es la **partitura**: la línea de tiempo es un pentagrama donde cada pasada del radar es una nota y los dos momentos que se comparan quedan unidos por una ligadura.
 
 Quién la usa: jurados del Space Apps (la verán proyectada, en pocos minutos), estudiantes y personas curiosas por su territorio. Su trabajo principal: mostrar, con datos reales de NISAR, qué cambió entre dos fechas en un lugar, y explicar con honestidad qué significa y qué no.
 
@@ -49,7 +49,7 @@ Qué no hacer: etiquetas en mayúsculas con espaciado, «antetítulos» decorati
 
 ```
 ┌───────────────────────────────────────────────────────────────────────┐
-│ compás      Historias   Explorar   En vivo            ES | EN  Método │
+│ SARitmo     Historias   Explorar   En vivo            ES | EN  Método │
 │ ┌─────────────────┐                              ┌──────────────────┐ │
 │ │ Panel izquierdo │                              │ Panel de lectura │ │
 │ │ historia o      │       GLOBO / MAPA           │ frase resumen    │ │
@@ -86,9 +86,11 @@ SVG. Pentagrama de cinco líneas a lo ancho del panel inferior.
 - **Pista.** Una sola línea sobre el mapa con el paso siguiente de la vista actual. Nunca más de una, y se puede ocultar para siempre.
 - **Ayuda.** El botón de la barra superior abre tres pasos de uso, los atajos de teclado y las preferencias. Los atajos son de una tecla y aparecen en el texto emergente del botón que disparan.
 
+- **Recorrido guiado.** Una tarjeta sobre el mapa, en cuatro capítulos (el satélite, el radar, los datos, la aplicación). Avanza sola y la aplicación hace lo que se explica. Un marco dorado señala de qué se habla y viaja de un objetivo al siguiente. El satélite se enseña con un modelo en 3D sobre fondo de espacio; el radar, con esquemas donde el color es el del dato (lila para HH, verde para HV, azul y rojo para el cambio).
+
 ## Movimiento
 
-Un solo momento orquestado: al abrir una historia el globo vuela al lugar y la capa de cambio se revela. El resto del movimiento responde a acciones (cortina, reproducción, paneles). Sin entradas con desvanecido en cada sección. Con `prefers-reduced-motion`, el vuelo es un salto y la danza avanza por pasos manuales.
+Un solo momento orquestado: al abrir una historia el globo vuela al lugar y la capa de cambio se revela. El resto del movimiento responde a acciones (cortina, reproducción, paneles). Sin entradas con desvanecido en cada sección. Con `prefers-reduced-motion`, el vuelo es un salto y la danza avanza por pasos manuales. En el recorrido guiado, cada paso entra con un fundido corto (300 ms, curva `--ease-out`), el marco viaja con `--ease-in-out` y, mientras se habla del satélite, la cámara lo sigue sin cortes; con movimiento reducido solo quedan los fundidos y el recorrido no avanza solo.
 
 ## Voz
 

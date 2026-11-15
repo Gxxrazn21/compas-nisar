@@ -1,5 +1,5 @@
 // Recursos abiertos que propone el reto «Dancing with the SARs» y que el
-// diálogo Método lista con el papel de cada uno en Compás.
+// diálogo Método lista con el papel de cada uno en SARitmo.
 // Los textos viven en i18n: `resources.<id>.name` y `resources.<id>.use`.
 
 export type ResourceGroup = 'nasa' | 'csa' | 'conae';

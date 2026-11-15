@@ -46,7 +46,7 @@ export function buildReport(change: ChangeResult, options: ReportOptions) {
       .map(([key, path]) => [key, new URL(path, options.origin).toString()]),
   );
   return {
-    informe: 'Compás: comparación de dos pasadas de NISAR',
+    informe: 'SARitmo: comparación de dos pasadas de NISAR',
     generado: options.generatedAt,
     enlace: options.link,
     fuente: calibrated ? 'gcov (lupa calibrada)' : 'browse (vista previa oficial)',

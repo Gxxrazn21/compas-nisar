@@ -1,4 +1,4 @@
-# Inicia Compás en http://127.0.0.1:8000 (backend + interfaz ya compilada).
+# Inicia SARitmo en http://127.0.0.1:8000 (backend + interfaz ya compilada).
 # Uso:  powershell -ExecutionPolicy Bypass -File scripts\start.ps1 [-Build] [-Prewarm]
 param(
     [switch]$Build,    # vuelve a compilar la interfaz aunque ya exista dist\

@@ -10,7 +10,8 @@ import { formatNumber } from '../../lib/format';
 import type { ContextLayers } from '../../lib/context';
 import type { Orbit } from '../../lib/orbit';
 import type { FeatureCollection } from '../../lib/events';
-import { zoomForBounds } from '../../lib/camera';
+import { globeZoom, zoomForBounds } from '../../lib/camera';
+import { stateAt } from '../../lib/orbit';
 import { prefersReducedMotion } from '../../state/useElapsed';
 import type { CameraTarget } from '../../state/useCompas';
 import type { Bounds, ChangeResult, Corners, LonLat, MapLayer, SeriesResult } from '../../types';
@@ -83,11 +84,16 @@ interface Props {
   reference: Reference;
   /** Órbita de NISAR: con ella el satélite se dibuja y se mueve en vivo sobre el mapa. */
   satellite?: Orbit | null;
+  /** Zoom de globo con el que la cámara sigue a NISAR sin parar; `null` la deja quieta. */
+  follow?: number | null;
   apiRef: RefObject<StageApi | null>;
 }
 
 const SPIN_DEGREES = 30;
 const SPIN_MS = 14000;
+/** Seguimiento de NISAR: vuelo inicial y tramos cortos y lineales que se encadenan sin tirones. */
+const FOLLOW_FLY_MS = 1900;
+const FOLLOW_STEP_MS = 500;
 
 function markerElement(label: string, className: string): HTMLElement {
   const element = document.createElement('div');
@@ -355,6 +361,54 @@ export function Stage(props: Props) {
       scale: (times) => (times === null ? t('sat.scaleReal') : t('sat.scaleUp', { n: formatNumber(times, lang, 0) })),
     });
   }, [map, ready, satellite, t, lang]);
+
+  // Seguir a NISAR: la cámara vuela hasta él y después lo acompaña, con la Tierra pasando por debajo.
+  // Si la persona mueve el mapa, se deja de seguir hasta que cambie el zoom pedido.
+  const follow = props.follow ?? null;
+  useEffect(() => {
+    const host = hostRef.current;
+    if (!map || !ready || !host || !satellite || follow === null) return;
+    const reduced = prefersReducedMotion();
+    const ahead = (ms: number): LonLat | null => {
+      const state = stateAt(satellite, new Date(Date.now() + ms));
+      return state ? [state.lon, state.lat] : null;
+    };
+    const first = ahead(reduced ? 0 : FOLLOW_FLY_MS);
+    if (!first) return;
+    let released = false;
+    let timer = 0;
+    const release = () => {
+      released = true;
+    };
+    spinning.current = false;
+    map.stop();
+    const view = (center: LonLat) => ({ center, zoom: globeZoom(follow, center[1]), padding: coverPadding(host) });
+    if (reduced) map.jumpTo(view(first));
+    else map.flyTo({ ...view(first), duration: FOLLOW_FLY_MS, curve: 1.4, essential: true });
+    const start = window.setTimeout(
+      () => {
+        map.on('dragstart', release);
+        map.on('wheel', release);
+        timer = window.setInterval(
+          () => {
+            if (released || document.hidden) return;
+            const next = ahead(reduced ? 0 : FOLLOW_STEP_MS);
+            if (!next) return;
+            if (reduced) map.jumpTo(view(next));
+            else map.easeTo({ ...view(next), duration: FOLLOW_STEP_MS, easing: (x) => x, essential: true });
+          },
+          reduced ? 4000 : FOLLOW_STEP_MS,
+        );
+      },
+      reduced ? 0 : FOLLOW_FLY_MS + 40,
+    );
+    return () => {
+      window.clearTimeout(start);
+      window.clearInterval(timer);
+      map.off('dragstart', release);
+      map.off('wheel', release);
+    };
+  }, [map, ready, satellite, follow]);
 
   // Marcador de la sonda y del punto de exploración.
   useEffect(() => {

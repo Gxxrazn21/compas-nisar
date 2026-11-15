@@ -27,7 +27,8 @@ export function TopBar({ mode, borders, names, onMode, onHome, onMethod, onBorde
   return (
     <header className="barra-superior">
       <button type="button" className="marca" onClick={onHome} aria-label={t('top.home')}>
-        {t('brand')}
+        {/* SAR + ritmo: la sigla va recta y el resto en cursiva, como una indicación de tempo. */}
+        <span className="marca-sar">SAR</span>itmo
       </button>
       <nav className="navegacion" aria-label={t('nav.label')}>
         {MODES.map((item, index) => (

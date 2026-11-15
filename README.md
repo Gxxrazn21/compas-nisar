@@ -1,4 +1,4 @@
-# Compás
+# SARitmo
 
 Aplicación interactiva para el reto "Dancing with the SARs" del NASA Space Apps Challenge 2026. Muestra, con datos reales del radar NISAR (NASA e ISRO), qué cambió en la superficie de la Tierra entre dos pasadas del satélite, en cualquier lugar donde haya adquisiciones.
 
@@ -6,7 +6,7 @@ El ciclo nominal de NISAR es de 12 días; las adquisiciones disponibles pueden t
 
 **Nuevo recorrido guardado:** `/?demo=mojana`, con ventana calibrada, escucha HH/HV, ficha de evidencia e informe HTML imprimible. Ver [preparación, prueba sin servicios externos y recuperación del respaldo](docs/demo.md) y [estado de las mejoras](docs/estado-mejoras-2026-11-14.md).
 
-![Portada de Compás](docs/capturas/01-portada.png)
+![Portada de SARitmo](docs/capturas/01-portada.png)
 
 ## Qué hace
 
@@ -17,8 +17,10 @@ El ciclo nominal de NISAR es de 12 días; las adquisiciones disponibles pueden t
 - **Lectura del cambio.** Mapa de aumento y disminución del retorno del radar, clases de cambio con su área en km², sonda por punto, histograma, procedencia de cada dato y límites del análisis.
 - **La danza.** Animación a color de todas las pasadas de una serie (lila donde domina HH, verde donde domina HV), con la partitura siguiendo el ritmo. Cada nota suena a la altura a la que está dibujada: más retorno del radar, más aguda. El altavoz de la partitura (o la tecla M) lo apaga.
 - **Lupa calibrada.** Con un token de Earthdata, lee una ventana del producto científico completo desde la nube de NASA. Obtiene el espaciado de los metadatos y promedia en potencia; el caso preparado de La Mojana tiene celdas de 30 m.
-- **En vivo.** Eventos naturales recientes de NASA EONET, las últimas adquisiciones de respuesta urgente de NISAR, con acceso directo a explorar cada lugar, y «NISAR ahora»: el satélite dibujado a escala (antena de 12 m, brazo de 9 m, paneles de 5,5 m) en su posición de este instante, la franja de más de 240 km que su radar alcanza a ver a la izquierda del rumbo y el recorrido de su próxima vuelta, calculados con los elementos orbitales de CelesTrak. La franja se comprobó contra la huella real de una pasada sobre La Mojana.
-- **Recorrido guiado.** Unos cinco minutos que avanzan solos, con pausa y capítulos: el satélite pieza por pieza, cómo observa y para qué sirve cada zona de Compás. Mientras explica, la aplicación hace lo que cuenta (sigue a NISAR, abre una historia, cambia de capa, mide un punto, pone la danza). Se abre desde «Recorrido» en la barra superior, la portada, «NISAR ahora» o la ayuda.
+- **En vivo.** Eventos naturales recientes de NASA EONET, las últimas adquisiciones de respuesta urgente de NISAR, con acceso directo a explorar cada lugar, y «NISAR ahora»: el satélite en 3D, a escala, en su posición de este instante, la franja de más de 240 km que su radar alcanza a ver a la izquierda del rumbo y el recorrido de su próxima vuelta, calculados con los elementos orbitales de CelesTrak. La franja se comprobó contra la huella real de una pasada sobre La Mojana.
+- **Recorrido guiado.** Unos ocho minutos en cuatro capítulos que avanzan solos, con pausa: el satélite pieza por pieza (modelo en 3D que se puede girar), cómo funciona el radar (órbita, mirada de lado, eco, superficies, HH y HV, con esquemas animados), cómo leer los datos (Antes y Después, cortina, Cambio HH y HV, Señales, Compuesto, lectura, medición de un punto y las tres capas de contexto) y cómo se usa la aplicación. Mientras explica, la aplicación hace lo que cuenta. Se abre desde «Recorrido» en la barra superior, la portada, «NISAR ahora» o la ayuda.
+- **Modelo de NISAR.** Construido pieza por pieza sobre las vistas frontal y lateral que publica NASA/JPL (dominio público) y sus medidas: reflector de 12 m con aro de 30 tramos, brazo de 9 m, bus con la estructura del radar de ocho caras (5,5 m de largo), alimentadores de banda L y S, alas solares de 5,5 m y antena de banda Ka. La NASA no ofrece un modelo 3D descargable de NISAR; los soportes y detalles menores son aproximados.
+- **Unidades.** En español, sistema métrico. En inglés, las medidas del satélite y de su órbita van en pies y millas; los datos científicos (km², dB) se dejan como los entrega NISAR.
 - **Fronteras y nombres.** Fronteras de países, límites de departamentos o estados y nombres con su punto, dibujados sobre los datos. Se quitan y se ponen desde la barra superior (teclas B y N).
 - **Ayuda y atajos.** El botón de ayuda (tecla ?) explica el uso en tres pasos y lista los atajos de teclado. Una pista sobre el mapa indica el paso siguiente en cada vista y se puede ocultar.
 - Interfaz en inglés y español. Abre en inglés; el idioma se cambia en la barra superior (o con `#lang=es` en el enlace) y la elección se recuerda. Cada vista tiene un enlace permanente.
@@ -53,9 +55,9 @@ No se usan datos sintéticos. Todo lo que aparece en pantalla viene de estos ser
 
 ### Recursos del reto
 
-El reto propone catorce recursos abiertos. Esta tabla dice qué papel tiene cada uno en Compás; la misma lista está en el diálogo Método de la aplicación.
+El reto propone catorce recursos abiertos. Esta tabla dice qué papel tiene cada uno en SARitmo; la misma lista está en el diálogo Método de la aplicación.
 
-| Recurso | Papel en Compás |
+| Recurso | Papel en SARitmo |
 |---|---|
 | [Earthdata Search](https://search.earthdata.nasa.gov/search) | Mismo catálogo (CMR) que consulta el backend para listar pasadas |
 | [ASF Data Search](https://search.asf.alaska.edu/) | Origen de los productos NISAR; cada comparación enlaza a la ficha de sus dos productos |
@@ -76,7 +78,7 @@ El reto propone catorce recursos abiertos. Esta tabla dice qué papel tiene cada
 
 El análisis general parte de las imágenes de vista previa que NASA publica con cada producto GCOV. Esas imágenes no guardan el retorno calibrado: cada una se recorta entre sus propios percentiles 5 y 95 y lleva una corrección gamma de 0,5. Lo confirmamos en el código fuente de `nisarqa` y en los metadatos de control de calidad de cada producto. Dos fechas, por tanto, no se pueden restar directamente.
 
-Compás hace lo siguiente:
+SARitmo hace lo siguiente:
 
 1. Invierte la gamma para obtener una magnitud proporcional a la potencia.
 2. Suaviza el moteado con una media de 5×5 píxeles.
@@ -219,8 +221,8 @@ Código bajo licencia MIT (ver `LICENSE`). Los datos pertenecen a sus fuentes y 
 
 ## Créditos
 
-Datos de NISAR por cortesía de NASA, ISRO y el Alaska Satellite Facility DAAC. Eventos de NASA EONET. Imagen diaria de NASA EPIC. Teselas de NASA GIBS y de Esri (Esri, Maxar, Earthstar Geographics y la comunidad de usuarios de GIS). Búsqueda de lugares con Nominatim, © colaboradores de OpenStreetMap. Elementos orbitales de NISAR de CelesTrak; posición calculada con satellite.js (SGP4). Fronteras y nombres de Natural Earth (dominio público). Proyecto independiente: no es un producto oficial de NASA ni de ISRO.
+Datos de NISAR por cortesía de NASA, ISRO y el Alaska Satellite Facility DAAC. Eventos de NASA EONET. Imagen diaria de NASA EPIC. Teselas de NASA GIBS y de Esri (Esri, Maxar, Earthstar Geographics y la comunidad de usuarios de GIS). Búsqueda de lugares con Nominatim, © colaboradores de OpenStreetMap. Elementos orbitales de NISAR de CelesTrak; posición calculada con satellite.js (SGP4). Modelo en 3D de NISAR hecho con three.js a partir de las láminas de NASA/JPL. Fronteras y nombres de Natural Earth (dominio público). Proyecto independiente: no es un producto oficial de NASA ni de ISRO.
 
 ## English summary
 
-Compás is an interactive web app for the "Dancing with the SARs" challenge. It uses real NISAR observations to explore radar return changes wherever acquisitions exist. Its musical score represents dated observations, with selectable HH/HV and explicit gaps. A saved La Mojana walkthrough includes a calibrated GCOV window, a manual evidence review and a portable HTML brief. The overview uses normalized preview imagery: agreement with calibrated GCOV varies by window, date, channel and scale. In the main 15 km HH case, correlation at the smoothed scale is 0.861 but precision at 3 dB is only 12.5%, with 9 joint detections out of 72 preview detections. Physical classes are hypotheses, not validated flood or damage inventories. See the full multiwindow results above. The interface is available in Spanish and English.
+SARitmo is an interactive web app for the "Dancing with the SARs" challenge. It uses real NISAR observations to explore radar return changes wherever acquisitions exist. Its musical score represents dated observations, with selectable HH/HV and explicit gaps. A saved La Mojana walkthrough includes a calibrated GCOV window, a manual evidence review and a portable HTML brief. The overview uses normalized preview imagery: agreement with calibrated GCOV varies by window, date, channel and scale. In the main 15 km HH case, correlation at the smoothed scale is 0.861 but precision at 3 dB is only 12.5%, with 9 joint detections out of 72 preview detections. Physical classes are hypotheses, not validated flood or damage inventories. See the full multiwindow results above. The interface is available in Spanish and English.

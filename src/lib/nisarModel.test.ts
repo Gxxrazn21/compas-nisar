@@ -21,16 +21,16 @@ describe('modelo a escala de NISAR', () => {
     expect(Number(cells[0]![3])).toBe(SIZE.solarWidth);
   });
 
-  it('el brazo mide unos 9 m entre el cuerpo y la antena', () => {
+  it('el brazo, que sube inclinado, se ve de frente algo más corto que sus 9 m', () => {
     const path = /class="brazo" d="M([-\d.]+) ([-\d.]+)L([-\d.]+) ([-\d.]+)L([-\d.]+) ([-\d.]+)"/.exec(nisarSvg())!;
     const [x0, y0, x1, y1, x2, y2] = path.slice(1).map(Number) as [number, number, number, number, number, number];
     const length = Math.hypot(x1 - x0, y1 - y0) + Math.hypot(x2 - x1, y2 - y1);
-    expect(length).toBeGreaterThan(SIZE.boom - 0.4);
-    expect(length).toBeLessThan(SIZE.boom + 0.4);
+    expect(length).toBeGreaterThan(SIZE.boom - 1);
+    expect(length).toBeLessThanOrEqual(SIZE.boom);
   });
 
   it('con rótulos añade las cotas y la persona de referencia', () => {
-    const svg = nisarSvg({ reflector: '12 m', boom: '9 m', body: '5,5 m', solar: '5,5 m', person: '1,75 m' });
+    const svg = nisarSvg({ reflector: '12 m', boom: '9 m', solar: '5,5 m', person: '1,75 m' });
     expect(svg).toContain('class="cotas"');
     expect(svg).toContain('>12 m<');
     expect(svg).toContain('>1,75 m<');

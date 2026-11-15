@@ -52,6 +52,13 @@
   color: var(--oro);
 }
 
+/* La sigla del radar va recta; «itmo» sigue en cursiva y juntas se leen «ritmo» */
+.marca-sar {
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
 .barra-derecha {
   display: flex;
   align-items: center;

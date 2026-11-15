@@ -2,7 +2,7 @@
 
 Estado al 14 de noviembre de 2026.
 
-Los documentos de `docs/superpowers/` (diseño y plan del 11 de noviembre) describen la primera versión, llamada Terra, que mostraba huellas del catálogo y una demostración sintética. Quedaron superados: la aplicación se llama ahora Compás y trabaja solo con datos reales. Las fuentes vigentes son `docs/contrato-api.md` (API, hechos verificados y método) y `docs/diseno.md` (dirección de diseño).
+Los documentos de `docs/superpowers/` (diseño y plan del 11 de noviembre) describen la primera versión, llamada Terra, que mostraba huellas del catálogo y una demostración sintética. Quedaron superados: la aplicación se llama ahora SARitmo y trabaja solo con datos reales. Las fuentes vigentes son `docs/contrato-api.md` (API, hechos verificados y método) y `docs/diseno.md` (dirección de diseño).
 
 ## Hecho
 
@@ -17,7 +17,7 @@ Los documentos de `docs/superpowers/` (diseño y plan del 11 de noviembre) descr
 - Video explicativo en inglés y español (`video/`): graba la aplicación real con Chrome, la monta en una composición animada y la convierte en MP4. Primera versión de 92 segundos, con música generada y sin voz en off.
 - Fronteras, límites internos y nombres sobre el mapa, con datos de Natural Earth guardados en `public/ref/` (`scripts/build_reference.py` los regenera). Se dibujan encima de los datos y a ambos lados de la cortina; dos interruptores en la barra superior los quitan. Los rótulos se pintan en un lienzo con las tipografías de la aplicación (`src/components/stage/reference.ts`).
 - Sonido de la partitura: cada nota suena a la altura a la que está dibujada, leída en clave de sol (`src/lib/sound.ts`, `staffStep` y `stepFrequency` en `src/lib/score.ts`). Suena al elegir una nota, al recorrerlas con el teclado y en cada cuadro de la danza.
-- Atajos de teclado (`src/state/useShortcuts.ts`), diálogo «Cómo usar Compás» y una pista sobre el mapa con el paso siguiente de cada vista. Las preferencias (fronteras, nombres, sonido, pistas) se recuerdan en el navegador.
+- Atajos de teclado (`src/state/useShortcuts.ts`), diálogo «Cómo usar SARitmo» y una pista sobre el mapa con el paso siguiente de cada vista. Las preferencias (fronteras, nombres, sonido, pistas) se recuerdan en el navegador.
 - Carga de imágenes: las capas de cada comparación se guardan en WebP (cerca de la quinta parte del peso), se sirven con caché inmutable y el mapa solo añade la capa que se está viendo; las demás se traen al caché del navegador en segundo plano.
 - En vivo: actualización automática cada diez minutos y botón «Actualizar», aviso cuando se muestra una copia anterior, filtro «Solo en curso», y el mapa vuelve al globo al cambiar de pestaña para que las huellas urgentes se vean.
 - «Ver la danza» funciona en Explorar antes de comparar (usa el punto elegido).

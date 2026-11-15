@@ -1,10 +1,10 @@
-# Compás: cumplimiento del reto y oportunidades de impacto
+# SARitmo: cumplimiento del reto y oportunidades de impacto
 
 Revisión del 14 de noviembre de 2026 contra el texto proporcionado por Jhonatan. Es una evaluación del proyecto, no una certificación del concurso ni una comparación exhaustiva con todos los participantes.
 
 ## Dictamen
 
-Compás cubre el núcleo funcional del reto: utiliza NISAR real, permite comparar fechas y explorar lugares, presenta historias con hipótesis físicas y comunica los resultados en una aplicación interactiva con licencia MIT. También incorpora varias sugerencias opcionales: polarizaciones, contexto de otro radar, cobertura del suelo, población, animación y sonificación.
+SARitmo cubre el núcleo funcional del reto: utiliza NISAR real, permite comparar fechas y explorar lugares, presenta historias con hipótesis físicas y comunica los resultados en una aplicación interactiva con licencia MIT. También incorpora varias sugerencias opcionales: polarizaciones, contexto de otro radar, cobertura del suelo, población, animación y sonificación.
 
 El cumplimiento es parcial en dos resultados deseados: demostrar que una audiencia no especializada entiende la herramienta y convertir la observación en información útil para una decisión concreta. La principal deuda es científica y comunicativa: buena correlación espacial no equivale a buena detección por umbral, y el indicador de «confianza» puede interpretarse como una garantía que su cálculo no ofrece.
 
@@ -127,7 +127,7 @@ Valoración provisional por código y capturas existentes, sin certificación WC
 
 No hay un bloqueo P0 confirmado en los recorridos de API probados. Se registran **3 hallazgos P1 y 3 P2** arriba. La revisión visual actual queda pendiente; las capturas muestran composición, no prueban el estado del navegador de hoy.
 
-## Qué puede diferenciar a Compás
+## Qué puede diferenciar a SARitmo
 
 Worldview ya permite comparar fechas, animar y compartir mapas, y ASF documenta la visualización de NISAR en esa herramienta. Vertex ya ofrece búsqueda especializada de productos SAR. Por eso, mapa + línea de tiempo + búsqueda son una base compartida, no una exclusividad demostrada. [Worldview, NASA](https://earthdata.nasa.gov/s3fs-public/2025-03/worldview-booklet.pdf), [NISAR en Worldview, ASF](https://hyp3-docs.asf.alaska.edu/nisar-docs/worldview/), [NISAR en Vertex, ASF](https://nisar-docs.asf.alaska.edu/vertex/).
 

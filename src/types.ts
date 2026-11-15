@@ -1,4 +1,4 @@
-// Tipos de la API de Compás. Fuente de verdad: docs/contrato-api.md (versión 3).
+// Tipos de la API de SARitmo. Fuente de verdad: docs/contrato-api.md (versión 3).
 // Los nombres de campo se copian tal cual del contrato.
 
 export type Lang = 'es' | 'en';

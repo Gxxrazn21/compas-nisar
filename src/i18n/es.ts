@@ -16,11 +16,11 @@ export const es = {
   'dance.partial': 'Reproducción parcial: {n} de {total} imágenes no cargaron.',
   'dance.failed': 'No cargaron {n} de {total} imágenes.',
   'dance.retry': 'Reintentar imágenes',
-  'brand': 'compás',
-  'doc.title': 'Compás, el radar NISAR en el tiempo',
+  'brand': 'SARitmo',
+  'doc.title': 'SARitmo, el radar NISAR en el tiempo',
   'top.method': 'Método',
   'top.langLabel': 'Idioma',
-  'top.home': 'Compás, ir a la portada',
+  'top.home': 'SARitmo, ir a la portada',
   'top.back': 'Todas las historias',
 
   'cover.title': 'Cada 12 días, un radar escucha cómo cambia la Tierra',
@@ -30,7 +30,7 @@ export const es = {
   'cover.programLabel': 'Historias disponibles',
   'cover.loadingStories': 'Buscando las historias en el servidor…',
   'cover.storiesError':
-    'No se pudieron cargar las historias. Revisa que el servidor de Compás esté encendido y vuelve a intentarlo.',
+    'No se pudieron cargar las historias. Revisa que el servidor de SARitmo esté encendido y vuelve a intentarlo.',
   'cover.earth': 'La Tierra hoy, {date}',
   'cover.earthAlt': 'Imagen de la Tierra completa tomada por el satélite DSCOVR',
 
@@ -53,7 +53,7 @@ export const es = {
   'load.slow': 'Está tardando más de lo normal; el servicio de la NASA puede estar lento.',
   'err.title': 'No se pudo calcular el cambio',
   'err.network':
-    'No hay conexión con el servidor de Compás. Comprueba que esté encendido y vuelve a intentarlo.',
+    'No hay conexión con el servidor de SARitmo. Comprueba que esté encendido y vuelve a intentarlo.',
   'err.notFound':
     'No hay datos de NISAR para ese par de fechas en este lugar. Prueba con otras dos pasadas de la partitura.',
   'err.invalid': 'Esas fechas no se pueden comparar: {detail}',
@@ -72,13 +72,20 @@ export const es = {
   'layer.change_hv': 'Cambio HV',
   'layer.classes': 'Señales',
   'layer.composite': 'Compuesto',
-  'layer.hint.before': 'La pasada anterior, tal como la publica la NASA.',
-  'layer.hint.after': 'La pasada posterior, tal como la publica la NASA.',
-  'layer.hint.swipe': 'Arrastra la cortina para comparar antes y después.',
-  'layer.hint.change_hh': 'Azul: el retorno bajó. Rojo: el retorno subió. Canal HH.',
-  'layer.hint.change_hv': 'Azul: el retorno bajó. Rojo: el retorno subió. Canal HV.',
-  'layer.hint.classes': 'Las clases de la lista, pintadas sobre el mapa.',
-  'layer.hint.composite': 'Rojo: más señal después. Cian: más señal antes.',
+  'layer.hint.before':
+    'La pasada anterior, tal como la publica la NASA. Brillo: fuerza del eco. Lila: domina HH. Verde: domina HV.',
+  'layer.hint.after':
+    'La pasada posterior, tal como la publica la NASA. Brillo: fuerza del eco. Lila: domina HH. Verde: domina HV.',
+  'layer.hint.swipe':
+    'Arrastra la cortina para comparar: a la izquierda el antes, a la derecha el después.',
+  'layer.hint.change_hh':
+    'Diferencia entre las dos fechas en el canal HH (suelo, agua, edificios). Azul: el eco bajó. Rojo: subió.',
+  'layer.hint.change_hv':
+    'Diferencia entre las dos fechas en el canal HV (vegetación). Azul: el eco bajó. Rojo: subió.',
+  'layer.hint.classes':
+    'Las señales posibles que salen de combinar HH y HV, con los colores de la lista del panel.',
+  'layer.hint.composite':
+    'El antes en cian y el después en rojo. Gris: sin cambio. Rojo: más eco ahora. Cian: más eco antes.',
   'map.opacity': 'Opacidad de la capa',
   'map.zoomIn': 'Acercar',
   'map.zoomOut': 'Alejar',
@@ -213,7 +220,7 @@ export const es = {
   'method.title': 'Cómo se calcula el cambio',
   'method.close': 'Cerrar',
   'method.intro':
-    'Compás no mide el terreno: compara dos fotografías de radar de la misma zona y señala dónde cambió la señal. Esta es la receta completa.',
+    'SARitmo no mide el terreno: compara dos fotografías de radar de la misma zona y señala dónde cambió la señal. Esta es la receta completa.',
   'method.s1.title': 'De dónde salen las imágenes',
   'method.s1.text':
     'NISAR es un radar de la NASA y la agencia espacial india (ISRO). Pasa por el mismo lugar cada 12 días y lo ve de noche y a través de las nubes. Usamos las imágenes de vista previa que la NASA publica para cada pasada, con dos canales: HH y HV, dos formas de emitir y recibir la señal.',
@@ -245,24 +252,24 @@ export const es = {
 
   'resources.title': 'Recursos abiertos del reto',
   'resources.intro':
-    'Los recursos que propone el reto «Dancing with the SARs» y el papel de cada uno en Compás. La aplicación procesa datos de NISAR; los radares de Canadá y Argentina figuran como fuentes para contrastar y aún no se procesan aquí.',
+    'Los recursos que propone el reto «Dancing with the SARs» y el papel de cada uno en SARitmo. La aplicación procesa datos de NISAR; los radares de Canadá y Argentina figuran como fuentes para contrastar y aún no se procesan aquí.',
   'resources.group.nasa': 'NASA',
   'resources.group.csa': 'Agencia Espacial Canadiense (CSA)',
   'resources.group.conae': 'Comisión Nacional de Actividades Espaciales de Argentina (CONAE)',
   'resources.earthdataSearch.name': 'Earthdata Search',
   'resources.earthdataSearch.use':
-    'Buscador del catálogo de NASA. Compás consulta ese mismo catálogo (CMR) para saber qué pasadas de NISAR cubren cada punto.',
+    'Buscador del catálogo de NASA. SARitmo consulta ese mismo catálogo (CMR) para saber qué pasadas de NISAR cubren cada punto.',
   'resources.asfSearch.name': 'ASF Data Search (Vertex)',
   'resources.asfSearch.use':
-    'Archivo de radar de NASA en Alaska. Cada producto que cita Compás enlaza a su ficha aquí, para comprobar la procedencia.',
+    'Archivo de radar de NASA en Alaska. Cada producto que cita SARitmo enlaza a su ficha aquí, para comprobar la procedencia.',
   'resources.nisarDocs.name': 'Documentación de NISAR',
   'resources.nisarDocs.use':
-    'Describe los productos GCOV y GUNW que lee Compás y las formas de acceder a ellos.',
+    'Describe los productos GCOV y GUNW que lee SARitmo y las formas de acceder a ellos.',
   'resources.remoteSensing.name': 'Fundamentos de teledetección',
   'resources.remoteSensing.use': 'Introducción de NASA a la observación de la Tierra desde el espacio.',
   'resources.sarBasics.name': 'Qué es un radar de apertura sintética',
   'resources.sarBasics.use':
-    'Explica bandas, polarización e interferometría: la base para leer los mapas de cambio y las hipótesis de Compás.',
+    'Explica bandas, polarización e interferometría: la base para leer los mapas de cambio y las hipótesis de SARitmo.',
   'resources.arset.name': 'Capacitaciones ARSET',
   'resources.arset.use':
     'Cursos gratuitos de NASA sobre teledetección aplicada, entre ellos agua superficial con radar y desplazamiento del terreno con NISAR.',
@@ -274,7 +281,7 @@ export const es = {
     'Fichas de dos páginas por aplicación: inundaciones, seguridad alimentaria, glaciares, volcanes y más. Lectura de fondo para las hipótesis de cada clase de cambio.',
   'resources.uavsar.name': 'Postales de UAVSAR',
   'resources.uavsar.use':
-    'Imágenes del radar aéreo de banda L que sirvió de antecedente a NISAR. Dos coinciden con historias de Compás: Kilauea y Vatnajökull.',
+    'Imágenes del radar aéreo de banda L que sirvió de antecedente a NISAR. Dos coinciden con historias de SARitmo: Kilauea y Vatnajökull.',
   'resources.rcm.name': 'Misión de la Constelación RADARSAT (RCM)',
   'resources.rcm.use':
     'Tres satélites de banda C con parte de sus productos en acceso abierto. Sirven para contrastar con la banda L de NISAR.',
@@ -340,7 +347,7 @@ export const es = {
   'explore.searching':
     'Buscando las pilas de NISAR sobre este punto…',
   'explore.stacksError':
-    'No se pudieron consultar las pilas de NISAR. Revisa que el servidor de Compás esté encendido y vuelve a elegir el punto.',
+    'No se pudieron consultar las pilas de NISAR. Revisa que el servidor de SARitmo esté encendido y vuelve a elegir el punto.',
   'explore.empty.title':
     'NISAR aún no tiene datos aquí',
   'explore.empty.text':
@@ -600,7 +607,7 @@ export const es = {
   'ig.product.title':
     'Un producto oficial, sin procesar',
   'ig.product.text':
-    'La imagen es la vista previa oficial del producto GUNW provisional de NISAR, tal como la publica la NASA. Compás no la recalcula ni la interpreta.',
+    'La imagen es la vista previa oficial del producto GUNW provisional de NISAR, tal como la publica la NASA. SARitmo no la recalcula ni la interpreta.',
   'ig.georef':
     'La georreferencia es aproximada: se estima con la huella de la escena, no con la geolocalización del producto.',
   'ig.limit.1':
@@ -717,7 +724,7 @@ export const es = {
   'future.title':
     'Qué viene con NISAR',
   'future.intro':
-    'Lo que Compás muestra hoy es una parte de lo que NISAR puede ofrecer. Esto es lo que ya sabemos del satélite y lo que se abre a partir de ahí.',
+    'Lo que SARitmo muestra hoy es una parte de lo que NISAR puede ofrecer. Esto es lo que ya sabemos del satélite y lo que se abre a partir de ahí.',
   'future.facts.title':
     'Lo que ya es un hecho',
   'future.facts.1':
@@ -727,7 +734,7 @@ export const es = {
   'future.facts.3':
     'La banda L atraviesa el follaje.',
   'future.facts.4':
-    'El catálogo público ya publica, además de lo que usa Compás, productos de humedad del suelo, de desplazamientos (útiles para glaciares) e interferogramas, y una línea de respuesta urgente casi en tiempo real.',
+    'El catálogo público ya publica, además de lo que usa SARitmo, productos de humedad del suelo, de desplazamientos (útiles para glaciares) e interferogramas, y una línea de respuesta urgente casi en tiempo real.',
   'future.apps.title':
     'Aplicaciones que eso abre',
   'future.apps.1':
@@ -743,11 +750,11 @@ export const es = {
   'future.apps.6':
     'Apoyo a la respuesta ante desastres.',
   'future.gap.title':
-    'Qué le falta a Compás para llegar ahí',
+    'Qué le falta a SARitmo para llegar ahí',
   'future.gap.1':
     'Series completas y calibradas: hoy la vista general usa imágenes de vista previa con dB aproximados, y la lupa calibrada cubre solo ventanas pequeñas.',
   'future.gap.2':
-    'Validación con datos de campo: Compás todavía no contrasta sus señales con mediciones hechas en el terreno.',
+    'Validación con datos de campo: SARitmo todavía no contrasta sus señales con mediciones hechas en el terreno.',
   'live.clusterHint':
     'Los círculos con número agrupan eventos cercanos; púlsalos para acercarte y separarlos.',
   'ref.group':
@@ -767,9 +774,9 @@ export const es = {
   'score.soundOff':
     'Sonido de las notas: apagado',
   'help.open':
-    'Cómo usar Compás y atajos de teclado',
+    'Cómo usar SARitmo y atajos de teclado',
   'help.title':
-    'Cómo usar Compás',
+    'Cómo usar SARitmo',
   'help.step.1':
     'Elige una historia de la portada, o entra en Explorar y pulsa cualquier lugar del mapa.',
   'help.step.2':
@@ -911,7 +918,7 @@ export const es = {
   'sat.focus':
     'Centrar el mapa en NISAR',
   'sat.track':
-    'La línea dorada punteada es el recorrido de su próxima vuelta; la clara, el de los últimos {minutes} minutos. NISAR vuelve a pasar por el mismo lugar cada 12 días: de ahí sale el compás de la partitura.',
+    'La línea dorada punteada es el recorrido de su próxima vuelta; la clara, el de los últimos {minutes} minutos. NISAR vuelve a pasar por el mismo lugar cada 12 días: ese es el ritmo de SARitmo y el compás de su partitura.',
   'sat.source':
     'Posición calculada con el modelo orbital SGP4 a partir de los elementos que CelesTrak publicó {age}. Es una estimación con un margen de pocos kilómetros, no telemetría de la misión.',
   'sat.ageHours':
@@ -925,9 +932,9 @@ export const es = {
   'sat.scaleReal':
     'a tamaño real',
   'sat.swath':
-    'La franja dorada es el suelo que su radar alcanza a ver: más de 240 km de ancho, a la izquierda del rumbo y a escala real sobre el mapa. Es lo que puede observar, no una confirmación de que esté grabando.',
+    'La franja dorada es el suelo que su radar alcanza a ver: más de 240 km de ancho, a la izquierda del rumbo y a escala real sobre el mapa. Es lo que puede observar, no una confirmación de que esté grabando.',
   'sat.model':
-    'El satélite está dibujado con sus proporciones reales. Mide unos 17 m de punta a punta, así que en el mapa aparece ampliado; el rótulo dice cuántas veces.',
+    'El satélite del mapa es el modelo en 3D de NISAR, a escala. Mide 12 m de ancho, así que aparece ampliado; el rótulo dice cuántas veces.',
   'sat.tour':
     'Ver cómo funciona NISAR',
   'tour.open':
@@ -935,15 +942,13 @@ export const es = {
   'tour.short':
     'Recorrido',
   'tour.label':
-    'Recorrido guiado de Compás',
+    'Recorrido guiado de SARitmo',
   'tour.chapters':
     'Capítulos del recorrido',
   'tour.chapter.satellite':
     'El satélite',
-  'tour.chapter.observe':
-    'Cómo observa',
   'tour.chapter.app':
-    'Cómo se usa',
+    'La aplicación',
   'tour.controls':
     'Controles del recorrido',
   'tour.stepOf':
@@ -961,97 +966,89 @@ export const es = {
   'tour.restart':
     'Repetir',
   'tour.finish':
-    'Empezar a usar Compás',
+    'Empezar a usar SARitmo',
   'tour.figure':
-    'NISAR dibujado a escala',
+    'Modelo en 3D de NISAR; se puede girar arrastrando',
   'tour.figureDimensions':
-    'NISAR dibujado a escala con sus medidas: antena de 12 metros, brazo de 9 metros, cuerpo de 5,5 metros y paneles solares de 5,5 metros, junto a una persona de 1,75 metros',
+    'Modelo en 3D de NISAR con sus medidas: reflector de 12 metros, brazo de 9 metros, cuerpo de 5,5 metros de largo y alas solares de 5,5 metros, junto a una persona de 1,75 metros',
   'tour.figureNote':
-    'Medidas publicadas por NASA/JPL. La disposición es esquemática.',
+    'Hecho sobre las láminas y medidas que publica NASA/JPL. Arrástralo para girarlo.',
   'tour.dim.reflector':
-    '12 m',
+    '12 m',
   'tour.dim.boom':
-    '9 m',
+    '9 m',
   'tour.dim.body':
-    '5,5 m',
+    '5,5 m',
   'tour.dim.solar':
-    '5,5 m',
+    '5,5 m',
   'tour.dim.person':
-    '1,75 m',
+    '1,75 m',
   'cover.tour':
     'Ver el recorrido guiado',
   'cover.tourHelp':
-    'Unos cinco minutos y avanza solo: el satélite pieza por pieza, cómo observa y cómo se usa Compás.',
+    'Unos ocho minutos en cuatro capítulos, y avanza solo: el satélite pieza por pieza, cómo funciona el radar, cómo leer los datos y cómo se usa SARitmo.',
   'help.tour':
     'Ver el recorrido guiado',
   'tour.now.title':
     'Este es NISAR, ahora mismo',
   'tour.now.text':
-    'NISAR es un satélite de radar de la NASA y de ISRO, la agencia espacial de India. Despegó el 30 de julio de 2025 y da una vuelta a la Tierra cada 100 minutos, a 747 km de altura. El modelo se mueve en el mapa en tiempo real, con la órbita que publica CelesTrak.',
+    'NISAR es un satélite de radar de la NASA y de ISRO, la agencia espacial de India. Despegó el 30 de julio de 2025 y da una vuelta a la Tierra cada 100 minutos, a 747 km de altura. En el mapa se mueve en tiempo real, con la órbita que publica CelesTrak.',
   'tour.scale.title':
-    'Dibujado a escala',
+    'Sus medidas reales',
   'tour.scale.text':
-    'El dibujo guarda las medidas reales: una antena de 12 m, más ancha que una cancha de tenis, al final de un brazo de 9 m. A su tamaño verdadero no ocuparía ni un píxel del mapa, así que aparece ampliado; el rótulo bajo el satélite dice cuántas veces.',
+    'El modelo sigue las láminas del satélite que publica la NASA. El reflector mide 12 m, más que el ancho de una cancha de tenis, y el cuerpo, 5,5 m de largo. A ese tamaño no ocuparía ni un píxel del mapa: por eso allí aparece ampliado, y su rótulo dice cuántas veces.',
   'tour.reflector.title':
-    'La antena reflectora',
+    'El reflector',
   'tour.reflector.text':
-    'Una malla de alambre bañado en oro, tensada en un aro de 12 m. Funciona como un espejo para las microondas: concentra el pulso del radar hacia la Tierra y recoge el eco que vuelve. Viajó plegada y se abrió en órbita.',
+    'Una malla de alambre bañado en oro, tensada dentro de un aro de 123 barras y 12 m de diámetro. Es un espejo para las microondas: concentra hacia la Tierra el pulso que sale del radar y recoge el eco que vuelve. Pesa solo 64 kg; viajó plegado y se abrió en órbita.',
   'tour.boom.title':
     'El brazo',
   'tour.boom.text':
-    'Sostiene la antena a 9 m del cuerpo del satélite, a la distancia y con el ángulo justos para que el radar la ilumine desde abajo y el haz baje inclinado hacia la Tierra.',
+    'Nueve metros en dos tramos con bisagras. Sostiene el reflector por el borde, a la distancia y con la inclinación justas para que el radar lo ilumine desde abajo y el haz baje de lado hacia la Tierra. También viajó plegado, pegado al cuerpo.',
   'tour.radar.title':
     'Dos radares en uno',
   'tour.radar.text':
-    'El de banda L, de la NASA, usa ondas de 24 cm que atraviesan el follaje y sienten el suelo y el hielo. El de banda S, de ISRO, usa ondas de 9,4 cm, más sensibles a cultivos y vegetación baja. Los dos emiten hacia la antena desde la placa dorada.',
+    'La estructura de ocho caras lleva dos radares que apuntan hacia el reflector. El de banda L, de la NASA (las placas oscuras), usa ondas de 24 cm que atraviesan el follaje y llegan al suelo. El de banda S, de ISRO (las placas doradas), usa ondas de 9,4 cm, más sensibles a cultivos y vegetación baja.',
   'tour.solar.title':
-    'Los paneles solares',
+    'Las alas solares',
   'tour.solar.text':
-    'Dos alas de 5,5 m, con tres paneles cada una, entregan unos 5 kilovatios. NISAR vuela sobre la frontera entre el día y la noche, así que casi nunca entra en la sombra de la Tierra y tiene sol para el radar casi todo el tiempo.',
+    'Dos alas de 5,5 m, con tres paneles cada una, entregan unos 5 kilovatios. NISAR vuela sobre la frontera entre el día y la noche, así que casi nunca entra en la sombra de la Tierra y tiene sol para el radar casi todo el tiempo.',
   'tour.bus.title':
-    'El cuerpo del satélite',
+    'El bus',
   'tour.bus.text':
-    'Lo construyó ISRO. Lleva los computadores, la batería, el combustible y las ruedas de reacción que mantienen el radar bien apuntado. Con el instrumento encima mide 5,5 m de alto, y todo el satélite pesó cerca de 2.400 kg al despegar.',
+    'Es la caja dorada que construyó ISRO. Lleva los computadores, la batería, el combustible y las ruedas de reacción que mantienen el radar bien apuntado; los dos tubos de arriba son sensores de estrellas, con los que se orienta. Todo el satélite pesó cerca de 2.400 kg al despegar.',
   'tour.antenna.title':
     'La antena de datos',
   'tour.antenna.text':
-    'El radar produce muchísima información: hasta 26 terabits por día. Esta antena de banda Ka la envía a las estaciones en tierra. De ahí salen los productos abiertos de NISAR que Compás consulta.',
+    'El radar produce muchísima información: hasta 26 terabits por día. Esta antena de banda Ka, en la cara que mira a la Tierra, la envía a las estaciones en tierra. De ahí salen los productos abiertos de NISAR que SARitmo consulta.',
   'tour.orbit.title':
-    'Una vuelta cada 100 minutos',
+    'Una vuelta cada 100 minutos',
   'tour.orbit.text':
-    'La línea punteada es su próxima vuelta; la clara, los últimos 25 minutos. NISAR pasa cerca de los dos polos mientras la Tierra gira debajo. Tras 173 vueltas, cada 12 días, repite el mismo camino: ese es el compás que da nombre a la aplicación.',
+    'La línea punteada del mapa es su próxima vuelta. NISAR pasa cerca de los dos polos mientras la Tierra gira debajo, de modo que en cada vuelta sobrevuela una franja distinta. Tras 173 vueltas, cada 12 días, repite exactamente el mismo camino. Ese ritmo le da nombre a SARitmo.',
   'tour.swath.title':
     'Mira de lado',
   'tour.swath.text':
-    'La franja dorada es lo que su radar alcanza a ver: más de 240 km de ancho, a la izquierda del rumbo y a escala real. Mira de lado para distinguir lo cercano de lo lejano por lo que tarda el eco. Es la zona que puede observar, no una confirmación de que esté grabando.',
+    'Un radar no mira hacia abajo: mira de lado, para distinguir lo cercano de lo lejano por lo que tarda el eco. NISAR ilumina una franja de más de 240 km a la izquierda de su rumbo. Es la banda dorada del mapa, a escala real: lo que puede observar, no una confirmación de que esté grabando.',
   'tour.echo.title':
-    'Escucha el eco',
+    'Emite y escucha',
   'tour.echo.text':
-    'NISAR no toma fotos: emite pulsos de microondas y mide cuánto vuelve. El agua quieta devuelve poco y se ve oscura; el bosque y las ciudades devuelven mucho. Como lleva su propia luz, ve de noche y a través de las nubes.',
-  'tour.stories.title':
-    'Historias',
-  'tour.stories.text':
-    'Aquí empieza Compás. Cada historia es un lugar real donde algo cambió entre dos pasadas del radar. Vamos a abrir una.',
+    'NISAR no toma fotos. Emite más de mil pulsos de microondas por segundo y mide dos cosas de cada eco: cuánto tarda en volver, que dice dónde está cada cosa, y con cuánta fuerza vuelve, que dice cómo es la superficie. Como lleva su propia luz, ve de noche y a través de las nubes.',
   'tour.story.title':
-    'Una historia, paso a paso',
+    'Un caso real',
   'tour.story.text':
-    'El panel de la izquierda cuenta la historia por pasos. Cada paso mueve el mapa y cambia lo que muestra: el lugar, el antes, el después y lo que cambió. Se avanza con «Anterior» y «Siguiente».',
-  'tour.layers.title':
-    'Las capas del mapa',
-  'tour.layers.text':
-    'Esta barra elige qué ves: la imagen de antes, la de después, el cambio en color o una cortina que se arrastra para comparar las dos fechas, como ahora. En las capas de cambio, azul es menos retorno del radar y rojo, más.',
+    'Vamos a leer un caso real. El panel de la izquierda cuenta la historia por pasos: cada paso mueve el mapa y cambia lo que muestra. Todo lo que sigue sirve igual en cualquier historia y en cualquier lugar que explores.',
   'tour.reading.title':
     'La lectura',
   'tour.reading.text':
-    'A la derecha, lo que cambió dicho con palabras: cuántos km² y de qué tipo. La lista de clases es también la leyenda del mapa. Todo cambio se llama «posible»: el radar da pistas, y la procedencia y los límites están siempre a la vista.',
+    'El panel derecho lo dice con palabras: cuánta superficie cambió, con qué señales y con qué calidad se pudieron comparar las dos imágenes. Cada señal dice «posible» porque el radar mide el eco, no la causa: son pistas para ir a mirar, no eventos confirmados. La procedencia y los límites están en la pestaña Datos.',
   'tour.probe.title':
     'Medir un punto',
   'tour.probe.text':
-    'Un clic en el mapa mide ese punto: cuánto subió o bajó el retorno entre las dos fechas. El recorrido acaba de consultar uno por ti; el resultado aparece en el panel de lectura.',
+    'Un clic en el mapa mide ese punto en decibelios (dB), la unidad del eco: los valores más negativos son superficies más oscuras. Ves HH y HV antes y después, y la diferencia. El recorrido acaba de medir uno por ti; el resultado está en la pestaña Punto.',
   'tour.score.title':
     'La partitura',
   'tour.score.text':
-    'Abajo, el tiempo es un pentagrama. Cada nota es una pasada de NISAR sobre este lugar y cada barra marca 12 días. Elige una nota para «antes», otra para «después» y pulsa «Comparar estas fechas».',
+    'Abajo, el tiempo es un pentagrama. Cada nota es una pasada de NISAR sobre este lugar y cada barra marca 12 días. Elige una nota para «antes», otra para «después» y pulsa «Comparar estas fechas».',
   'tour.dance.title':
     'La danza',
   'tour.dance.text':
@@ -1059,7 +1056,7 @@ export const es = {
   'tour.explore.title':
     'Explorar',
   'tour.explore.text':
-    'Aquí eliges tú. Busca un lugar o pulsa cualquier punto del mapa, y Compás lista las pasadas de NISAR que lo cubren. Con dos fechas elegidas obtienes la misma lectura que en las historias.',
+    'Aquí eliges tú. Busca un lugar o pulsa cualquier punto del mapa, y SARitmo lista las pasadas de NISAR que lo cubren. Con dos fechas elegidas obtienes la misma lectura que en las historias.',
   'tour.live.title':
     'En vivo',
   'tour.live.text':
@@ -1067,7 +1064,125 @@ export const es = {
   'tour.end.title':
     'Ahora te toca',
   'tour.end.text':
-    'Ya conoces el satélite y la aplicación. Elige una historia, explora tu territorio o sigue a NISAR en vivo. El recorrido queda en la barra superior por si quieres repetirlo.',
+    'Ya conoces el satélite, el radar y cómo se leen sus datos. Elige una historia, explora tu territorio o sigue a NISAR en vivo. El recorrido queda en la barra superior por si quieres repetirlo.',
+  'unit.km':
+    'km',
+  'tour.chapter.radar':
+    'El radar',
+  'tour.chapter.data':
+    'Los datos',
+  'tour.d.aria.orbit':
+    'Esquema: NISAR da vueltas de polo a polo mientras la Tierra gira debajo',
+  'tour.d.aria.look':
+    'Esquema: el radar ilumina una franja a un lado del satélite, no debajo',
+  'tour.d.aria.echo':
+    'Esquema: el pulso baja, el eco vuelve, y lo cercano llega antes que lo lejano',
+  'tour.d.aria.surfaces':
+    'Esquema: cuánto eco devuelven el agua quieta, el suelo rugoso, el bosque y los edificios',
+  'tour.d.aria.polarization':
+    'Esquema: en HH la onda vuelve horizontal como salió; en HV vuelve girada a vertical tras rebotar en la vegetación',
+  'tour.d.aria.repeat':
+    'Esquema: dos pasadas del mismo lugar se restan y queda el cambio',
+  'tour.d.earthTurns':
+    'la Tierra gira',
+  'tour.d.lap':
+    'una vuelta: 100 min',
+  'tour.d.repeat':
+    'cada 12 días repite el camino',
+  'tour.d.fromBehind':
+    'visto desde atrás',
+  'tour.d.altitude':
+    '747 km',
+  'tour.d.swath':
+    'más de 240 km',
+  'tour.d.near':
+    'cerca',
+  'tour.d.far':
+    'lejos',
+  'tour.d.angles':
+    '33° a 47°',
+  'tour.d.pulse':
+    'pulso',
+  'tour.d.echo':
+    'eco',
+  'tour.d.time':
+    'tiempo',
+  'tour.d.nearFirst':
+    'lo cercano llega antes',
+  'tour.d.water':
+    'agua quieta',
+  'tour.d.soil':
+    'suelo',
+  'tour.d.forest':
+    'bosque',
+  'tour.d.city':
+    'edificios',
+  'tour.d.inImage':
+    'así se ve cada uno en la imagen',
+  'tour.d.sends':
+    'emite H',
+  'tour.d.hhBack':
+    'vuelve igual: suelo, agua, edificios',
+  'tour.d.hvBack':
+    'vuelve girada: vegetación',
+  'tour.d.day0':
+    'día 0',
+  'tour.d.day12':
+    'día 12',
+  'tour.d.change':
+    'cambio',
+  'tour.d.less':
+    'menos eco',
+  'tour.d.more':
+    'más eco',
+  'tour.surfaces.title':
+    'Qué se ve brillante y qué oscuro',
+  'tour.surfaces.text':
+    'El agua quieta es un espejo: manda el pulso hacia otro lado y casi nada regresa, por eso se ve oscura. El suelo rugoso devuelve una parte. El bosque devuelve más, porque la onda rebota entre ramas y troncos. Y los edificios, o los troncos sobre agua, la devuelven casi entera: doble rebote, muy brillante.',
+  'tour.polarization.title':
+    'HH y HV',
+  'tour.polarization.text':
+    'La onda del radar vibra en una dirección. NISAR la emite horizontal (H) y escucha el eco de dos maneras. HH: vuelve horizontal, como salió; domina en suelos, agua y edificios. HV: vuelve girada a vertical, y eso solo pasa cuando rebotó muchas veces dentro de la vegetación. En la práctica, HV mide cuánta vegetación hay.',
+  'tour.repeat.title':
+    'Dos pasadas, un cambio',
+  'tour.repeat.text':
+    'Como NISAR vuelve cada 12 días por el mismo camino y con el mismo ángulo, dos imágenes del mismo lugar se pueden comparar punto por punto. Si el eco bajó o subió, algo cambió en la superficie: agua que llegó o se fue, vegetación que creció o se perdió. De esa comparación sale todo lo que muestra SARitmo.',
+  'tour.images.title':
+    'Antes y Después',
+  'tour.images.text':
+    'Cada imagen es una pasada del radar, tal como la publica la NASA. El brillo es la fuerza del eco. El color mezcla los dos canales: lila donde domina HH (suelo, orillas, edificios) y verde donde domina HV (vegetación). Lo negro es agua quieta o una superficie muy lisa.',
+  'tour.swipe.title':
+    'La cortina',
+  'tour.swipe.text':
+    'La cortina pone las dos fechas lado a lado: a la izquierda el antes, a la derecha el después. Arrástrala sobre una zona y verás aparecer o desaparecer las manchas oscuras. Es la forma más directa de comprobar con tus propios ojos un cambio que el mapa señala.',
+  'tour.hh.title':
+    'Cambio HH',
+  'tour.hh.text':
+    'Aquí ya no ves imágenes, sino la resta entre las dos fechas en el canal HH. Azul: el eco bajó. Rojo: subió. Mientras más intenso el color, mayor el cambio; desde 3 dB, que equivale a la mitad o al doble del eco, cuenta como cambio. Un azul fuerte en terreno abierto suele ser agua nueva.',
+  'tour.hv.title':
+    'Cambio HV',
+  'tour.hv.text':
+    'La misma resta, en el canal HV, el que responde a la vegetación. Azul: hay menos estructura vegetal que antes, como tras una cosecha, una tala, una quema o una inundación que tapó las plantas. Rojo: hay más, como un cultivo que creció. Comparar HH con HV es lo que permite distinguir agua de vegetación.',
+  'tour.classes.title':
+    'Señales',
+  'tour.classes.text':
+    'Esta capa combina los dos canales y pinta siete señales posibles. Por ejemplo: si HH cae hasta quedar oscuro, posible agua nueva; si HH sube y HV no se mueve, posible vegetación inundada; si cae HV, posible pérdida de vegetación. Los colores son los de la lista del panel derecho, que sirve de leyenda.',
+  'tour.composite.title':
+    'Compuesto',
+  'tour.composite.text':
+    'Las dos fechas en una sola imagen: el antes en cian y el después en rojo. Donde nada cambió, los colores se suman y sale gris. Rojo: hay más eco ahora. Cian: había más eco antes. Sirve para ver el cambio de un vistazo sin perder de vista el terreno.',
+  'tour.ctxWater.title':
+    'Contexto: agua',
+  'tour.ctxWater.text':
+    'Tres capas de la NASA ayudan a entender qué rodea un cambio. La primera es el agua que vio otro radar, Sentinel-1: azul, agua abierta; verde, vegetación inundada. Es un contraste independiente: otro satélite, otro día y otra frecuencia. Si coincide con NISAR, la pista se sostiene mejor.',
+  'tour.ctxLand.title':
+    'Contexto: bosques y suelo',
+  'tour.ctxLand.text':
+    'La cobertura del suelo según MODIS: verdes para bosques, amarillos para cultivos y sabanas, azul para humedales y rojo para ciudades. Importa porque la misma señal significa cosas distintas según el terreno: una caída de HV es cosecha en un cultivo y tala en un bosque.',
+  'tour.ctxPeople.title':
+    'Contexto: población',
+  'tour.ctxPeople.text':
+    'Cuánta gente vive en cada zona, de crema (casi nadie) a rojo oscuro (mil o más personas por km²). Muestra a quién puede afectar un cambio. Las tres capas se encienden con los botones de «Contexto», sobre la barra del mapa, y quedan debajo de los datos de NISAR.',
 } as const;
 
 export type Key = keyof typeof es;

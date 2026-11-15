@@ -1,98 +1,88 @@
 // Recorrido guiado: una tarjeta sobre el mapa que explica, paso a paso y sola, qué es cada parte
-// de NISAR, cómo observa y para qué sirve cada zona de Compás. Mientras habla, la aplicación real
-// hace lo que se explica (ver `useTourDirector`) y un marco dorado señala de qué se trata.
+// de NISAR, cómo funciona su radar, cómo se leen sus datos y para qué sirve cada zona de SARitmo.
+// Mientras habla, la aplicación real hace lo que se explica (ver `useTourDirector`) y un marco
+// dorado señala de qué se trata.
 import { ChevronLeft, ChevronRight, Pause, Play, RotateCcw, X } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import type { KeyboardEvent } from 'react';
 import { useI18n } from '../../i18n';
 import type { Key } from '../../i18n/es';
-import { nisarSvg } from '../../lib/nisarModel';
-import type { Part } from '../../lib/nisarModel';
-import { CHAPTERS, textKey, titleKey } from '../../lib/tour';
+import { CHAPTERS, TOUR, chapterStart, textKey, titleKey } from '../../lib/tour';
+import type { TourStep } from '../../lib/tour';
 import type { Tour } from '../../state/useTour';
-
-/** El modelo a escala, con una parte resaltada o con las cotas de sus medidas. */
-export function NisarFigure({ dimensions = false, part }: { dimensions?: boolean; part?: Part }) {
-  const { t } = useI18n();
-  const svg = useMemo(
-    () =>
-      nisarSvg(
-        dimensions
-          ? {
-              reflector: t('tour.dim.reflector'),
-              boom: t('tour.dim.boom'),
-              body: t('tour.dim.body'),
-              solar: t('tour.dim.solar'),
-              person: t('tour.dim.person'),
-            }
-          : undefined,
-      ),
-    [dimensions, t],
-  );
-  return (
-    <figure className="figura-nisar" data-resalta={part}>
-      {/* El SVG lo genera `nisarSvg` con datos propios: no incluye texto de terceros. */}
-      <div
-        className="figura-dibujo"
-        role="img"
-        aria-label={t(dimensions ? 'tour.figureDimensions' : 'tour.figure')}
-        dangerouslySetInnerHTML={{ __html: svg }}
-      />
-      <figcaption className="ayuda">{t('tour.figureNote')}</figcaption>
-    </figure>
-  );
-}
-
-interface Box {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-}
+import { NisarFigure } from './Nisar3D';
+import { RadarDiagram } from './RadarDiagram';
 
 const MARGIN = 6;
+/** Lo que tarda el marco en viajar de un objetivo al siguiente (igual que en recorrido.css). */
+const TRAVEL_MS = 460;
 
-/** Marco dorado alrededor de lo que el paso señala. Si el elemento no está en pantalla, no se dibuja. */
-function Spotlight({ selector }: { selector: string }) {
-  const [box, setBox] = useState<Box | null>(null);
+/**
+ * Marco dorado alrededor de lo que el paso señala. Sigue a su objetivo cuadro a cuadro escribiendo
+ * directo en el estilo (sin repintar React): el satélite no se queda quieto y los paneles cambian de
+ * tamaño cuando llegan los datos. Al cambiar de objetivo, el marco viaja hasta el nuevo.
+ */
+function Spotlight({ selector }: { selector: string | null }) {
+  const ring = useRef<HTMLDivElement>(null);
+  /** El marco ya está puesto sobre algo: solo entonces tiene sentido que viaje al objetivo nuevo. */
+  const placed = useRef(false);
 
   useEffect(() => {
-    const measure = () => {
-      const rect = document.querySelector(selector)?.getBoundingClientRect();
+    const element = ring.current;
+    if (!element) return;
+    let frame = 0;
+    // Lo último que se escribió: si el objetivo no se movió, no se toca el estilo ni se pide otro cuadro.
+    let last = '';
+    // Durante el viaje entre dos objetivos manda la transición de CSS; después, el marco va pegado.
+    const travelUntil = performance.now() + (placed.current ? TRAVEL_MS : 0);
+    element.classList.toggle('viajando', placed.current);
+    const tick = (now: number) => {
+      frame = window.requestAnimationFrame(tick);
+      const rect = selector ? document.querySelector(selector)?.getBoundingClientRect() : null;
       if (!rect || rect.width < 2 || rect.height < 2) {
-        setBox(null);
+        if (placed.current) {
+          placed.current = false;
+          element.classList.remove('visible', 'viajando');
+        }
         return;
       }
+      if (now > travelUntil) element.classList.remove('viajando');
       const left = Math.max(2, rect.left - MARGIN);
       const top = Math.max(2, rect.top - MARGIN);
-      const next = {
-        left,
-        top,
-        width: Math.min(window.innerWidth - 2, rect.right + MARGIN) - left,
-        height: Math.min(window.innerHeight - 2, rect.bottom + MARGIN) - top,
-      };
-      setBox((current) =>
-        current &&
-        Math.abs(current.left - next.left) < 0.5 &&
-        Math.abs(current.top - next.top) < 0.5 &&
-        Math.abs(current.width - next.width) < 0.5 &&
-        Math.abs(current.height - next.height) < 0.5
-          ? current
-          : next,
-      );
+      const width = Math.min(window.innerWidth - 2, rect.right + MARGIN) - left;
+      const height = Math.min(window.innerHeight - 2, rect.bottom + MARGIN) - top;
+      const box = `${left.toFixed(1)}|${top.toFixed(1)}|${width.toFixed(1)}|${height.toFixed(1)}`;
+      if (box !== last) {
+        last = box;
+        element.style.transform = `translate3d(${left.toFixed(1)}px, ${top.toFixed(1)}px, 0)`;
+        element.style.width = `${Math.max(width, 0).toFixed(1)}px`;
+        element.style.height = `${Math.max(height, 0).toFixed(1)}px`;
+      }
+      if (!placed.current) {
+        placed.current = true;
+        element.classList.add('visible');
+      }
     };
-    measure();
-    // Los paneles aparecen y cambian de tamaño cuando llegan los datos, y el satélite no se queda quieto.
-    const timer = window.setInterval(measure, 200);
-    window.addEventListener('resize', measure);
-    return () => {
-      window.clearInterval(timer);
-      window.removeEventListener('resize', measure);
-    };
+    frame = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(frame);
   }, [selector]);
 
-  if (!box || box.width <= 0 || box.height <= 0) return null;
-  return <div className="recorrido-foco" style={box} aria-hidden="true" />;
+  return <div ref={ring} className="recorrido-foco" aria-hidden="true" />;
+}
+
+function Figure({ step }: { step: TourStep }) {
+  if (!step.figure) return null;
+  if (step.figure === 'model' || step.figure === 'dimensions') {
+    return <NisarFigure dimensions={step.figure === 'dimensions'} part={step.part} />;
+  }
+  return (
+    <figure className="figura-nisar">
+      {/* La clave reinicia la animación del esquema al cambiar de paso. */}
+      <div key={step.figure} className="figura-dibujo figura-esquema recorrido-entra">
+        <RadarDiagram kind={step.figure} />
+      </div>
+    </figure>
+  );
 }
 
 export function TourPlayer({ tour }: { tour: Tour }) {
@@ -119,6 +109,8 @@ export function TourPlayer({ tour }: { tour: Tour }) {
 
   const first = tour.index === 0;
   const last = tour.index === tour.total - 1;
+  const chapterFirst = chapterStart(step.chapter);
+  const chapterSteps = TOUR.filter((item) => item.chapter === step.chapter);
 
   const onKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (event.altKey || event.ctrlKey || event.metaKey) return;
@@ -133,7 +125,7 @@ export function TourPlayer({ tour }: { tour: Tour }) {
 
   return (
     <>
-      {step.target && <Spotlight key={step.target} selector={step.target} />}
+      <Spotlight selector={step.target ?? null} />
       <div className="recorrido-zona">
         <section
           ref={card}
@@ -151,7 +143,7 @@ export function TourPlayer({ tour }: { tour: Tour }) {
                   key={chapter}
                   type="button"
                   aria-pressed={step.chapter === chapter}
-                  onClick={() => tour.start(chapter)}
+                  onClick={() => tour.go(chapterStart(chapter))}
                 >
                   {t(`tour.chapter.${chapter}` as Key)}
                 </button>
@@ -163,21 +155,30 @@ export function TourPlayer({ tour }: { tour: Tour }) {
           </header>
 
           <div className="recorrido-cuerpo">
-            {step.figure && <NisarFigure dimensions={step.figure === 'dimensions'} part={step.part} />}
-            <div className="recorrido-texto" aria-live="polite">
+            <Figure step={step} />
+            {/* La clave hace entrar el texto de cada paso con un fundido corto, en vez de cambiar de golpe. */}
+            <div key={step.id} className="recorrido-texto recorrido-entra" aria-live="polite">
               <h2 className="recorrido-titulo">{t(titleKey(step))}</h2>
               <p>{t(textKey(step))}</p>
             </div>
           </div>
 
-          {/* La barra se reinicia en cada paso y se detiene con la pausa; el avance real lo lleva useTour. */}
+          {/* Un tramo por paso del capítulo: el actual se llena al ritmo del reloj de useTour. */}
           <div className="recorrido-avance" aria-hidden="true">
-            {!last && (
-              <span
-                key={`${tour.run}:${tour.index}`}
-                style={{ animationDuration: `${tour.duration}ms`, animationPlayState: tour.playing ? 'running' : 'paused' }}
-              />
-            )}
+            {chapterSteps.map((item, offset) => {
+              const index = chapterFirst + offset;
+              const state = index < tour.index ? 'hecho' : index === tour.index ? 'actual' : 'pendiente';
+              return (
+                <span key={item.id} className={state}>
+                  {state === 'actual' && !last && (
+                    <i
+                      key={`${tour.run}:${tour.index}`}
+                      style={{ animationDuration: `${tour.duration}ms`, animationPlayState: tour.playing ? 'running' : 'paused' }}
+                    />
+                  )}
+                </span>
+              );
+            })}
           </div>
 
           <footer className="recorrido-pie">
