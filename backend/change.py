@@ -342,7 +342,7 @@ WEBP_PARAMS = {
 
 def save_layer(rgba, path, name):
     """Guarda una capa RGBA como WebP con los parámetros de `WEBP_PARAMS[name]`."""
-    Image.fromarray(np.ascontiguousarray(rgba), 'RGBA').save(path, 'WEBP', method=4, **WEBP_PARAMS[name])
+    Image.fromarray(np.ascontiguousarray(rgba), 'RGBA').save(path, 'WEBP', method=1, **WEBP_PARAMS[name])
 
 
 # ---------------------------------------------------------------- sondeo puntual
@@ -400,7 +400,7 @@ def read_result(change):
     return resultado
 
 
-@lru_cache(maxsize=2)
+@lru_cache(maxsize=8)
 def _arrays(change, mtime):
     with np.load(config.DERIVED_DIR / change / 'arrays.npz') as paquete:
         return {k: paquete[k] for k in paquete.files}
@@ -531,13 +531,17 @@ def _compute(stack, before, after, aoi, change):
     stats = compute_stats(analysis, bounds)
 
     def construir(temporal):
-        save_layer(render_rgb(a_w, a_w.max(axis=2) > 0), temporal / 'before.webp', 'before')
-        save_layer(render_rgb(b_w, b_w.max(axis=2) > 0), temporal / 'after.webp', 'after')
-        save_layer(render_change(analysis.hh.delta, analysis.valid), temporal / 'change_hh.webp', 'change_hh')
+        tareas = [
+            (render_rgb(a_w, a_w.max(axis=2) > 0), temporal / 'before.webp', 'before'),
+            (render_rgb(b_w, b_w.max(axis=2) > 0), temporal / 'after.webp', 'after'),
+            (render_change(analysis.hh.delta, analysis.valid), temporal / 'change_hh.webp', 'change_hh'),
+            (render_classes(analysis.classes), temporal / 'classes.webp', 'classes'),
+            (render_composite(a_w, b_w), temporal / 'composite.webp', 'composite'),
+        ]
         if dual:
-            save_layer(render_change(analysis.hv.delta, analysis.valid), temporal / 'change_hv.webp', 'change_hv')
-        save_layer(render_classes(analysis.classes), temporal / 'classes.webp', 'classes')
-        save_layer(render_composite(a_w, b_w), temporal / 'composite.webp', 'composite')
+            tareas.append((render_change(analysis.hv.delta, analysis.valid), temporal / 'change_hv.webp', 'change_hv'))
+        with ThreadPoolExecutor(max_workers=4) as pool:
+            list(pool.map(lambda t: save_layer(*t), tareas))
         arreglos = {'valid': analysis.valid, 'classes': analysis.classes,
                     'hh_before': analysis.hh.before_db.astype(np.float16),
                     'hh_after': analysis.hh.after_db.astype(np.float16)}

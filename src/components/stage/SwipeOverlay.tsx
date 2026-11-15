@@ -30,6 +30,7 @@ export function SwipeOverlay({ map, change, opacity, visible, projection, refere
   const { t, lang } = useI18n();
   const hostRef = useRef<HTMLDivElement>(null);
   const areaRef = useRef<HTMLDivElement>(null);
+  const rectRef = useRef<DOMRect | null>(null);
   const [top, setTop] = useState<MapLibreMap | null>(null);
   const [position, setPosition] = useState(0.5);
 
@@ -103,7 +104,7 @@ export function SwipeOverlay({ map, change, opacity, visible, projection, refere
   const move = (event: PointerEvent<HTMLDivElement>) => {
     const area = areaRef.current;
     if (!area || !event.currentTarget.hasPointerCapture(event.pointerId)) return;
-    const rect = area.getBoundingClientRect();
+    const rect = rectRef.current ?? area.getBoundingClientRect();
     setPosition(clamp((event.clientX - rect.left) / rect.width));
   };
 
@@ -149,10 +150,17 @@ export function SwipeOverlay({ map, change, opacity, visible, projection, refere
         aria-valuenow={Math.round(percent)}
         onKeyDown={keys}
         onPointerDown={(event) => {
+          rectRef.current = areaRef.current?.getBoundingClientRect() ?? null;
           event.currentTarget.setPointerCapture(event.pointerId);
           move(event);
         }}
         onPointerMove={move}
+        onPointerUp={() => {
+          rectRef.current = null;
+        }}
+        onPointerCancel={() => {
+          rectRef.current = null;
+        }}
       >
         <span className="cortina-grip" aria-hidden="true" />
       </div>

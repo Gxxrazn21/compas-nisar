@@ -92,7 +92,7 @@ interface Props {
 const SPIN_DEGREES = 30;
 const SPIN_MS = 14000;
 /** Seguimiento de NISAR: vuelo inicial y tramos cortos y lineales que se encadenan sin tirones. */
-const FOLLOW_FLY_MS = 1900;
+const FOLLOW_FLY_MS = 1100;
 const FOLLOW_STEP_MS = 500;
 
 function markerElement(label: string, className: string): HTMLElement {
@@ -109,7 +109,6 @@ export function Stage(props: Props) {
   const hostRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<MapLibreMap | null>(null);
   const [ready, setReady] = useState(false);
-  const [flying, setFlying] = useState(false);
   const spinning = useRef(false);
   const markerRef = useRef<Marker | null>(null);
   const pointRef = useRef<Marker | null>(null);
@@ -179,10 +178,15 @@ export function Stage(props: Props) {
       if (current.picking) current.onPick(event.lngLat.lng, event.lngLat.lat);
       else if (current.probing) current.onProbe(event.lngLat.lng, event.lngLat.lat);
     });
+    let lastCursor = '';
     instance.on('mousemove', (event) => {
-      if (!live.current.live) return;
+      if (!live.current.live || instance.isMoving() || instance.isZooming()) return;
       const hit = featureAt(instance, event.point, [EVENTS, CLUSTERS, `${URGENT}-relleno`]);
-      instance.getCanvas().style.cursor = hit ? 'pointer' : '';
+      const nextCursor = hit ? 'pointer' : '';
+      if (nextCursor !== lastCursor) {
+        lastCursor = nextCursor;
+        instance.getCanvas().style.cursor = nextCursor;
+      }
     });
     instance.on('error', (event) => {
       // Las teselas de contexto de GIBS fallan a veces (500 o fechas sin datos): no es un error de la aplicación.
@@ -215,7 +219,6 @@ export function Stage(props: Props) {
     const reduced = prefersReducedMotion();
 
     if (camera.kind === 'cover') {
-      setFlying(false);
       const zoom = coverZoom(host, padding);
       if (reduced) {
         map.jumpTo({ center: [-30, 14], zoom, padding });
@@ -229,7 +232,7 @@ export function Stage(props: Props) {
           center: [center.lng + SPIN_DEGREES, first ? 14 : center.lat],
           zoom: first ? zoom : map.getZoom(),
           padding: first ? padding : map.getPadding(),
-          duration: first ? 3000 : SPIN_MS,
+          duration: first ? 1400 : SPIN_MS,
           easing: first ? (x) => 1 - (1 - x) ** 2 : (x) => x,
           essential: true,
         });
@@ -252,17 +255,14 @@ export function Stage(props: Props) {
 
     if (camera.instant || reduced) {
       map.jumpTo({ center: camera.center, zoom, padding });
-      setFlying(false);
       return;
     }
-    setFlying(true);
-    map.once('moveend', () => setFlying(false));
     map.flyTo({
       center: camera.center,
       zoom,
       padding,
-      duration: camera.duration ?? 4200,
-      curve: 1.6,
+      duration: camera.duration ?? 1400,
+      curve: 1.35,
       essential: true,
     });
   }, [map, camera]);
@@ -273,15 +273,15 @@ export function Stage(props: Props) {
   useEffect(() => {
     if (!map || !ready) return;
     installChange(map, change);
-    showLayer(map, layer, opacity, !flying, radarBelow);
+    showLayer(map, layer, opacity, true, radarBelow);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, ready, changeId]);
 
   useEffect(() => {
     if (!map || !ready) return;
     const dancing = layer === 'dance';
-    showLayer(map, dancing ? 'before' : layer, dancing ? 0 : opacity, !flying, radarBelow);
-  }, [map, ready, layer, opacity, flying, changeId, radarBelow]);
+    showLayer(map, dancing ? 'before' : layer, dancing ? 0 : opacity, true, radarBelow);
+  }, [map, ready, layer, opacity, changeId, radarBelow]);
 
   // Cuadros de la danza.
   const seriesKey = series ? series.frames.map((frame) => frame.url).join('|') : '';
@@ -438,8 +438,8 @@ export function Stage(props: Props) {
 
   useEffect(() => {
     props.apiRef.current = {
-      zoomIn: () => map?.zoomIn({ duration: 400 }),
-      zoomOut: () => map?.zoomOut({ duration: 400 }),
+      zoomIn: () => map?.zoomIn({ duration: 220 }),
+      zoomOut: () => map?.zoomOut({ duration: 220 }),
       getCenter: () => {
         const host = hostRef.current;
         if (!map || !host) return null;
@@ -472,7 +472,7 @@ export function Stage(props: Props) {
           map={map}
           change={change}
           opacity={opacity}
-          visible={!flying}
+          visible={true}
           projection={projection}
           reference={props.reference}
         />

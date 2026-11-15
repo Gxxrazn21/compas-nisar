@@ -36,7 +36,7 @@ interface Installed {
 }
 
 const INSTALLED = new WeakMap<MapLibreMap, Installed>();
-const WARM_DELAY_MS = 1800;
+const WARM_DELAY_MS = 400;
 
 /**
  * Trae al caché del navegador, sin prisa, las capas que aún no se ven: cambiar de capa después
@@ -81,7 +81,7 @@ function ensure(map: MapLibreMap, key: DataKey) {
   const entry = INSTALLED.get(map);
   const url = entry?.change.layers[key];
   if (!entry || !url || (entry.only && !entry.only.includes(key))) return;
-  addImage(map, id, url, entry.change.coordinates, 700);
+  addImage(map, id, url, entry.change.coordinates, 220);
   // El orden fijo importa: «después» debe quedar bajo las capas de cambio cuando hace de fondo.
   for (const other of DATA_KEYS) if (map.getLayer(dataId(other))) map.moveLayer(dataId(other));
   raiseOverlays(map);

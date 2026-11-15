@@ -72,14 +72,9 @@ async function getJson<T>(url: string, signal?: AbortSignal): Promise<T> {
 // Caché de respuestas en memoria: volver a una historia o a un par de fechas es instantáneo.
 // Solo se guardan las respuestas correctas; una petición abortada no deja rastro.
 const memory = new Map<string, Promise<unknown>>();
+const ttlMemory = new Map<string, { expires: number; promise: Promise<unknown> }>();
 
-function cached<T>(url: string, signal?: AbortSignal): Promise<T> {
-  const hit = memory.get(url);
-  if (hit) return hit as Promise<T>;
-  // La petición compartida no se ata a la señal de un solo componente.
-  const promise = getJson<T>(url);
-  memory.set(url, promise);
-  promise.catch(() => memory.delete(url));
+function withAbort<T>(promise: Promise<T>, signal?: AbortSignal): Promise<T> {
   if (!signal) return promise;
   return new Promise<T>((resolve, reject) => {
     const onAbort = () => reject(new DOMException('Abortado', 'AbortError'));
@@ -87,6 +82,28 @@ function cached<T>(url: string, signal?: AbortSignal): Promise<T> {
     signal.addEventListener('abort', onAbort, { once: true });
     promise.then(resolve, reject).finally(() => signal.removeEventListener('abort', onAbort));
   });
+}
+
+function cached<T>(url: string, signal?: AbortSignal): Promise<T> {
+  const hit = memory.get(url);
+  if (hit) return withAbort(hit as Promise<T>, signal);
+  // La petición compartida no se ata a la señal de un solo componente.
+  const promise = getJson<T>(url);
+  memory.set(url, promise);
+  promise.catch(() => memory.delete(url));
+  return withAbort(promise, signal);
+}
+
+function cachedTtl<T>(url: string, ttlMs: number, signal?: AbortSignal): Promise<T> {
+  const now = Date.now();
+  const hit = ttlMemory.get(url);
+  if (hit && hit.expires > now) return withAbort(hit.promise as Promise<T>, signal);
+  const promise = getJson<T>(url);
+  ttlMemory.set(url, { expires: now + ttlMs, promise });
+  promise.catch(() => {
+    if (ttlMemory.get(url)?.promise === promise) ttlMemory.delete(url);
+  });
+  return withAbort(promise, signal);
 }
 
 export const api = {
@@ -139,10 +156,10 @@ export const api = {
     ),
 
   events: (days = 20, signal?: AbortSignal) =>
-    getJson<{ events: NaturalEvent[]; source: string; stale?: boolean }>(buildUrl('/api/events', { days }), signal),
+    cachedTtl<{ events: NaturalEvent[]; source: string; stale?: boolean }>(buildUrl('/api/events', { days }), 120_000, signal),
 
   urgent: (limit = 30, signal?: AbortSignal) =>
-    getJson<{ scenes: UrgentScene[] }>(buildUrl('/api/urgent', { limit }), signal).then((body) => body.scenes),
+    cachedTtl<{ scenes: UrgentScene[] }>(buildUrl('/api/urgent', { limit }), 120_000, signal).then((body) => body.scenes),
 
   interferograms: (lon: number, lat: number, limit: number, signal?: AbortSignal) =>
     cached<{ items: Interferogram[] }>(
@@ -151,7 +168,7 @@ export const api = {
     ).then((body) => body.items),
 
   probe: (change: string, lon: number, lat: number, signal?: AbortSignal) =>
-    getJson<ProbeResult>(
+    cached<ProbeResult>(
       buildUrl('/api/probe', { change, lon: lon.toFixed(5), lat: lat.toFixed(5) }),
       signal,
     ),
@@ -171,10 +188,10 @@ export const api = {
       signal,
     ),
 
-  earthToday: (signal?: AbortSignal) => getJson<EarthToday>('/api/earth-today', signal),
+  earthToday: (signal?: AbortSignal) => cached<EarthToday>('/api/earth-today', signal),
 
   /** Elementos orbitales de NISAR: con ellos el navegador calcula dónde está el satélite. */
-  satellite: (signal?: AbortSignal) => getJson<SatelliteTle>('/api/satellite', signal),
+  satellite: (signal?: AbortSignal) => cachedTtl<SatelliteTle>('/api/satellite', 600_000, signal),
 };
 
 export function isAbort(error: unknown): boolean {

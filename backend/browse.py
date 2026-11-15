@@ -16,7 +16,7 @@ from .errors import InvalidInput, UpstreamError
 from .ttl import TtlCache
 
 MAX_BYTES = 40 * 1024 * 1024        # tope de descarga por imagen
-MAX_DESCARGAS = 4                   # el PC del usuario es modesto
+MAX_DESCARGAS = 8                   # tope de descargas simultáneas
 PNG_FIRMA = b'\x89PNG\r\n\x1a\n'
 RESIZED_DIR = config.BROWSE_DIR / 'resized'
 RANGO_CALIDAD = {'validated': 3, 'provisional': 2, 'beta': 1}
@@ -108,7 +108,7 @@ def fetch_browse(url):
 
 # ---------------------------------------------------------------- lectura de píxeles
 
-@lru_cache(maxsize=6)
+@lru_cache(maxsize=24)
 def _leer(ruta, modo, mtime):
     with Image.open(ruta) as imagen:
         arreglo = np.asarray(imagen.convert(modo))
@@ -134,11 +134,12 @@ def image_file(url, ancho=None):
         if destino.exists():
             return destino
         alto = max(1, round(imagen.size[1] * ancho / imagen.size[0]))
-        reducida = imagen.convert('RGBA').resize((ancho, alto), Image.LANCZOS)
+        filtro = Image.BILINEAR if ancho <= 256 else Image.LANCZOS
+        reducida = imagen.convert('RGBA').resize((ancho, alto), filtro)
     RESIZED_DIR.mkdir(parents=True, exist_ok=True)
     temporal = destino.with_name(f'{destino.name}.{uuid.uuid4().hex}.part')
     try:
-        reducida.save(temporal, 'PNG', compress_level=3)
+        reducida.save(temporal, 'PNG', compress_level=1)
         os.replace(temporal, destino)
     finally:
         temporal.unlink(missing_ok=True)

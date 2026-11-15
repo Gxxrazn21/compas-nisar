@@ -20,9 +20,9 @@ export const SATELLITE_LAYERS = [
 
 /** Minutos de recorrido ya hecho que se dibujan detrás del satélite. */
 export const PAST_MINUTES = 25;
-/** La marca y el haz se mueven varias veces por segundo; la traza y la banda, cada dos segundos. */
+/** La marca y el haz se mueven varias veces por segundo; la traza y la banda, cada diez segundos. */
 const MOVE_MS = 200;
-const TRACK_REFRESH_MS = 2000;
+const TRACK_REFRESH_MS = 10000;
 /** Lado mínimo del modelo en pantalla: por debajo, la antena y los paneles dejan de distinguirse. */
 const MIN_MODEL_PX = 92;
 /** La foto del modelo en 3D tiene más detalle y pide algo más de tamaño. */
@@ -160,6 +160,7 @@ export function trackSatellite(map: MapLibreMap, orbit: Orbit, labels: Satellite
   };
 
   const move = () => {
+    if (typeof document !== 'undefined' && document.hidden) return;
     const now = new Date();
     const state = stateAt(orbit, now);
     if (!state) return;
@@ -178,6 +179,7 @@ export function trackSatellite(map: MapLibreMap, orbit: Orbit, labels: Satellite
   };
 
   const draw = () => {
+    if (typeof document !== 'undefined' && document.hidden) return;
     const now = Date.now();
     const from = now - PAST_MINUTES * 60_000;
     setData(map, SOURCE, [
@@ -208,7 +210,7 @@ export function trackSatellite(map: MapLibreMap, orbit: Orbit, labels: Satellite
   move();
   draw();
   map.on('zoom', resize);
-  map.on('move', resize);
+  map.on('moveend', resize);
   const moving = window.setInterval(move, MOVE_MS);
   const drawing = window.setInterval(draw, TRACK_REFRESH_MS);
   return () => {
@@ -216,7 +218,7 @@ export function trackSatellite(map: MapLibreMap, orbit: Orbit, labels: Satellite
     window.clearInterval(moving);
     window.clearInterval(drawing);
     map.off('zoom', resize);
-    map.off('move', resize);
+    map.off('moveend', resize);
     marker.remove();
     if (map.getStyle()) {
       for (const source of [SOURCE, SWATH, `${SWATH}-ahora`]) setData(map, source, []);

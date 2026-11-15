@@ -80,7 +80,7 @@ def make_frame(rgb, window, path):
     imagen.thumbnail((FRAME_MAX_SIDE, FRAME_MAX_SIDE), Image.LANCZOS)
     temporal = path.with_name(f'{path.stem}.{uuid.uuid4().hex[:8]}.part')
     try:
-        imagen.save(temporal, 'WEBP', quality=80, method=4)
+        imagen.save(temporal, 'WEBP', quality=80, method=1)
         os.replace(temporal, path)
     finally:
         temporal.unlink(missing_ok=True)

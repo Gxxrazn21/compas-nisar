@@ -504,7 +504,7 @@ export function useCompas(reference: ReferenceChoice | null = null): Compas {
         [lupaTarget.lon, lupaTarget.lat],
         zoomForWindow(lupaTarget.size_km, lupaTarget.lat),
         before === null || prefersReducedMotion(),
-        2600,
+        1200,
       );
     } else if (!lupaKey && before) {
       recenterRef.current();
@@ -564,9 +564,9 @@ export function useCompas(reference: ReferenceChoice | null = null): Compas {
       if (next === 'explore') {
         if (stack && exStackId) fitFootprint(stack, false);
         else if (exPoint) view(exPoint, 5.5, prefersReducedMotion());
-        else view([-30, 14], GLOBE_ZOOM, prefersReducedMotion(), 1800);
+        else view([-30, 14], GLOBE_ZOOM, prefersReducedMotion(), 1000);
       } else {
-        view([-30, 14], GLOBE_ZOOM, prefersReducedMotion(), 1800);
+        view([-30, 14], GLOBE_ZOOM, prefersReducedMotion(), 1000);
       }
     },
     [goHome, stack, exStackId, exPoint, fitFootprint, view],
@@ -706,7 +706,7 @@ export function useCompas(reference: ReferenceChoice | null = null): Compas {
   const goToPoint = useCallback(
     (lon: number, lat: number) => {
       pickPoint(lon, lat);
-      view([lon, lat], 5.5, prefersReducedMotion(), 2400);
+      view([lon, lat], 5.5, prefersReducedMotion(), 1200);
     },
     [pickPoint, view],
   );
@@ -774,12 +774,12 @@ export function useCompas(reference: ReferenceChoice | null = null): Compas {
   const changePlace = useCallback(() => {
     resetExplore();
     setExPoint(null);
-    view([-30, 14], GLOBE_ZOOM, prefersReducedMotion(), 1800);
+    view([-30, 14], GLOBE_ZOOM, prefersReducedMotion(), 1000);
   }, [resetExplore, view]);
 
   const changeStack = useCallback(() => {
     resetExplore();
-    if (exPoint) view(exPoint, 5.5, prefersReducedMotion(), 1800);
+    if (exPoint) view(exPoint, 5.5, prefersReducedMotion(), 1000);
   }, [resetExplore, exPoint, view]);
 
   // En vivo
@@ -789,7 +789,7 @@ export function useCompas(reference: ReferenceChoice | null = null): Compas {
       live.setTab('events');
       if (live.events.status === 'ready') {
         const found = live.events.data.find((item) => item.id === id);
-        if (found) view([found.lon, found.lat], 5.5, prefersReducedMotion(), 2200);
+        if (found) view([found.lon, found.lat], 5.5, prefersReducedMotion(), 1100);
       }
     },
     [live, view],
@@ -801,7 +801,7 @@ export function useCompas(reference: ReferenceChoice | null = null): Compas {
       live.setTab('urgent');
       if (live.urgent.status === 'ready') {
         const found = live.urgent.data.find((item) => `${item.stack}|${item.datetime}` === id);
-        if (found) view(found.center, 5.5, prefersReducedMotion(), 2200);
+        if (found) view(found.center, 5.5, prefersReducedMotion(), 1100);
       }
     },
     [live, view],
@@ -816,8 +816,8 @@ export function useCompas(reference: ReferenceChoice | null = null): Compas {
       // «NISAR ahora» gira el globo hasta donde está el satélite en este instante.
       const orbit = tab === 'satellite' && live.satellite.state.status === 'ready' ? live.satellite.state.orbit : null;
       const nisar = orbit ? stateAt(orbit, new Date()) : null;
-      if (nisar) view([nisar.lon, nisar.lat], globeZoom(GLOBE_ZOOM, nisar.lat), prefersReducedMotion(), 1600);
-      else view(latest ? latest.center : [-30, 14], GLOBE_ZOOM, prefersReducedMotion(), 1600);
+      if (nisar) view([nisar.lon, nisar.lat], globeZoom(GLOBE_ZOOM, nisar.lat), prefersReducedMotion(), 1000);
+      else view(latest ? latest.center : [-30, 14], GLOBE_ZOOM, prefersReducedMotion(), 1000);
     },
     [live, view],
   );

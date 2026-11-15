@@ -5,7 +5,19 @@ import { api } from '../../api';
 import { useI18n } from '../../i18n';
 import { formatDate } from '../../lib/format';
 import type { Load } from '../../state/useCompas';
+import { isChangeStory, isInterferogramStory } from '../../types';
 import type { EarthToday, Story } from '../../types';
+
+function prefetchStory(story: Story) {
+  if (isChangeStory(story)) {
+    void api.stack(story.stack).catch(() => undefined);
+    void api
+      .change({ stack: story.stack, before: story.before, after: story.after, aoi: story.aoi })
+      .catch(() => undefined);
+  } else if (isInterferogramStory(story)) {
+    void api.interferograms(story.point[0], story.point[1], story.limit ?? 8).catch(() => undefined);
+  }
+}
 
 interface Props {
   stories: Load<Story[]>;
@@ -35,7 +47,13 @@ export function Cover({ stories, onOpen, onTour }: Props) {
         <ul className="programa" aria-label={t('cover.programLabel')}>
           {stories.data.map((story) => (
             <li key={story.id}>
-              <button type="button" className="programa-fila" onClick={() => onOpen(story.id)}>
+              <button
+                type="button"
+                className="programa-fila"
+                onMouseEnter={() => prefetchStory(story)}
+                onFocus={() => prefetchStory(story)}
+                onClick={() => onOpen(story.id)}
+              >
                 <span className="programa-titulo">{loc(story.title)}</span>
                 <span className="programa-puntos" aria-hidden="true" />
                 <span className="programa-lugar">

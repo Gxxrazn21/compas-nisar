@@ -315,6 +315,8 @@
   border: 0;
   border-bottom: 1px solid var(--linea);
   text-align: left;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 52px;
 }
 
 .fila-vivo:hover,
