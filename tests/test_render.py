@@ -2,6 +2,7 @@
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 import numpy as np
 from fastapi import FastAPI
@@ -58,6 +59,20 @@ class TestCapasWebp(unittest.TestCase):
 
 
 class TestCabecerasDeCache(unittest.TestCase):
+    def test_webp_declara_su_formato_aunque_windows_no_lo_reconozca(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ruta = Path(tmp) / 'change_hh.webp'
+            change.save_layer(_foto(), ruta, 'change_hh')
+            app = FastAPI()
+            app.mount('/derived', main.InmutableFiles(directory=tmp))
+            # Reproduce sistemas cuya tabla MIME no incluye WebP.
+            with mock.patch('mimetypes.guess_type', return_value=(None, None)):
+                respuesta = TestClient(app).get('/derived/change_hh.webp')
+            self.assertEqual(respuesta.status_code, 200)
+            self.assertEqual(respuesta.headers['content-type'], 'image/webp')
+            self.assertEqual(respuesta.content, ruta.read_bytes())
+            self.assertEqual(respuesta.headers['cache-control'], main.CACHE_INMUTABLE)
+
     def test_derived_es_inmutable(self):
         with tempfile.TemporaryDirectory() as tmp:
             (Path(tmp) / 'x.webp').write_bytes(b'RIFF')

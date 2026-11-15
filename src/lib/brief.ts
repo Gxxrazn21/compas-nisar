@@ -28,7 +28,8 @@ export function buildBriefHtml(report: Report, lang: Lang, image: string | null)
 export async function layerDataUrl(path: string): Promise<string> {
   const url = new URL(path, window.location.origin);
   if (url.origin !== window.location.origin) throw new Error('La capa debe ser local.');
-  const response = await fetch(url);
+  // Renueva también las capas guardadas con un tipo MIME incorrecto por el servidor.
+  const response = await fetch(url, { cache: 'reload' });
   if (!response.ok) throw new Error('No se pudo descargar la capa.');
   const blob = await response.blob();
   if (!['image/png', 'image/jpeg', 'image/webp'].includes(blob.type)) throw new Error('Formato de imagen no válido.');

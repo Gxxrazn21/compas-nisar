@@ -181,6 +181,10 @@ class InmutableFiles(StaticFiles):
 
     def file_response(self, *args, **kwargs):
         respuesta = super().file_response(*args, **kwargs)
+        # Windows puede desconocer WebP y devolver application/octet-stream,
+        # que impide incorporar la imagen al informe portable.
+        if isinstance(respuesta, FileResponse) and str(respuesta.path).lower().endswith('.webp'):
+            respuesta.headers['Content-Type'] = 'image/webp'
         respuesta.headers['Cache-Control'] = CACHE_INMUTABLE
         return respuesta
 
