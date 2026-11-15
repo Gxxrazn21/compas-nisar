@@ -243,6 +243,8 @@ The `data/cache/` cache automatically limits itself to about 3.5 GB; it can be d
 
 This project's code and text were written with coding assistants (Codex and Claude Code), directed and reviewed by the author. The assistants did not generate any data: images, figures and dates come from the NASA and ASF services cited above, and every result can be reproduced with the repository's scripts.
 
+The voice-over of the 30-second demo video is AI-generated: a text-to-speech model (Kokoro, run locally by `video/voice.py`) reads the on-screen captions. The video's music is synthesized by `video/music.py`, and its footage is a recording of the real app.
+
 ## License
 
 Code is licensed under MIT (see `LICENSE`). Data belong to their respective sources and are used according to their open-access policies.

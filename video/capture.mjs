@@ -175,6 +175,36 @@ const SHOTS = {
       await a.wait(3600);
     });
   },
+  // NISAR ahora: el satélite en 3D sobre su órbita (tercera pestaña de En vivo).
+  async satellite(app, dir) {
+    await app.goto(url('m=v'), { x: 900, y: 420 });
+    await settle(app, '.pestanas', 5000);
+    return app.record(dir, async (a) => {
+      await a.wait(400);
+      await a.click('.pestanas button:nth-child(3)', 900);
+      await a.wait(7000);
+    });
+  },
+  // Contexto: el agua vista por Sentinel-1 encima del cambio de NISAR.
+  async context(app, dir) {
+    await app.goto(url('s=mojana&p=2'), { x: 900, y: 300 });
+    await settle(app, '.clases', 6000);
+    return app.record(dir, async (a) => {
+      await a.wait(400);
+      await a.click('.ctx-ficha', 900);
+      await a.wait(5000);
+    });
+  },
+  // Recorrido guiado: se abre desde la barra superior y avanza solo.
+  async tour(app, dir) {
+    await app.goto(url(), { x: 900, y: 420 });
+    await settle(app, '.programa-fila', 5000);
+    return app.record(dir, async (a) => {
+      await a.wait(400);
+      await a.click('.recorrido-boton', 900);
+      await a.wait(9000);
+    });
+  },
 };
 
 // Imágenes fijas: otras historias y el diálogo Método.
@@ -202,7 +232,8 @@ try {
   if (!only.length || only.includes('method')) {
     await app.goto(url(), { x: -50, y: -50 });
     await settle(app, '.programa-fila', 3000);
-    await app.page.click('.barra-derecha .enlace');
+    // El primer .enlace de la barra es ahora el recorrido: se elige el de Método.
+    await app.page.click('.barra-derecha .enlace:not(.recorrido-boton):not(.ayuda-boton)');
     await app.wait(1500);
     await app.still(join(root, 'method.jpg'));
     console.log(`${lang}/method.jpg`);

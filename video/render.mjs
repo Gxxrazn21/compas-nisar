@@ -2,6 +2,8 @@
 // Uso:  node video/render.mjs <en|es>                      → video/out/compas-<idioma>.mp4
 //       node video/render.mjs <en|es> --frame 24.5 a.jpg   → un solo cuadro, para revisar (o varios: 2,8,24)
 //       node video/render.mjs <en|es> --from 13 --to 23    → solo un tramo
+//       node video/render.mjs en --cut demo30              → corte de 30 s (composition/script.demo30.js),
+//                                                            en video/out/saritmo-demo30-en.mp4
 // Con --audio <archivo> la pista se mezcla en el MP4. Necesita ffmpeg y Google Chrome instalados.
 import { chromium } from 'playwright-core';
 import { spawn } from 'node:child_process';
@@ -15,6 +17,7 @@ const root = resolve(here, '..');
 const args = process.argv.slice(2);
 const lang = args[0] === 'es' ? 'es' : 'en';
 const option = (name) => { const i = args.indexOf(name); return i === -1 ? null : args.slice(i + 1); };
+const cut = option('--cut')?.[0] ?? null;
 
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.jpg': 'image/jpeg', '.png': 'image/png', '.woff2': 'font/woff2', '.svg': 'image/svg+xml' };
@@ -45,7 +48,7 @@ const browser = await chromium.launch({ channel: 'chrome', headless: true, args:
 const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
 page.on('pageerror', (error) => console.error(`error en la composición: ${error.message}`));
 await page.addInitScript((data) => { window.FOOTAGE = data; window.RENDER = true; }, footage);
-await page.goto(`${base}/video/composition/index.html?lang=${lang}`, { waitUntil: 'load' });
+await page.goto(`${base}/video/composition/index.html?lang=${lang}${cut ? `&cut=${cut}` : ''}`, { waitUntil: 'load' });
 await page.evaluate(() => window.ready);
 const { fps, duration } = await page.evaluate(() => window.SCRIPT);
 const cdp = await page.context().newCDPSession(page);
@@ -71,12 +74,16 @@ try {
     const audio = option('--audio')?.[0];
     const partial = from > 0 || to < duration;
     mkdirSync(join(here, 'out'), { recursive: true });
-    const out = join(here, 'out', partial ? `compas-${lang}-${from}-${to}.mp4` : `compas-${lang}.mp4`);
+    const name = cut ? `saritmo-${cut}-${lang}` : `compas-${lang}`;
+    const out = join(here, 'out', partial ? `${name}-${from}-${to}.mp4` : `${name}.mp4`);
     const input = ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(fps), '-c:v', 'mjpeg', '-i', '-'];
     if (audio && !partial) input.push('-i', audio);
     const output = ['-c:v', 'libx264', '-preset', 'medium', '-crf', '17', '-pix_fmt', 'yuv420p',
       '-color_primaries', 'bt709', '-color_trc', 'bt709', '-colorspace', 'bt709', '-movflags', '+faststart'];
     if (audio && !partial) output.push('-c:a', 'aac', '-b:a', '192k', '-shortest');
+    // --comment "texto" queda en los metadatos del MP4 (por ejemplo, para declarar audio generado con IA).
+    const comment = option('--comment')?.[0];
+    if (comment) output.push('-metadata', `comment=${comment}`);
     const ffmpeg = spawn('ffmpeg', [...input, ...output, out], { stdio: ['pipe', 'inherit', 'inherit'] });
     const closed = new Promise((done, fail) => ffmpeg.on('close', (code) => (code === 0 ? done() : fail(new Error(`ffmpeg terminó con código ${code}`)))));
     const first = Math.round(from * fps);

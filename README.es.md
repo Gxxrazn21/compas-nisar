@@ -217,6 +217,8 @@ La caché de `data/cache/` se limita sola a unos 3,5 GB; se puede borrar en cual
 
 El código y los textos de este proyecto se escribieron con asistentes de programación (Codex y Claude Code), dirigidos y revisados por el autor. Los asistentes no generaron ningún dato: las imágenes, cifras y fechas provienen de los servicios de NASA y ASF citados arriba, y cada resultado se puede reproducir con los scripts del repositorio.
 
+La narración del video demo de 30 segundos está generada con IA: un modelo de texto a voz (Kokoro, ejecutado en local por `video/voice.py`) lee los rótulos que aparecen en pantalla. La música del video la sintetiza `video/music.py` y las imágenes son una grabación de la aplicación real.
+
 ## Licencia
 
 Código bajo licencia MIT (ver `LICENSE`). Los datos pertenecen a sus fuentes y se usan según sus políticas de acceso abierto.

@@ -2,14 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Compás, video</title>
+    <title>SARitmo, video</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div id="stage">
       <!-- Apertura y concepto: el pentagrama grande -->
       <section id="intro" class="scene">
-        <h1 id="wordmark">compás</h1>
+        <p id="eyebrow"></p>
+        <h1 id="wordmark">SARitmo</h1>
         <p id="tagline"></p>
         <div id="concept">
           <h2 id="concept-h"></h2>
@@ -50,17 +51,26 @@
 
       <!-- Cierre -->
       <section id="outro" class="scene">
-        <p id="outro-mark">compás</p>
+        <p id="outro-mark">SARitmo</p>
         <svg id="outro-staff" viewBox="0 0 1920 120" aria-hidden="true"></svg>
         <p id="outro-a"></p>
         <p id="outro-b"></p>
+        <p id="outro-team"></p>
         <p id="outro-c">github.com/Gxxrazn21/compas-nisar</p>
+        <p id="outro-note"></p>
       </section>
 
       <!-- La línea de tiempo del propio video, como partitura -->
       <svg id="progress" viewBox="0 0 1920 70" aria-hidden="true"></svg>
     </div>
     <script src="script.js"></script>
+    <script>
+      // ?cut=demo30 carga script.demo30.js, un guion alterno que reemplaza al completo.
+      {
+        const cut = new URLSearchParams(location.search).get('cut') ?? '';
+        if (/^[a-z0-9]+$/.test(cut)) document.write(`<script src="script.${cut}.js"><\/script>`);
+      }
+    </script>
     <script src="timeline.js"></script>
   </body>
 </html>

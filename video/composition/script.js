@@ -48,8 +48,8 @@ window.SCRIPT = {
     {
       id: 'explore', start: 56, end: 65,
       cam: [[0, 533, 300, 1.5], [3.3, 533, 300, 1.5], [4.8, 800, 450, 1]],
-      en: ['Explore', 'Search any city. Compás lists the NISAR passes that cover it.'],
-      es: ['Explorar', 'Busca una ciudad. Compás lista las pasadas de NISAR que la cubren.'],
+      en: ['Explore', 'Search any city. SARitmo lists the NISAR passes that cover it.'],
+      es: ['Explorar', 'Busca una ciudad. SARitmo lista las pasadas de NISAR que la cubren.'],
     },
     {
       id: 'live', start: 65, end: 70.5,

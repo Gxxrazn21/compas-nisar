@@ -3,9 +3,11 @@
 Un acorde sostenido cada ocho segundos, un pulso cada dos (el compás del video) y una nota más
 aguda al empezar cada escena. Los tiempos de las escenas se leen de composition/script.js.
 
-Uso:  python video/music.py            → video/out/music.wav
+Uso:  python video/music.py                                   → video/out/music.wav
+      python video/music.py script.demo30.js music-demo30.wav → pista del corte de 30 s
 """
 import re
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -14,7 +16,9 @@ from scipy.signal import butter, lfilter
 
 AQUI = Path(__file__).resolve().parent
 SR = 44100
-GUION = (AQUI / 'composition' / 'script.js').read_text(encoding='utf-8')
+ARCHIVO_GUION = sys.argv[1] if len(sys.argv) > 1 else 'script.js'
+ARCHIVO_SALIDA = sys.argv[2] if len(sys.argv) > 2 else 'music.wav'
+GUION = (AQUI / 'composition' / ARCHIVO_GUION).read_text(encoding='utf-8')
 DURACION = float(re.search(r'duration:\s*([\d.]+)', GUION).group(1))
 ESCENAS = sorted({float(x) for x in re.findall(r'(?:start|conceptAt):\s*([\d.]+)', GUION)})
 
@@ -131,7 +135,7 @@ general = np.minimum(1.0, t / 1.5) * np.clip((DURACION - 0.3 - t) / 3.5, 0, 1)
 mezcla = np.stack([izq, der], axis=1) * general[:, None]
 mezcla *= 0.5 / np.abs(mezcla).max()
 
-salida = AQUI / 'out' / 'music.wav'
+salida = AQUI / 'out' / ARCHIVO_SALIDA
 salida.parent.mkdir(exist_ok=True)
 wavfile.write(salida, SR, (mezcla * 32767).astype(np.int16))
 print(f'{salida}  {DURACION:.0f} s, {len(ESCENAS)} escenas')

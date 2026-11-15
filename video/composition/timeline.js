@@ -5,7 +5,8 @@
   const S = window.SCRIPT;
   const params = new URLSearchParams(location.search);
   const lang = params.get('lang') === 'es' ? 'es' : 'en';
-  const T = S.text[lang];
+  const T = S.text[lang] ?? S.text.en;
+  const BRAND = S.brand ?? 'SARitmo';
   const FOOTAGE = window.FOOTAGE || {};
   document.documentElement.lang = lang;
 
@@ -46,8 +47,14 @@
   const mix = (a, b, k) => `rgb(${a.map((v, i) => Math.round(lerp(v, b[i], k))).join(',')})`;
 
   // ---------------------------------------------------------------- apertura y concepto
-  const letters = split($('wordmark'), 'compás', false);
+  // Igual que en la aplicación: «SAR» va recto y el resto en cursiva.
+  const upright = (spans) => {
+    if (BRAND.startsWith('SAR')) spans.slice(0, 3).forEach((span) => { span.style.fontStyle = 'normal'; });
+  };
+  const letters = split($('wordmark'), BRAND, false);
+  upright(letters);
   const words = split($('tagline'), T.tagline, true);
+  $('eyebrow').textContent = T.eyebrow ?? '';
   $('concept-h').textContent = T.conceptH;
   $('concept-p').textContent = T.conceptP;
 
@@ -93,44 +100,51 @@
   const labelDays = label((bx0 + bx1) / 2, T.days, 'var(--bruma)', 32);
 
   function intro(t) {
-    const { start, end, conceptAt } = S.intro;
+    const { start, end, conceptAt, pace = 1 } = S.intro;
     const el = $('intro');
     const on = t >= start && t < end;
     el.style.opacity = on ? 1 - seg(t, end - 0.5, end) : 0;
     if (!on) return;
+    // `u` es el tiempo interno de la apertura y `c` el momento del concepto en ese tiempo:
+    // con `pace` mayor que 1 la misma coreografía cabe en menos segundos (corte de 30 s).
+    const u = (t - start) * pace;
+    const c = (conceptAt - start) * pace;
     lines.forEach((line, i) => {
-      line.setAttribute('stroke-dashoffset', (X1 - X0) * (1 - outCubic(seg(t, 0.3 + i * 0.12, 1.9 + i * 0.12))));
+      line.setAttribute('stroke-dashoffset', (X1 - X0) * (1 - outCubic(seg(u, 0.3 + i * 0.12, 1.9 + i * 0.12))));
     });
-    const leave = seg(t, conceptAt - 0.25, conceptAt + 0.35);
+    const leave = seg(u, c - 0.25, c + 0.35);
     letters.forEach((span, j) => {
-      const k = outQuint(seg(t, 0.9 + j * 0.08, 1.8 + j * 0.08));
+      const k = outQuint(seg(u, 0.9 + j * 0.08, 1.8 + j * 0.08));
       span.style.opacity = k * (1 - leave);
       span.style.transform = `translateY(${(1 - k) * 70 - inOut(leave) * 40}px)`;
     });
     words.forEach((span, j) => {
-      const k = outQuint(seg(t, 2.3 + j * 0.09, 2.95 + j * 0.09));
+      const k = outQuint(seg(u, 2.3 + j * 0.09, 2.95 + j * 0.09));
       span.style.opacity = k * (1 - leave);
       span.style.transform = `translateY(${(1 - k) * 26 - inOut(leave) * 40}px)`;
     });
-    const gold = seg(t, conceptAt + 2.5, conceptAt + 3.1);
+    const eyebrow = outQuint(seg(u, 0.5, 1.4));
+    $('eyebrow').style.opacity = eyebrow * (1 - leave);
+    $('eyebrow').style.transform = `translateY(${(1 - eyebrow) * 16 - inOut(leave) * 40}px)`;
+    const gold = seg(u, c + 2.5, c + 3.1);
     notes.forEach((note, k) => {
       const at = 3.0 + k * 0.27;
-      const p = seg(t, at, at + 0.5);
+      const p = seg(u, at, at + 0.5);
       const scale = p <= 0 ? 0 : outBack(p);
       note.g.setAttribute('transform', `translate(${noteX(k)},${noteY(k)}) scale(${scale})`);
       const color = GOLD.includes(k) ? mix(PAPEL, ORO, gold) : mix(PAPEL, PAUTA, gold * 0.55);
       note.head.setAttribute('fill', color);
       note.stem.setAttribute('stroke', color);
-      bars[k].setAttribute('opacity', seg(t, at - 0.1, at + 0.3));
+      bars[k].setAttribute('opacity', seg(u, at - 0.1, at + 0.3));
     });
-    rise($('concept-h'), seg(t, conceptAt + 0.4, conceptAt + 1.2), 36);
-    const days = outCubic(seg(t, conceptAt + 1.5, conceptAt + 2.1));
+    rise($('concept-h'), seg(u, c + 0.4, c + 1.2), 36);
+    const days = outCubic(seg(u, c + 1.5, c + 2.1));
     bracket.setAttribute('opacity', days);
     labelDays.setAttribute('opacity', days);
-    slur.setAttribute('stroke-dashoffset', 1 - inOut(seg(t, conceptAt + 2.8, conceptAt + 3.9)));
-    labelBefore.setAttribute('opacity', outCubic(seg(t, conceptAt + 2.7, conceptAt + 3.2)));
-    labelAfter.setAttribute('opacity', outCubic(seg(t, conceptAt + 3.6, conceptAt + 4.1)));
-    rise($('concept-p'), seg(t, conceptAt + 3.9, conceptAt + 4.7), 26);
+    slur.setAttribute('stroke-dashoffset', 1 - inOut(seg(u, c + 2.8, c + 3.9)));
+    labelBefore.setAttribute('opacity', outCubic(seg(u, c + 2.7, c + 3.2)));
+    labelAfter.setAttribute('opacity', outCubic(seg(u, c + 3.6, c + 4.1)));
+    rise($('concept-p'), seg(u, c + 3.9, c + 4.7), 26);
   }
 
   // ---------------------------------------------------------------- la aplicación
@@ -167,11 +181,17 @@
     const lt = t - item.start;
     const dur = item.end - item.start;
     const count = FOOTAGE[item.id] ?? 1;
+    // `clip: [desde, hasta]` (segundos de la toma) usa solo ese tramo; sin él, la toma completa.
+    const first = Math.min(count - 1, Math.floor((item.clip?.[0] ?? 0) * S.fps));
+    const last = Math.max(first + 1, Math.min(count, Math.floor((item.clip?.[1] ?? count / S.fps) * S.fps)));
     // La toma se ajusta a la escena: si es más larga se acelera; si es más corta, se sostiene el último cuadro.
-    const speed = Math.max(1, count / S.fps / (dur - 0.3));
-    const frame = clamp(Math.floor(lt * speed * S.fps) + 1, 1, count);
+    // `pace` acorta las transiciones entre tomas y la entrada del rótulo (corte rápido).
+    const q = S.app.pace ?? 1;
+    // `speed` fija la velocidad de la toma: si el tramo se acaba antes, el último cuadro queda en pantalla.
+    const speed = item.speed ?? Math.max(1, (last - first) / S.fps / (dur - 0.3 / q));
+    const frame = clamp(first + Math.floor(lt * speed * S.fps) + 1, 1, last);
     wanted = `/video/footage/${lang}/${item.id}/f_${pad(frame)}.jpg`;
-    shot.style.opacity = seg(lt, 0, 0.3) * (1 - seg(lt, dur - 0.2, dur));
+    shot.style.opacity = seg(lt, 0, 0.3 / q) * (1 - seg(lt, dur - 0.2 / q, dur));
     camera(item.cam, lt);
     if (item.mark) {
       const [a, b, x, y, w, h] = item.mark;
@@ -183,9 +203,9 @@
     }
     $('kicker').textContent = item[lang][0];
     $('headline').textContent = item[lang][1];
-    const leave = seg(lt, dur - 0.4, dur - 0.1);
-    rise($('kicker'), seg(lt, 0.15, 0.7) * (1 - leave), 18);
-    rise($('headline'), seg(lt, 0.25, 0.85) * (1 - leave), 24);
+    const leave = seg(lt, dur - 0.4 / q, dur - 0.1 / q);
+    rise($('kicker'), seg(lt, 0.15 / q, 0.7 / q) * (1 - leave), 18);
+    rise($('headline'), seg(lt, 0.25 / q, 0.85 / q) * (1 - leave), 24);
     return wanted;
   }
 
@@ -215,13 +235,13 @@
     const on = t >= start && t < end;
     el.style.opacity = on ? 1 - seg(t, end - 0.4, end) : 0;
     if (!on) return;
-    const lt = t - start;
+    const lt = (t - start) * (S.montage.pace ?? 1);
     rise($('montage-h'), seg(lt, 0.1, 0.8), 30);
     cards.forEach(({ card, img }, i) => {
       const k = outQuint(seg(lt, 0.45 + i * 0.4, 1.25 + i * 0.4));
       card.style.opacity = k;
       card.style.transform = `translateY(${(1 - k) * 46}px) scale(${lerp(0.96, 1, k)})`;
-      img.style.transform = `scale(${lerp(2.0, 2.18, seg(lt, 0, end - start))})`;
+      img.style.transform = `scale(${lerp(2.0, 2.18, seg(t, start, end))})`;
     });
   }
 
@@ -254,9 +274,12 @@
   }
 
   // ---------------------------------------------------------------- cierre
-  const outroLetters = split($('outro-mark'), 'compás', false);
+  const outroLetters = split($('outro-mark'), BRAND, false);
+  upright(outroLetters);
   $('outro-a').textContent = T.outroA;
   $('outro-b').textContent = T.outroB;
+  $('outro-team').textContent = T.outroTeam ?? '';
+  $('outro-note').textContent = T.outroNote ?? '';
   const oStaff = $('outro-staff');
   const OX0 = 600;
   const OX1 = 1320;
@@ -267,12 +290,13 @@
   const oThick = svg(oStaff, 'line', { x1: OX1 - 3, x2: OX1 - 3, y1: 20, y2: 92, stroke: 'var(--papel)', 'stroke-width': 8, opacity: 0 });
 
   function outro(t) {
-    const { start, end } = S.outro;
+    // `fade: 0` deja el cierre fijo hasta el último cuadro; `pace` acelera la entrada de los textos.
+    const { start, end, pace = 1, fade = 0.7 } = S.outro;
     const el = $('outro');
     const on = t >= start && t <= end;
-    el.style.opacity = on ? 1 - seg(t, end - 0.7, end - 0.1) : 0;
+    el.style.opacity = on ? (fade > 0 ? 1 - seg(t, end - fade, end - 0.1) : 1) : 0;
     if (!on) return;
-    const lt = t - start;
+    const lt = (t - start) * pace;
     outroLetters.forEach((span, j) => {
       span.style.display = 'inline-block';
       rise(span, seg(lt, 0.2 + j * 0.07, 1.0 + j * 0.07), 60);
@@ -285,6 +309,8 @@
     rise($('outro-a'), seg(lt, 1.5, 2.2), 22);
     rise($('outro-b'), seg(lt, 1.9, 2.6), 22);
     rise($('outro-c'), seg(lt, 2.6, 3.3), 18);
+    rise($('outro-team'), seg(lt, 2.2, 2.9), 18);
+    rise($('outro-note'), seg(lt, 2.8, 3.5), 12);
   }
 
   // ---------------------------------------------------------------- línea de tiempo como partitura
@@ -294,8 +320,9 @@
   const px = (time) => PX0 + (time / S.duration) * (PX1 - PX0);
   [0, 1, 2, 3, 4].forEach((i) =>
     svg(progress, 'line', { x1: PX0, x2: PX1, y1: 12 + i * 7, y2: 12 + i * 7, stroke: 'var(--linea)', 'stroke-width': 1.5 }));
-  const beats = [S.intro.start, S.intro.conceptAt, ...S.shots.map((item) => item.start), S.montage.start,
-    S.honesty.start, S.outro.start];
+  // Sin repetidos: una escena de duración cero (omitida en un corte) comparte inicio con la siguiente.
+  const beats = [...new Set([S.intro.start, S.intro.conceptAt, ...S.shots.map((item) => item.start), S.montage.start,
+    S.honesty.start, S.outro.start])];
   const PPITCH = [4, 2, 5, 3, 6, 4, 2, 5, 3, 6, 4, 2];
   const pNotes = beats.map((time, i) => {
     const g = svg(progress, 'g');
