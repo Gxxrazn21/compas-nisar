@@ -9,6 +9,7 @@ import {
   barDays,
   makeAxis,
   monthTicks,
+  noteLabelLayout,
   noteY,
   COMMON_DB_RANGE,
   noteFrequency,
@@ -17,14 +18,15 @@ import {
   xOfDate,
   xOfDay,
 } from '../../lib/score';
+import type { NoteLabelPlacement } from '../../lib/score';
 import { blockReason } from '../../lib/selection';
 import type { Blocked, Selection } from '../../lib/selection';
 import { playNote } from '../../lib/sound';
 import type { Scene, SeriesResult, Stack } from '../../types';
 
-export const STAFF_HEIGHT = 126;
+export const STAFF_HEIGHT = 130;
 const SPACE = 9;
-const TOP = 38;
+const TOP = 34;
 const CENTER = TOP + SPACE * 2;
 const BOTTOM = TOP + SPACE * 4;
 const STEM = 26;
@@ -75,9 +77,21 @@ export function Staff({ stack, containerWidth, selection, series, cursorDate, so
     .map((day) => xOfDay(day, axis))
     .filter((x) => x > 6 && x < width - 6);
   const ticks = monthTicks(first, axis.days);
+  let lastTickX = -Infinity;
+  const visibleTicks = ticks.filter((tick) => {
+    const x = xOfDay(tick.day, axis);
+    if (x - lastTickX < 52) return false;
+    lastTickX = x;
+    return true;
+  });
 
   const sceneBefore = scenes.find((scene) => scene.date === selection.before);
   const sceneAfter = scenes.find((scene) => scene.date === selection.after);
+  const labels = noteLabelLayout(
+    sceneBefore ? xOfDate(sceneBefore.date, axis) : null,
+    sceneAfter ? xOfDate(sceneAfter.date, axis) : null,
+    width,
+  );
   const defaultFocus = Math.max(0, scenes.findIndex((scene) => scene.date === selection.before));
   const rovingIndex = focusIndex ?? defaultFocus;
 
@@ -138,13 +152,11 @@ export function Staff({ stack, containerWidth, selection, series, cursorDate, so
     return <path className="ligadura" d={`M ${x1} ${y1} C ${x1} ${peak}, ${x2} ${peak}, ${x2} ${y2}`} />;
   };
 
-  const label = (scene: Scene | undefined, kind: 'before' | 'after') => {
-    if (!scene) return null;
-    const x = xOfDate(scene.date, axis);
+  const label = (scene: Scene | undefined, kind: 'before' | 'after', placement: NoteLabelPlacement | null) => {
+    if (!scene || !placement) return null;
     const word = t(kind === 'before' ? 'score.before' : 'score.after');
-    const anchor = kind === 'before' ? (x < 110 ? 'start' : 'end') : x > width - 110 ? 'end' : 'start';
     return (
-      <text className="nota-rotulo" x={anchor === 'end' ? x + 8 : x - 8} y={BOTTOM + 26} textAnchor={anchor}>
+      <text className="nota-rotulo" x={placement.x} y={BOTTOM + 24} textAnchor={placement.anchor}>
         <tspan className="nota-palabra">{word}</tspan> {formatDateShort(scene.date, lang)}
       </text>
     );
@@ -170,12 +182,18 @@ export function Staff({ stack, containerWidth, selection, series, cursorDate, so
       {bars.map((x) => (
         <line key={x} className="pent-barra" x1={x} x2={x} y1={TOP} y2={BOTTOM} />
       ))}
-      {ticks.map((tick, index) => {
+      {visibleTicks.map((tick, index) => {
         const x = xOfDay(tick.day, axis);
+        const nearRight = x > width - 44;
         return (
           <g key={tick.date}>
-            <line className="pent-mes" x1={x} x2={x} y1={STAFF_HEIGHT - 19} y2={STAFF_HEIGHT - 13} />
-            <text className="pent-mes-texto" x={x + 4} y={STAFF_HEIGHT - 4}>
+            <line className="pent-mes" x1={x} x2={x} y1={STAFF_HEIGHT - 18} y2={STAFF_HEIGHT - 12} />
+            <text
+              className="pent-mes-texto"
+              x={nearRight ? x - 4 : x + 4}
+              y={STAFF_HEIGHT - 3}
+              textAnchor={nearRight ? 'end' : 'start'}
+            >
               {monthLabel(tick.date, index, lang)}
             </text>
           </g>
@@ -245,8 +263,8 @@ export function Staff({ stack, containerWidth, selection, series, cursorDate, so
         );
       })}
 
-      {label(sceneBefore, 'before')}
-      {label(sceneAfter, 'after')}
+      {label(sceneBefore, 'before', labels.before)}
+      {label(sceneAfter, 'after', labels.after)}
     </svg>
   );
 }

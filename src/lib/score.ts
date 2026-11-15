@@ -149,3 +149,131 @@ export function stepFrequency(step: number): number {
   const midi = C4_MIDI + octave * 12 + (MAJOR_SCALE[((degree % 7) + 7) % 7] as number);
   return 440 * 2 ** ((midi - 69) / 12);
 }
+
+export interface NoteLabelPlacement {
+  x: number;
+  anchor: 'start' | 'end';
+}
+
+export interface NoteLabelLayout {
+  before: NoteLabelPlacement | null;
+  after: NoteLabelPlacement | null;
+}
+
+function singleNoteLabel(
+  x: number,
+  labelWidth: number,
+  prefer: 'start' | 'end',
+  width: number,
+  margin: number,
+): NoteLabelPlacement {
+  const minRight = Math.min(width - margin, margin + labelWidth);
+  const maxLeft = Math.max(margin, width - margin - labelWidth);
+  if (prefer === 'end') {
+    const right = Math.min(width - margin, x + 6);
+    if (right - labelWidth >= margin) return { x: right, anchor: 'end' };
+    return { x: Math.min(maxLeft, Math.max(margin, x - 6)), anchor: 'start' };
+  }
+  const left = Math.max(margin, x - 6);
+  if (left + labelWidth <= width - margin) return { x: left, anchor: 'start' };
+  return { x: Math.max(minRight, Math.min(width - margin, x + 6)), anchor: 'end' };
+}
+
+/**
+ * Posiciona los rótulos «antes» y «después» bajo el pentagrama sin que salgan del lienzo
+ * ni se superpongan entre sí, incluso cuando dos notas adyacentes caen cerca de un borde.
+ */
+export function noteLabelLayout(
+  xBefore: number | null,
+  xAfter: number | null,
+  width: number,
+  beforeWidth = 136,
+  afterWidth = 152,
+  gap = 18,
+  margin = 10,
+): NoteLabelLayout {
+  if (xBefore === null && xAfter === null) return { before: null, after: null };
+  if (xBefore !== null && xAfter === null) {
+    return { before: singleNoteLabel(xBefore, beforeWidth, 'end', width, margin), after: null };
+  }
+  if (xBefore === null && xAfter !== null) {
+    return { before: null, after: singleNoteLabel(xAfter, afterWidth, 'start', width, margin) };
+  }
+
+  const bX = xBefore as number;
+  const aX = xAfter as number;
+  const swapped = bX > aX;
+  const leftNoteX = swapped ? aX : bX;
+  const rightNoteX = swapped ? bX : aX;
+  const leftW = swapped ? afterWidth : beforeWidth;
+  const rightW = swapped ? beforeWidth : afterWidth;
+
+  const leftPinnedStart = leftNoteX + 6 - leftW < margin;
+  const rightPinnedEnd = rightNoteX - 6 + rightW > width - margin;
+
+  let leftStart: number;
+  let leftEnd: number;
+  if (leftPinnedStart) {
+    leftStart = Math.max(margin, Math.min(width - margin - leftW, leftNoteX - 6));
+    leftEnd = leftStart + leftW;
+  } else {
+    leftEnd = Math.min(width - margin, Math.max(margin + leftW, leftNoteX + 6));
+    leftStart = leftEnd - leftW;
+  }
+
+  let rightStart: number;
+  let rightEnd: number;
+  if (rightPinnedEnd) {
+    rightEnd = Math.min(width - margin, Math.max(margin + rightW, rightNoteX + 6));
+    rightStart = rightEnd - rightW;
+  } else {
+    rightStart = Math.max(margin, Math.min(width - margin - rightW, rightNoteX - 6));
+    rightEnd = rightStart + rightW;
+  }
+
+  if (leftEnd + gap > rightStart) {
+    const overlap = leftEnd + gap - rightStart;
+    if (rightPinnedEnd && !leftPinnedStart) {
+      const shiftL = Math.min(overlap, Math.max(0, leftStart - margin));
+      leftStart -= shiftL;
+      leftEnd -= shiftL;
+      const rem = leftEnd + gap - rightStart;
+      if (rem > 0) {
+        const shiftR = Math.min(rem, Math.max(0, width - margin - rightEnd));
+        rightStart += shiftR;
+        rightEnd += shiftR;
+      }
+    } else if (leftPinnedStart && !rightPinnedEnd) {
+      const shiftR = Math.min(overlap, Math.max(0, width - margin - rightEnd));
+      rightStart += shiftR;
+      rightEnd += shiftR;
+      const rem = leftEnd + gap - rightStart;
+      if (rem > 0) {
+        const shiftL = Math.min(rem, Math.max(0, leftStart - margin));
+        leftStart -= shiftL;
+        leftEnd -= shiftL;
+      }
+    } else {
+      let shiftL = Math.min(overlap / 2, Math.max(0, leftStart - margin));
+      let shiftR = Math.min(overlap - shiftL, Math.max(0, width - margin - rightEnd));
+      if (shiftL + shiftR < overlap) {
+        shiftL = Math.min(overlap - shiftR, Math.max(0, leftStart - margin));
+      }
+      leftStart -= shiftL;
+      leftEnd -= shiftL;
+      rightStart += shiftR;
+      rightEnd += shiftR;
+    }
+  }
+
+  const leftPlacement: NoteLabelPlacement = leftPinnedStart
+    ? { x: leftStart, anchor: 'start' }
+    : { x: leftEnd, anchor: 'end' };
+  const rightPlacement: NoteLabelPlacement = rightPinnedEnd
+    ? { x: rightEnd, anchor: 'end' }
+    : { x: rightStart, anchor: 'start' };
+
+  return swapped
+    ? { before: rightPlacement, after: leftPlacement }
+    : { before: leftPlacement, after: rightPlacement };
+}

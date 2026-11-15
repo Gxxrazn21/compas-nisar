@@ -4,6 +4,7 @@ import {
   barDays,
   makeAxis,
   monthTicks,
+  noteLabelLayout,
   noteY,
   pitchRange,
   scoreWidth,
@@ -118,5 +119,90 @@ describe('sonido de las notas', () => {
     expect(stepFrequency(1)).toBeCloseTo(523.25, 1); // do5, tercer espacio
     expect(stepFrequency(4)).toBeCloseTo(698.46, 1); // fa5, quinta línea
     expect(stepFrequency(5)).toBeGreaterThan(stepFrequency(4));
+  });
+});
+
+function labelBox(placement: { x: number; anchor: 'start' | 'end' } | null, w: number): [number, number] {
+  expect(placement).not.toBeNull();
+  const p = placement!;
+  return p.anchor === 'start' ? [p.x, p.x + w] : [p.x - w, p.x];
+}
+
+describe('rótulos antes y después sin superposición', () => {
+  const BEFORE_W = 136;
+  const AFTER_W = 152;
+  const GAP = 18;
+  const MARGIN = 10;
+
+  it('separa dos notas adyacentes pegadas al borde derecho (2 de nov y 14 de nov)', () => {
+    const layout = noteLabelLayout(887, 972, 1000, BEFORE_W, AFTER_W, GAP, MARGIN);
+    const [bLeft, bRight] = labelBox(layout.before, BEFORE_W);
+    const [aLeft, aRight] = labelBox(layout.after, AFTER_W);
+
+    expect(layout.before?.anchor).toBe('end');
+    expect(layout.after?.anchor).toBe('end');
+    expect(bLeft).toBeGreaterThanOrEqual(MARGIN);
+    expect(aRight).toBeLessThanOrEqual(1000 - MARGIN);
+    expect(bRight + GAP).toBeLessThanOrEqual(aLeft);
+  });
+
+  it('separa dos notas adyacentes pegadas al borde izquierdo', () => {
+    const layout = noteLabelLayout(68, 140, 1000, BEFORE_W, AFTER_W, GAP, MARGIN);
+    const [bLeft, bRight] = labelBox(layout.before, BEFORE_W);
+    const [aLeft, aRight] = labelBox(layout.after, AFTER_W);
+
+    expect(layout.before?.anchor).toBe('start');
+    expect(layout.after?.anchor).toBe('start');
+    expect(bLeft).toBeGreaterThanOrEqual(MARGIN);
+    expect(aRight).toBeLessThanOrEqual(1000 - MARGIN);
+    expect(bRight + GAP).toBeLessThanOrEqual(aLeft);
+  });
+
+  it('separa dos notas muy cercanas en el centro', () => {
+    for (const [xB, xA] of [[480, 510], [490, 496]] as const) {
+      const layout = noteLabelLayout(xB, xA, 1000, BEFORE_W, AFTER_W, GAP, MARGIN);
+      const [bLeft, bRight] = labelBox(layout.before, BEFORE_W);
+      const [aLeft, aRight] = labelBox(layout.after, AFTER_W);
+
+      expect(layout.before?.anchor).toBe('end');
+      expect(layout.after?.anchor).toBe('start');
+      expect(bLeft).toBeGreaterThanOrEqual(MARGIN);
+      expect(aRight).toBeLessThanOrEqual(1000 - MARGIN);
+      expect(bRight + GAP).toBeLessThanOrEqual(aLeft);
+    }
+  });
+
+  it('mantiene centradas hacia afuera dos notas suficientemente separadas', () => {
+    const layout = noteLabelLayout(200, 800, 1000, BEFORE_W, AFTER_W, GAP, MARGIN);
+    const [bLeft, bRight] = labelBox(layout.before, BEFORE_W);
+    const [aLeft, aRight] = labelBox(layout.after, AFTER_W);
+
+    expect(layout.before).toEqual({ x: 206, anchor: 'end' });
+    expect(layout.after).toEqual({ x: 794, anchor: 'start' });
+    expect(bLeft).toBeGreaterThanOrEqual(MARGIN);
+    expect(aRight).toBeLessThanOrEqual(1000 - MARGIN);
+    expect(bRight + GAP).toBeLessThanOrEqual(aLeft);
+  });
+
+  it('adapta el anclaje cuando solo hay una nota seleccionada cerca de un borde', () => {
+    const leftEdgeBefore = noteLabelLayout(68, null, 1000, BEFORE_W, AFTER_W, GAP, MARGIN);
+    expect(leftEdgeBefore.after).toBeNull();
+    const [lbLeft, lbRight] = labelBox(leftEdgeBefore.before, BEFORE_W);
+    expect(leftEdgeBefore.before?.anchor).toBe('start');
+    expect(lbLeft).toBeGreaterThanOrEqual(MARGIN);
+    expect(lbRight).toBeLessThanOrEqual(1000 - MARGIN);
+
+    const rightEdgeBefore = noteLabelLayout(972, null, 1000, BEFORE_W, AFTER_W, GAP, MARGIN);
+    const [rbLeft, rbRight] = labelBox(rightEdgeBefore.before, BEFORE_W);
+    expect(rightEdgeBefore.before?.anchor).toBe('end');
+    expect(rbLeft).toBeGreaterThanOrEqual(MARGIN);
+    expect(rbRight).toBeLessThanOrEqual(1000 - MARGIN);
+
+    const rightEdgeAfter = noteLabelLayout(null, 972, 1000, BEFORE_W, AFTER_W, GAP, MARGIN);
+    expect(rightEdgeAfter.before).toBeNull();
+    const [raLeft, raRight] = labelBox(rightEdgeAfter.after, AFTER_W);
+    expect(rightEdgeAfter.after?.anchor).toBe('end');
+    expect(raLeft).toBeGreaterThanOrEqual(MARGIN);
+    expect(raRight).toBeLessThanOrEqual(1000 - MARGIN);
   });
 });
